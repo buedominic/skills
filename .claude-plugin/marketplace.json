@@ -1,0 +1,28 @@
+{
+  "name": "buedominic-skills",
+  "owner": {
+    "name": "Dominic Bue"
+  },
+  "description": "Generische, wiederverwendbare Claude-Code-Skills, -Agents und -Workflows zum Teilen",
+  "version": "0.5.4",
+  "plugins": [
+    {
+      "name": "dev-toolkit",
+      "source": "./plugins/dev-toolkit",
+      "description": "Alltags-Skills: /prior-art-check (ist das Problem schon gelöst?), /dependency-audit (risikogestufter Update-Plan), /adr (Entscheidungs-Log), /bug-triage (Meldung → Repro → Root-Cause), /web-audit (A11y/Performance/SEO) und /landing-page (Conversion-Struktur + Copy)",
+      "license": "MIT"
+    },
+    {
+      "name": "context-kit",
+      "source": "./plugins/context-kit",
+      "description": "Kontext-Lebenszyklus: /projekt-setup (erstmalige CLAUDE.md + Workflow-Verdrahtung) und /kontext-audit (Budgets, Drift, Duplikate, Kontext-Bomben) auf Basis einer gemeinsamen Kontext-Architektur-Doktrin",
+      "license": "MIT"
+    },
+    {
+      "name": "feature-workflow",
+      "source": "./plugins/feature-workflow",
+      "description": "Spec-to-Implementation-Pipeline: Brainstorm → Spec → Review → Plan → Review → Implementation mit zwei menschlichen Gates, Workflow-State-Manifest, drei Weichen (Umgebung/Reviewer/Grösse inkl. Light-Mode), Branch-Schutz und Smoke-Gate. Projektunabhängig konfigurierbar.",
+      "license": "MIT"
+    }
+  ]
+}

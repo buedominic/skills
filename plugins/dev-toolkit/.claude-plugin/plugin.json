@@ -1,0 +1,9 @@
+{
+  "name": "dev-toolkit",
+  "description": "Alltags-Skills fürs Entwickeln: /prior-art-check (ist das Problem schon gelöst?), /dependency-audit (Update-Plan mit Risiko-Stufen), /adr (Entscheidungs-Log), /bug-triage (Meldung → Repro → Root-Cause → Light-Mode-Input), /web-audit (A11y/Performance/SEO), /landing-page (Conversion-Struktur + Copy)",
+  "version": "1.1.0",
+  "author": {
+    "name": "Dominic Bue"
+  },
+  "license": "MIT"
+}

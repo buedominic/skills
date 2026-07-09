@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
+  "$comment": "Vorlage für <projekt>/.claude/settings.json — Permissions-Grundstock für Node-/Git-Projekte. Projektspezifisches (Prisma, Docker, ...) nach Bedarf ergänzen oder streichen.",
+  "permissions": {
+    "allow": [
+      "Bash(npm install)",
+      "Bash(npm install *)",
+      "Bash(npm run dev)",
+      "Bash(npm run build)",
+      "Bash(npm run lint)",
+      "Bash(npm test*)",
+      "Bash(npm run test:*)",
+      "Bash(npx tsc*)",
+      "Bash(node --check*)",
+      "Bash(git status*)",
+      "Bash(git diff*)",
+      "Bash(git log*)",
+      "Bash(git add *)",
+      "Bash(git branch*)",
+      "Bash(git checkout *)",
+      "Bash(git commit*)",
+      "Bash(git rev-parse*)",
+      "Bash(git ls-files*)",
+      "Bash(claude mcp list)"
+    ],
+    "deny": [
+      "Bash(rm -rf*)",
+      "Bash(git push --force*)",
+      "Bash(git push -f*)",
+      "Bash(git reset --hard*)"
+    ]
+  }
+}

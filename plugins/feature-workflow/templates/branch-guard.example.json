@@ -1,0 +1,6 @@
+{
+  "$comment": "Nach <projekt>/.claude/branch-guard.json kopieren und anpassen. Ohne diese Datei ist der Branch-Schutz-Hook inaktiv (Opt-in pro Projekt). Muster sind case-insensitive Regexes auf repo-relative POSIX-Pfade.",
+  "protectedBranch": "main",
+  "protected": ["^src/", "^prisma/", "^tests/", "^server\\.ts$"],
+  "allowed": ["^docs/", "^CLAUDE\\.md$", "^WORKFLOW\\.md$", "^\\.claude/"]
+}

@@ -1,0 +1,28 @@
+{
+  "$comment": "Nach <projekt>/.claude/workflow.config.json kopieren und anpassen. Alle Felder optional — der Skill leitet Fehlendes aus CLAUDE.md/package.json ab. Die Werte unten sind Beispiele für ein typisches Node-/Web-Projekt.",
+  "specsDir": "docs/specs",
+  "plansDir": "docs/plans",
+  "defaultBranch": "main",
+  "maxReviewRounds": 5,
+  "models": {
+    "$comment": "Optional. Werte: 'inherit' (= Session-Modell, Default) oder ein Modell-Alias wie 'opus', 'sonnet', 'haiku'. effort: 'low' | 'medium' | 'high'. reviewer='codex' erzwingt bzw. reviewer='claude' unterbindet die Codex-Delegation unabhängig von der MCP-Verfügbarkeit. Das Codex-INTERNE Modell wird in der Codex-MCP-Konfiguration eingestellt, nicht hier.",
+    "reviewer": "auto",
+    "reviewerModel": "inherit",
+    "reviewerEffort": "high",
+    "implementerModel": "inherit",
+    "implementerEffort": "medium"
+  },
+  "verifyCommands": [
+    "npx tsc --noEmit",
+    "npm run test:unit",
+    "npm run test:dom",
+    "npm run test:integration",
+    "npm run build"
+  ],
+  "devServer": {
+    "command": "npm run dev",
+    "port": 3000,
+    "healthUrl": "http://localhost:3000/api/health",
+    "appMarker": "my-app"
+  }
+}

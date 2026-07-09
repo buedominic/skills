@@ -1,0 +1,9 @@
+{
+  "name": "feature-workflow",
+  "description": "Spec-to-Implementation-Pipeline mit Review-Gates, Workflow-State-Manifest, Branch-Schutz-Hook und Smoke-Gate — projektunabhängig konfigurierbar",
+  "version": "1.3.0",
+  "author": {
+    "name": "Dominic Bue"
+  },
+  "license": "MIT"
+}
