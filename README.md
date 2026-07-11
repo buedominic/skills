@@ -31,7 +31,43 @@ mit:
 
 Alternativ (ohne Plugin-System) kann man Skill-Ordner auch direkt nach
 `~/.claude/skills/` (global) oder `<projekt>/.claude/skills/` (pro Projekt)
-kopieren.
+kopieren — automatisiert macht das `./install.sh claude-copy <projekt>`
+(siehe unten).
+
+### Cloud-Sessions: Skills im Projekt-Repo verankern
+
+`/plugin install` installiert in den Home-Ordner (`~/.claude/`) der laufenden
+Umgebung. In Claude Code in der Cloud (Web/Mobile/GitHub) ist der Container
+flüchtig — eine neue Session startet mit frischem Home, die installierten
+Plugins sind weg. Damit die Skills trotzdem in jeder Session verfügbar sind,
+verankert man sie im Projekt-Repo. Zwei Wege:
+
+**Empfohlen — Plugins in `.claude/settings.json` pinnen:**
+
+```bash
+./install.sh claude <projekt>
+```
+
+Schreibt `<projekt>/.claude/settings.json` mit dem Marketplace
+(`extraKnownMarketplaces`) und den drei Plugins (`enabledPlugins`) —
+Vorlage: [`templates/claude-settings.example.json`](templates/claude-settings.example.json).
+Existiert die Datei schon, zeigt das Script den Block zum manuellen
+Zusammenführen. Nach dem Commit installiert Claude Code die Plugins bei
+jedem Session-Start automatisch, auch im frischen Cloud-Container.
+Updates kommen weiterhin über den Marketplace. Voraussetzungen: die
+Netzwerk-Policy der Cloud-Umgebung erlaubt GitHub-Zugriff, und das
+Projekt wurde einmalig als vertrauenswürdig bestätigt.
+
+**Alternative — Kopien ins Repo (funktioniert auch ohne Netzzugriff):**
+
+```bash
+./install.sh claude-copy <projekt>   # → .claude/skills/** + .claude/agents/**
+```
+
+Die Kopien sind Teil des Klons und laden in jeder Session. Nachteile:
+Updates nur per erneutem Script-Lauf, und die Hooks des
+feature-workflow-Plugins (Branch-Schutz) sind nicht enthalten. Nur einen
+der beiden Wege pro Projekt verwenden, sonst liegen die Skills doppelt vor.
 
 ### Installation für Codex, Cursor, GitHub Copilot & Co. (ohne Claude)
 

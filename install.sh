@@ -4,6 +4,8 @@
 # einzige Quelle; Client-Formate werden generiert.
 #
 # Nutzung:
+#   ./install.sh claude [pfad]     → <projekt>/.claude/settings.json (Plugins pinnen; committen → Cloud-Sessions installieren automatisch)
+#   ./install.sh claude-copy [pfad]→ <projekt>/.claude/skills + .claude/agents (Kopien im Repo, ohne Plugin-System)
 #   ./install.sh codex             → ~/.codex/skills + ~/.codex/agents (alle Projekte)
 #   ./install.sh codex --project   → .codex/skills + .codex/agents (aktuelles Projekt)
 #   ./install.sh cursor [pfad]     → <projekt>/.agents/** + .cursor/rules/*.mdc
@@ -95,6 +97,42 @@ install_neutral() { # gemeinsamer Unterbau für cursor/copilot/agents
 }
 
 case "$CLIENT" in
+  claude)
+    PROJ="${ARG2:-.}"
+    SETTINGS="$PROJ/.claude/settings.json"
+    if [ -f "$SETTINGS" ] && grep -q 'buedominic-skills' "$SETTINGS"; then
+      echo "$SETTINGS referenziert buedominic-skills bereits — nichts zu tun."
+    elif [ -f "$SETTINGS" ]; then
+      echo "$SETTINGS existiert bereits. Folgende Keys auf oberster Ebene"
+      echo "manuell zusammenführen (Vorlage: templates/claude-settings.example.json):"
+      echo
+      cat "$ROOT/templates/claude-settings.example.json"
+      exit 1
+    else
+      mkdir -p "$PROJ/.claude"
+      cp "$ROOT/templates/claude-settings.example.json" "$SETTINGS"
+      echo "→ $SETTINGS geschrieben."
+    fi
+    echo
+    echo "Datei ins Projekt-Repo committen — Claude Code registriert den"
+    echo "Marketplace und installiert die Plugins dann bei jedem Session-Start"
+    echo "automatisch, auch in flüchtigen Cloud-/Web-Containern."
+    ;;
+
+  claude-copy)
+    PROJ="${ARG2:-.}"
+    copy_skills "$PROJ/.claude/skills"
+    copy_roles "$PROJ/.claude/agents"
+    echo "Skills → $PROJ/.claude/skills:"; printf '  - %s\n' "${SKILLS[@]}"
+    echo "Agents → $PROJ/.claude/agents:"; printf '  - %s\n' "${ROLES[@]}"
+    echo
+    echo "Ins Projekt-Repo committen — die Kopien sind Teil des Klons und laden"
+    echo "in jeder Session (auch Cloud/Web, auch ohne Netzzugriff). Nicht"
+    echo "enthalten: Hooks des feature-workflow-Plugins (nur über die"
+    echo "Plugin-Route bzw. plugins/feature-workflow/templates/)."
+    echo "Update = Repo pullen, Script erneut ausführen."
+    ;;
+
   codex)
     SK_TARGET="${HOME}/.codex/skills"; AG_TARGET="${HOME}/.codex/agents"
     if [ "$ARG2" = "--project" ]; then SK_TARGET=".codex/skills"; AG_TARGET=".codex/agents"; fi
