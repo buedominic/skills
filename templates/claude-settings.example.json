@@ -1,0 +1,15 @@
+{
+  "extraKnownMarketplaces": {
+    "buedominic-skills": {
+      "source": {
+        "source": "github",
+        "repo": "buedominic/skills"
+      }
+    }
+  },
+  "enabledPlugins": {
+    "context-kit@buedominic-skills": true,
+    "dev-toolkit@buedominic-skills": true,
+    "feature-workflow@buedominic-skills": true
+  }
+}

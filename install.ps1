@@ -3,13 +3,15 @@
 # Client-Formate werden generiert.
 #
 # Nutzung:
+#   .\install.ps1 claude [pfad]      → <projekt>\.claude\settings.json (Plugins pinnen; committen → Cloud-Sessions installieren automatisch)
+#   .\install.ps1 claude-copy [pfad] → <projekt>\.claude\skills + .claude\agents (Kopien im Repo, ohne Plugin-System)
 #   .\install.ps1 codex              → $HOME\.codex\skills + agents (alle Projekte)
 #   .\install.ps1 codex -Project     → .codex\skills + agents (aktuelles Projekt)
 #   .\install.ps1 cursor [pfad]      → <projekt>\.agents\** + .cursor\rules\*.mdc
 #   .\install.ps1 copilot [pfad]     → <projekt>\.agents\** + .github\prompts\*.prompt.md + AGENTS.md-Block
 #   .\install.ps1 agents [pfad]      → <projekt>\.agents\** + AGENTS.md-Block (generisch)
 param(
-    [Parameter(Mandatory = $true)][ValidateSet('codex', 'cursor', 'copilot', 'agents')][string]$Client,
+    [Parameter(Mandatory = $true)][ValidateSet('claude', 'claude-copy', 'codex', 'cursor', 'copilot', 'agents')][string]$Client,
     [string]$Path = '.',
     [switch]$Project
 )
@@ -101,6 +103,41 @@ function Install-Neutral([string]$Proj) {
 }
 
 switch ($Client) {
+    'claude' {
+        $Settings = Join-Path $Path '.claude\settings.json'
+        $Template = Join-Path $Root 'templates\claude-settings.example.json'
+        if ((Test-Path $Settings) -and (Select-String -Path $Settings -Pattern 'buedominic-skills' -Quiet)) {
+            Write-Host "$Settings referenziert buedominic-skills bereits — nichts zu tun."
+        }
+        elseif (Test-Path $Settings) {
+            Write-Host "$Settings existiert bereits. Folgende Keys auf oberster Ebene"
+            Write-Host 'manuell zusammenführen (Vorlage: templates\claude-settings.example.json):'
+            Write-Host ''
+            Get-Content $Template | Write-Host
+            exit 1
+        }
+        else {
+            New-Item -ItemType Directory -Force -Path (Join-Path $Path '.claude') | Out-Null
+            Copy-Item -Path $Template -Destination $Settings
+            Write-Host "→ $Settings geschrieben."
+        }
+        Write-Host ''
+        Write-Host 'Datei ins Projekt-Repo committen — Claude Code registriert den'
+        Write-Host 'Marketplace und installiert die Plugins dann bei jedem Session-Start'
+        Write-Host 'automatisch, auch in flüchtigen Cloud-/Web-Containern.'
+    }
+    'claude-copy' {
+        Write-Host "Skills → $Path\.claude\skills:"
+        Copy-Skills (Join-Path $Path '.claude\skills')
+        Copy-Roles (Join-Path $Path '.claude\agents')
+        Write-Host "Agents → $Path\.claude\agents"
+        Write-Host ''
+        Write-Host 'Ins Projekt-Repo committen — die Kopien sind Teil des Klons und laden'
+        Write-Host 'in jeder Session (auch Cloud/Web, auch ohne Netzzugriff). Nicht'
+        Write-Host 'enthalten: Hooks des feature-workflow-Plugins (nur über die'
+        Write-Host 'Plugin-Route bzw. plugins/feature-workflow/templates/).'
+        Write-Host 'Update = Repo pullen, Script erneut ausführen.'
+    }
     'codex' {
         $SkTarget = if ($Project) { Join-Path (Get-Location) '.codex\skills' } else { Join-Path $HOME '.codex\skills' }
         $AgTarget = if ($Project) { Join-Path (Get-Location) '.codex\agents' } else { Join-Path $HOME '.codex\agents' }
