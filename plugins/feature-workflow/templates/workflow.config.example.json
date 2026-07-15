@@ -1,11 +1,11 @@
 {
-  "$comment": "Nach <projekt>/.claude/workflow.config.json kopieren und anpassen. Alle Felder optional — der Skill leitet Fehlendes aus CLAUDE.md/package.json ab. Die Werte unten sind Beispiele für ein typisches Node-/Web-Projekt.",
+  "$comment": "Für Codex nach <projekt>/.codex/workflow.config.json, für Claude nach <projekt>/.claude/workflow.config.json kopieren. Alle Felder optional — der Skill leitet Fehlendes aus AGENTS.md/CLAUDE.md/package.json ab.",
   "specsDir": "docs/specs",
   "plansDir": "docs/plans",
   "defaultBranch": "main",
   "maxReviewRounds": 5,
   "models": {
-    "$comment": "Optional. Werte: 'inherit' (= Session-Modell, Default) oder ein Modell-Alias wie 'opus', 'sonnet', 'haiku'. effort: 'low' | 'medium' | 'high'. reviewer='codex' erzwingt bzw. reviewer='claude' unterbindet die Codex-Delegation unabhängig von der MCP-Verfügbarkeit. Das Codex-INTERNE Modell wird in der Codex-MCP-Konfiguration eingestellt, nicht hier.",
+    "$comment": "Optional. Werte: 'inherit' (= Runtime-Konfiguration) oder ein von der jeweiligen Runtime unterstützter Modell-Alias. effort nur verwenden, wenn das Dispatch-Tool ihn unterstützt. reviewer='codex' bevorzugt den nativen Codex-Subagenten bzw. in Claude das Codex-MCP; reviewer='claude' bleibt in Claude.",
     "reviewer": "auto",
     "reviewerModel": "inherit",
     "reviewerEffort": "high",

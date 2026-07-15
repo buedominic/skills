@@ -1,12 +1,12 @@
-# Universal-Installer für buedominic/skills (Windows/PowerShell).
+﻿# Universal-Installer für buedominic/skills (Windows/PowerShell).
 # Eine Wahrheit: SKILL.md/agents-*.md bleiben die einzige Quelle;
 # Client-Formate werden generiert.
 #
 # Nutzung:
 #   .\install.ps1 claude [pfad]      → <projekt>\.claude\settings.json (Plugins pinnen; committen → Cloud-Sessions installieren automatisch)
 #   .\install.ps1 claude-copy [pfad] → <projekt>\.claude\skills + .claude\agents (Kopien im Repo, ohne Plugin-System)
-#   .\install.ps1 codex              → $HOME\.codex\skills + agents (alle Projekte)
-#   .\install.ps1 codex -Project     → .codex\skills + agents (aktuelles Projekt)
+#   .\install.ps1 codex              → $HOME\.agents\skills + $HOME\.codex\agents
+#   .\install.ps1 codex -Project     → .agents\skills + .codex\agents
 #   .\install.ps1 cursor [pfad]      → <projekt>\.agents\** + .cursor\rules\*.mdc
 #   .\install.ps1 copilot [pfad]     → <projekt>\.agents\** + .github\prompts\*.prompt.md + AGENTS.md-Block
 #   .\install.ps1 agents [pfad]      → <projekt>\.agents\** + AGENTS.md-Block (generisch)
@@ -19,16 +19,22 @@ param(
 $ErrorActionPreference = 'Stop'
 $Root = Split-Path -Parent $MyInvocation.MyCommand.Path
 
-function Get-FrontmatterDescription([string]$File) {
-    $Lines = Get-Content $File
+function Get-FrontmatterValue([string]$File, [string]$Key) {
+    $Lines = Get-Content -Encoding UTF8 $File
     $DelimIdx = @(); for ($i = 0; $i -lt $Lines.Count; $i++) { if ($Lines[$i] -eq '---') { $DelimIdx += $i } }
     if ($DelimIdx.Count -lt 2) { return '' }
     $Front = $Lines[($DelimIdx[0] + 1)..($DelimIdx[1] - 1)]
-    return (($Front | Where-Object { $_ -match '^description:' } | Select-Object -First 1) -replace '^description:\s*', '')
+    $EscapedKey = [regex]::Escape($Key)
+    return (($Front | Where-Object { $_ -match "^${EscapedKey}:" } | Select-Object -First 1) -replace "^${EscapedKey}:\s*", '')
+}
+
+function Get-FrontmatterDescription([string]$File) {
+    $Value = Get-FrontmatterValue $File 'description'
+    return $Value
 }
 
 function Get-Body([string]$File) {
-    $Lines = Get-Content $File
+    $Lines = Get-Content -Encoding UTF8 $File
     $DelimIdx = @(); for ($i = 0; $i -lt $Lines.Count; $i++) { if ($Lines[$i] -eq '---') { $DelimIdx += $i } }
     if ($DelimIdx.Count -lt 2) { return '' }
     return ($Lines[($DelimIdx[1] + 1)..($Lines.Count - 1)]) -join "`n"
@@ -46,11 +52,20 @@ function Copy-Skills([string]$Target) {
         if (Test-Path $Dest) { Remove-Item -Recurse -Force $Dest }
         Copy-Item -Recurse -Path $_.FullName -Destination $Dest
         # Plugin-weite Doku in die references/ → jeder Skill selbsttragend
-        $PluginDocs = Join-Path (Split-Path (Split-Path $_.FullName -Parent) -Parent) 'docs'
+        $PluginRoot = Split-Path (Split-Path $_.FullName -Parent) -Parent
+        $PluginDocs = Join-Path $PluginRoot 'docs'
         if (Test-Path $PluginDocs) {
             $Refs = Join-Path $Dest 'references'
             New-Item -ItemType Directory -Force -Path $Refs | Out-Null
             Copy-Item -Recurse -Force -Path (Join-Path $PluginDocs '*') -Destination $Refs
+        }
+        # Rollen-Prompts als Fallback mitliefern, falls Codex keinen benannten
+        # Custom Agent auswählen kann. Quelle bleiben plugins/<plugin>/agents/*.md.
+        $PluginAgents = Join-Path $PluginRoot 'agents'
+        if (Test-Path $PluginAgents) {
+            $RoleRefs = Join-Path $Dest 'references\roles'
+            New-Item -ItemType Directory -Force -Path $RoleRefs | Out-Null
+            Copy-Item -Force -Path (Join-Path $PluginAgents '*.md') -Destination $RoleRefs
         }
         Write-Host "  - $($_.Name)"
     }
@@ -139,7 +154,7 @@ switch ($Client) {
         Write-Host 'Update = Repo pullen, Script erneut ausführen.'
     }
     'codex' {
-        $SkTarget = if ($Project) { Join-Path (Get-Location) '.codex\skills' } else { Join-Path $HOME '.codex\skills' }
+        $SkTarget = if ($Project) { Join-Path (Get-Location) '.agents\skills' } else { Join-Path $HOME '.agents\skills' }
         $AgTarget = if ($Project) { Join-Path (Get-Location) '.codex\agents' } else { Join-Path $HOME '.codex\agents' }
         Write-Host "Skills → ${SkTarget}:"
         Copy-Skills $SkTarget
@@ -153,8 +168,17 @@ switch ($Client) {
                 $Body = (Get-Body $_.FullName) -replace '\\', '\\' -replace '"""', '\"\"\"'
                 $Toml = @(
                     "# Generiert aus plugins/.../agents/$Name.md — Quelle dort ändern, Script erneut ausführen.",
-                    "name = `"$Name`"", "description = `"$Desc`"",
-                    'developer_instructions = """', $Body, '"""') -join "`n"
+                    ('name = "{0}"' -f $Name),
+                    ('description = "{0}"' -f $Desc)
+                )
+                $Disallowed = Get-FrontmatterValue $_.FullName 'disallowedTools'
+                if ($Disallowed -match 'Edit|Write|MultiEdit|NotebookEdit') {
+                    $Toml += 'sandbox_mode = "read-only"'
+                }
+                $Model = Get-FrontmatterValue $_.FullName 'model'
+                if ($Model -and $Model -ne 'inherit') { $Toml += ('model = "{0}"' -f $Model) }
+                $Toml += @('developer_instructions = """', $Body, '"""')
+                $Toml = $Toml -join "`n"
                 Set-Content -Path (Join-Path $AgTarget "$Name.toml") -Value $Toml -Encoding UTF8
             }
         }

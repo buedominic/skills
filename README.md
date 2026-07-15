@@ -75,7 +75,7 @@ Der Universal-Installer generiert die Client-Formate aus den
 SKILL.md-Quellen. Repo klonen, dann:
 
 ```bash
-./install.sh codex             # → ~/.codex/skills + ~/.codex/agents (nativ)
+./install.sh codex             # → ~/.agents/skills + ~/.codex/agents (nativ)
 ./install.sh cursor <projekt>  # → .agents/** + .cursor/rules/*.mdc (Agent-Requested)
 ./install.sh copilot <projekt> # → .agents/** + .github/prompts/*.prompt.md + AGENTS.md
 ./install.sh agents <projekt>  # → .agents/** + AGENTS.md (jeder AGENTS.md-Client)
@@ -91,7 +91,8 @@ Claude-Tool-Namen: [`docs/portabilitaet.md`](docs/portabilitaet.md).
 1. **Einmalig einrichten:** `/projekt-setup` im Projekt ausführen — erstellt
    eine schlanke `CLAUDE.md` und verdrahtet auf Wunsch den Feature-Workflow
    (Config, Branch-Schutz, Permissions).
-2. **Features bauen:** `/spec-to-implementation <feature>` — die Pipeline
+2. **Features bauen:** `$spec-to-implementation <feature>` in Codex bzw.
+   `/spec-to-implementation <feature>` in Claude — die Pipeline
    führt von der Idee bis zum Merge, mit genau zwei Rückfragen
    (Klärungsfragen + Plan-Freigabe). Kleine Fixes laufen automatisch als
    Light-Mode-Vorschlag.
@@ -120,7 +121,7 @@ Plugin-READMEs.
 |---|---|
 | [`context-kit`](plugins/context-kit/) | Kontext-Lebenszyklus: `/projekt-setup` (erstmalige, schlanke CLAUDE.md ≤ ~120 Zeilen mit Prüfankern + optionale Workflow-Verdrahtung) und `/kontext-audit` (hält den Kontext aktuell und schlank: Budget-, Drift-, Duplikat- und Kontext-Bomben-Check). Gemeinsame Doktrin: Schichten-Modell + „eine Wahrheit, dünne Adapter". |
 | [`dev-toolkit`](plugins/dev-toolkit/) | Alltags-Skills: `/prior-art-check` (ist das Problem schon gelöst? Eigencode → Bibliotheken → CS-Problemklassen → Natur-Heuristiken, mit Build/Buy/Adapt-Empfehlung), `/dependency-audit` (risikogestufter Update-Plan, Report zuerst), `/adr` (Architecture Decision Records unter `docs/decisions/`), `/bug-triage` (Meldung → Repro → Root-Cause-Hypothesen → Light-Mode-Input), `/web-audit` (Accessibility/Performance/SEO mit Fundstellen-Report) und `/landing-page` (Conversion-Struktur, Copy-Prinzipien, Launch-Checkliste). |
-| [`feature-workflow`](plugins/feature-workflow/) | Spec-to-Implementation-Pipeline: `/spec-to-implementation`-Skill (Brainstorm → Spec → Review → Plan → Review → Implementation mit zwei Gates, Workflow-State-Manifest, Light-Mode für kleine Fixes, Smoke-Gate mit chrome-mcp/playwright/manual-Varianten), `spec-reviewer`- und `implementer`-Agents, Branch-Schutz-Hook (Opt-in pro Projekt) sowie Konfigurations-Vorlagen. Projektunabhängig konfigurierbar. |
+| [`feature-workflow`](plugins/feature-workflow/) | Spec-to-Implementation-Pipeline: `$spec-to-implementation`/`/spec-to-implementation` (Brainstorm → Spec → Review → Plan → Review → Implementation mit zwei Gates, Stage-Manifest plus `.superpowers/sdd/progress.md`, begrenztem Codex-Rollen-Pool, Light-Mode und Smoke-Gate), Rollen-Agenten, Branch-Schutz-Hook und Konfigurations-Vorlagen. |
 
 ## Struktur
 

@@ -5,7 +5,7 @@ beim Eintritt in Stufe 7 lesen.
 
 ## Varianten-Wahl
 
-Nach grüner Stufe 6 einmalige `AskUserQuestion` mit zwei Optionen (KEIN
+Nach grüner Stufe 6 einmalige gebündelte User-Rückfrage mit zwei Optionen (KEIN
 drittes Workflow-Gate — nur die Varianten-Wahl eines Pflicht-Schritts):
 
 - **Smoke jetzt automatisiert durchführen** — Routine unten, Verfahren je
@@ -116,7 +116,7 @@ hängen am Dialog):
 2. Manifest committen: `smoke.status = "failed"`, `failedAt = <bullet>`,
    `attempts++`, Evidenz-Anker aktualisieren. Tabs/Server bleiben STEHEN.
 3. Merge bleibt blockiert. Kein Auto-Fix, kein Auto-Retry.
-4. `AskUserQuestion` mit vier Optionen:
+4. Gebündelte User-Rückfrage mit vier Optionen:
    - **Retry** — Smoke EINMAL komplett neu (alle Bullets von vorn), neue
      runId, Tabs frisch, Server nach Möglichkeit reusen. Für Flakes oder
      nach manuellem User-Fix.
@@ -140,7 +140,9 @@ Harte Sub-Routine, Cap 3 Versuche, OHNE weitere Zwischen-Gates
    (a) Smoke-Derivation falsch (Selector/Erwartung daneben, kein Code-Bug),
    (b) Testbarkeits-Lücke (fehlendes `data-testid` o.ä. — minimaler Fix),
    (c) echter Implementation-Bug (systematisches Debugging).
-2. **Fix** — frischer `implementer`-Agent, eigener Commit `fix(smoke): …`.
+2. **Fix** — `implementer`-Rollen-Pool nach dem Runtime-Vertrag verwenden,
+   eigener Commit `fix(smoke): …`. In Codex keinen zusätzlichen Thread
+   erzeugen, wenn bereits ein Implementer-Thread existiert.
    Bei (a) zusätzlich `smokeAdjustments[]`-Eintrag
    `{ bullet, before: { selector, expect }, after: { selector, expect }, rationale }`.
 3. **Re-Smoke NUR des fehlgeschlagenen Bullets.** Rot → Versuch +1.

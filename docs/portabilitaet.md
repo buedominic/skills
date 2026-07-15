@@ -16,9 +16,9 @@ Kopien im Repo.
 
 | Baustein | Claude Code | Codex | Cursor | GitHub Copilot | andere |
 |---|---|---|---|---|---|
-| Skills | nativ (Plugin) | **nativ**: `~/.codex/skills/` (`install.sh codex`) | `.agents/skills/` + generierte `.cursor/rules/*.mdc` (Agent-Requested — lädt per description, wie Skills) | `.agents/skills/` + generierte `.github/prompts/*.prompt.md` (Slash-Command) + AGENTS.md-Block | `install.sh agents` → `.agents/skills/` + AGENTS.md-Block (jeder AGENTS.md-Client) |
+| Skills | nativ (Plugin) | **nativ**: `~/.agents/skills/` (`install.sh codex`) | `.agents/skills/` + generierte `.cursor/rules/*.mdc` (Agent-Requested — lädt per description, wie Skills) | `.agents/skills/` + generierte `.github/prompts/*.prompt.md` (Slash-Command) + AGENTS.md-Block | `install.sh agents` → `.agents/skills/` + AGENTS.md-Block (jeder AGENTS.md-Client) |
 | Referenz-Files | nativ | mitkopiert | mitkopiert | mitkopiert | mitkopiert |
-| Agents (Rollen) | nativ als Subagenten | generierte `.codex/agents/*.toml` | `.agents/roles/*.md` — als Rollen-Prompt in frischem Kontext | `.agents/roles/*.md` — dito | dito |
+| Agents (Rollen) | nativ als Subagenten | generierte `.codex/agents/*.toml`; Rollen-Prompts zusätzlich im installierten Skill unter `references/roles/` | `.agents/roles/*.md` — als Rollen-Prompt in frischem Kontext | `.agents/roles/*.md` — dito | dito |
 | Hook `guard-branch` | nativ (PreToolUse) | prozedural via AGENTS.md-Block | prozedural | prozedural | prozedural |
 | Marketplace/Manifeste | nativ | entfällt | entfällt | entfällt | entfällt |
 | `workflow.config.json` / `workflow-state.json` | reines JSON — überall unverändert nutzbar | ✓ | ✓ | ✓ | ✓ |
@@ -32,8 +32,8 @@ gilt die Fähigkeit dahinter:
 |---|---|
 | `AskUserQuestion` | gebündelte Rückfrage an den Menschen; auf Antwort warten (zur Not: anhalten, Zustand im Manifest hinterlassen) |
 | `TodoWrite` | sichtbare Fortschritts-Checkliste führen |
-| Subagent dispatchen (`spec-reviewer`, `implementer`, `doc-writer`) | frischen Kontext (neue Session / eigener Agent) mit dem Rollen-Prompt aus `agents/<name>.md` starten; nur die genannten Inputs übergeben; kompakte Rückgabe |
-| `mcp__codex__codex` verfügbar? | „steht ein unabhängiges Zweitmodell für Reviews bereit?" — in Codex selbst: eigener Review-Kontext mit adversarialem Prompt |
+| Subagent dispatchen (`spec-reviewer`, `implementer`, `doc-writer`) | benannten Custom Agent verwenden oder generischen Agenten mit `references/roles/<name>.md`; Ergebnis durch Datei/Diff/parsebaren Status prüfen; Threads nach Gebrauch schliessen oder pro Rolle wiederverwenden |
+| `mcp__codex__codex` verfügbar? | nur in Claude die Frage nach einem unabhängigen Codex-Zweitmodell; in Codex selbst den nativen adversarialen Subagenten nutzen |
 | `/skill-name` aufrufen | die entsprechende `SKILL.md` lesen und befolgen |
 | Chrome-MCP / Playwright (Smoke) | beliebige Browser-Automatisierung des Werkzeugs (Codex: In-App-Browser); sonst Variante `manual` |
 | `WebSearch` | Web-Recherche-Fähigkeit des Werkzeugs; fehlt sie, entfällt die Ökosystem-Ebene (z.B. im `/prior-art-check`) und wird als Lücke dokumentiert |
@@ -60,11 +60,12 @@ Script erneut ausführen.
 automatisch anhand der `description` geladen (`/skills` zeigt sie an):
 
 ```bash
-./install.sh codex             # → ~/.codex/skills + ~/.codex/agents (alle Projekte)
-./install.sh codex --project   # → .codex/skills + .codex/agents (nur dieses Projekt)
+./install.sh codex             # → ~/.agents/skills + ~/.codex/agents (alle Projekte)
+./install.sh codex --project   # → .agents/skills + .codex/agents (nur dieses Projekt)
 ```
 
-Installiert die Skills flach (Plugin-Doku wandert in die `references/`
+Installiert die Skills flach nach den aktuellen Codex-Suchpfaden (Plugin-Doku
+und Rollen-Prompts wandern in die `references/`
 der betroffenen Skills — jeder Skill selbsttragend) und generiert die
 Agenten (`spec-reviewer`, `implementer`, `doc-writer`) als
 `.codex/agents/*.toml`.
@@ -114,6 +115,9 @@ die Skills) — oder einzelne Skill-Ordner von Hand kopieren.
 - Das Reviewer-Erzwingen (`models.reviewer = "codex"`) ergibt in Codex
   selbst keinen Sinn; dort ist der adversariale Zweit-Kontext die
   Diversitäts-Massnahme.
+- Nicht jede Codex-Oberfläche bietet eine explizite Close-Operation für
+  Agent-Threads. Der Feature-Workflow hält deshalb höchstens einen Thread pro
+  Rolle offen und verwendet ihn wieder, wenn Schliessen nicht verfügbar ist.
 - Skill-**Auto-Aktivierung** (Claude lädt Skills anhand der description)
   haben andere Werkzeuge nicht unbedingt — dort muss der Verweis in
   `AGENTS.md` bzw. der explizite Aufruf den Einstieg leisten.

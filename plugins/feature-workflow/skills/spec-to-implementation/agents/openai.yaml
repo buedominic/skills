@@ -1,0 +1,4 @@
+interface:
+  display_name: "Spec to Implementation"
+  short_description: "Feature workflow with durable Codex progress"
+  default_prompt: "Use $spec-to-implementation to take this feature from requirements through verified implementation."
