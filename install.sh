@@ -6,8 +6,8 @@
 # Nutzung:
 #   ./install.sh claude [pfad]     → <projekt>/.claude/settings.json (Plugins pinnen; committen → Cloud-Sessions installieren automatisch)
 #   ./install.sh claude-copy [pfad]→ <projekt>/.claude/skills + .claude/agents (Kopien im Repo, ohne Plugin-System)
-#   ./install.sh codex             → ~/.codex/skills + ~/.codex/agents (alle Projekte)
-#   ./install.sh codex --project   → .codex/skills + .codex/agents (aktuelles Projekt)
+#   ./install.sh codex             → ~/.agents/skills + ~/.codex/agents (alle Projekte)
+#   ./install.sh codex --project   → .agents/skills + .codex/agents (aktuelles Projekt)
 #   ./install.sh cursor [pfad]     → <projekt>/.agents/** + .cursor/rules/*.mdc
 #   ./install.sh copilot [pfad]    → <projekt>/.agents/** + .github/prompts/*.prompt.md + AGENTS.md-Block
 #   ./install.sh agents [pfad]     → <projekt>/.agents/** + AGENTS.md-Block (generisch, für alle AGENTS.md-Clients)
@@ -26,21 +26,32 @@ fm_desc() { # description aus SKILL.md/Agent-Frontmatter
   awk '/^---$/{c++;next} c==1 && /^description:/{sub(/^description:[ ]*/,"");print;exit}' "$1"
 }
 
+fm_value() { # $1 = Datei, $2 = Key
+  awk -v key="$2" '/^---$/{c++;next} c==1 && index($0,key ":")==1{sub("^" key ":[ ]*","");print;exit}' "$1"
+}
+
 copy_skills() { # $1 = Ziel-Verzeichnis für Skill-Ordner
   local target="$1"
   mkdir -p "$target"
   SKILLS=()
   for skill in "$ROOT"/plugins/*/skills/*/; do
-    local name dest plugin_docs
+    local name dest plugin_root plugin_docs plugin_agents
     name="$(basename "$skill")"
     dest="$target/$name"
     rm -rf "$dest"; mkdir -p "$dest"
     cp -R "$skill"/. "$dest/"
     # Plugin-weite Doku in die references/ des Skills → jeder Skill selbsttragend
-    plugin_docs="$(dirname "$(dirname "$skill")")/docs"
+    plugin_root="$(dirname "$(dirname "$skill")")"
+    plugin_docs="$plugin_root/docs"
     if [ -d "$plugin_docs" ]; then
       mkdir -p "$dest/references"
       cp -R "$plugin_docs"/. "$dest/references/"
+    fi
+    # Rollen-Prompts als Fallback für Runtimes ohne benannte Custom Agents.
+    plugin_agents="$plugin_root/agents"
+    if [ -d "$plugin_agents" ]; then
+      mkdir -p "$dest/references/roles"
+      cp "$plugin_agents"/*.md "$dest/references/roles/" 2>/dev/null || true
     fi
     SKILLS+=("$name")
   done
@@ -134,8 +145,8 @@ case "$CLIENT" in
     ;;
 
   codex)
-    SK_TARGET="${HOME}/.codex/skills"; AG_TARGET="${HOME}/.codex/agents"
-    if [ "$ARG2" = "--project" ]; then SK_TARGET=".codex/skills"; AG_TARGET=".codex/agents"; fi
+    SK_TARGET="${HOME}/.agents/skills"; AG_TARGET="${HOME}/.codex/agents"
+    if [ "$ARG2" = "--project" ]; then SK_TARGET=".agents/skills"; AG_TARGET=".codex/agents"; fi
     copy_skills "$SK_TARGET"
     mkdir -p "$AG_TARGET"
     ROLES=()
@@ -143,6 +154,8 @@ case "$CLIENT" in
       [ -e "$md" ] || continue
       name="$(basename "$md" .md)"
       desc="$(fm_desc "$md")"
+      disallowed="$(fm_value "$md" disallowedTools)"
+      agent_model="$(fm_value "$md" model)"
       body="$(awk '/^---$/{c++;next} c>=2{print}' "$md")"
       desc="${desc//\\/\\\\}"; desc="${desc//\"/\\\"}"
       body="${body//\\/\\\\}"; body="${body//\"\"\"/\\\"\\\"\\\"}"
@@ -150,6 +163,12 @@ case "$CLIENT" in
         echo "# Generiert aus plugins/.../agents/$name.md — Quelle dort ändern, Script erneut ausführen."
         echo "name = \"$name\""
         echo "description = \"$desc\""
+        if [[ "$disallowed" =~ Edit|Write|MultiEdit|NotebookEdit ]]; then
+          echo 'sandbox_mode = "read-only"'
+        fi
+        if [ -n "$agent_model" ] && [ "$agent_model" != "inherit" ]; then
+          printf 'model = "%s"\n' "$agent_model"
+        fi
         echo 'developer_instructions = """'
         printf '%s\n' "$body"
         echo '"""'

@@ -16,19 +16,20 @@ der Vertrag ist reviewer-unabhängig.
 ## Reviewer-Weiche (pro Dispatch)
 
 1. **Erkennung:** `models.reviewer` aus der `workflow.config.json` lesen
-   (Default `auto`). Bei `auto`: Ist `mcp__codex__codex` als Tool
-   verfügbar? → `reviewer = codex`, sonst `claude-subagent`
-   (Tool-Verfügbarkeit prüfen, kein Shell-Health-Check nötig). Bei
-   `codex`: erzwingen — nicht verfügbar → harter Block statt stillem
-   Fallback. Bei `claude`: nie delegieren. Eine Ansage des Users im
-   Gespräch schlägt die Config. Beim Dispatch `reviewerModel`/
-   `reviewerEffort` aus dem `models`-Block mitgeben (Default: Session-
-   Modell erben).
-2. Beide Pfade laufen über den `spec-reviewer`-Agent des Plugins: er
-   delegiert an Codex, wenn verfügbar (Modell-Diversität), sonst reviewt er
-   selbst — frischer Kontext, erhält NUR `targetFiles` + `contextPaths`
-   (nie die Autoren-Konversation), Rolle „kritischer Senior-Reviewer,
-   versuche die Spec/den Plan zu **widerlegen**".
+   (Default `auto`) und die tatsächlich angebotenen Tools prüfen. In einer
+   Codex-Session ist ein Codex-Subagent der native Pfad; `mcp__codex__codex`
+   ist dort keine Voraussetzung. In Claude kann das Codex-MCP als unabhängiges
+   Zweitmodell dienen. Bei erzwungenem Backend und fehlender Fähigkeit hart
+   blockieren statt still wechseln. Eine Ansage des Users schlägt die Config.
+   `reviewerModel`/`reviewerEffort` nur mitgeben, wenn das Dispatch-Tool diese
+   Parameter wirklich unterstützt.
+2. Der Dispatch nutzt die Rolle `spec-reviewer`: benannter Custom Agent, wenn
+   auswählbar; sonst generischer Subagent mit dem Rollen-Prompt; ohne
+   Subagenten-Tool führt der Orchestrator den adversarialen Review in einem
+   abgegrenzten Pass selbst aus. Er erhält NUR `targetFiles` + `contextPaths`
+   (nie die Autoren-Konversation) und versucht die Spec/den Plan zu
+   **widerlegen**. Für Codex gelten Slot-/Artefaktvertrag aus
+   `codex-runtime.md`.
 3. Optional (auf Ansage des Users) als Diversitäts-Ersatz: zwei Subagenten
    mit unterschiedlichen Linsen (Korrektheit vs. Vollständigkeit/
    Testbarkeit), Findings vereinigt.
@@ -47,11 +48,13 @@ Halte `rejected = {}` und `round = 0`:
 2. **Pre-Dispatch-Allowlist-Check (Daten-Grenze):** `targetFiles` (Stufe 2:
    die Spec-Datei; Stufe 4: README + Phasen-Files — das Verzeichnis
    expandiert der Orchestrator, nicht der Agent) und `contextPaths`
-   (Projekt-`CLAUDE.md`, Quell-Spec, ggf. verwandte Specs) jeweils mit
+   (anwendbare Projekt-`AGENTS.md`, Projekt-`CLAUDE.md`, Quell-Spec, ggf.
+   verwandte Specs) jeweils mit
    `git ls-files --error-unmatch <pfad>` als git-tracked + nicht-secret
    verifizieren; bei Treffer auf Secret/Ignore → Abbruch.
-3. `spec-reviewer`-Agent mit `target`, `targetFiles`, `contextPaths`
-   dispatchen.
+3. `spec-reviewer` mit `target`, `targetFiles`, `contextPaths` dispatchen.
+   Leere oder nicht parsebare Rückgabe ist `EMPTY_RESULT`; einmal auf
+   demselben Rollen-Thread gezielt nachfassen, nicht neu spawnen.
 4. `newActionable` = Findings MINUS `rejected`. Status `NO_FINDINGS` ODER
    `newActionable` leer → **Schleife verlassen** (Stufe fertig).
 5. Sonst jedes Finding **triagieren** (der Orchestrator entscheidet, hält
