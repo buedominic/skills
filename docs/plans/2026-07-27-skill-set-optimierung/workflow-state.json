@@ -9,9 +9,9 @@
   "specPath": "docs/specs/2026-07-27-skill-set-optimierung-design.md",
   "planDir": "docs/plans/2026-07-27-skill-set-optimierung",
   "branch": "claude/skills-optimization-spec-i2hiix",
-  "stage": 4,
-  "stageStatus": "plan-review-done — gate-2-pending",
-  "approvedAt": null,
+  "stage": 5,
+  "stageStatus": "implementation-ready",
+  "approvedAt": "2026-07-27",
   "reviews": {
     "spec": {
       "rounds": 3,
@@ -49,5 +49,10 @@
   },
   "openPoints": [
     "Wirksamkeit von disable-model-invocation ist erst in einem Zielprojekt mit installiertem Marketplace belegbar"
-  ]
+  ],
+  "gate2": {
+    "landingPage": "user-invoked — Gate-1-Entscheid an Gate 2 bestaetigt, Review-Einwand abgelehnt",
+    "grundlastSchranke": 1150,
+    "menge": 5
+  }
 }
