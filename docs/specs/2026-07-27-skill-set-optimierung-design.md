@@ -47,6 +47,21 @@ Die vier model-invoked Skills sind es aus einem Grund, nicht aus Gewohnheit:
 benannt, `/bug-triage` soll bei einer rohen Fehlermeldung von selbst
 greifen, `/kontext-audit` bei spürbarer Doku-Drift.
 
+### Ein Entscheid steht noch offen — und er bindet mehrere Kriterien
+
+Der Spec-Review hat `landing-page` als schwächsten der fünf markiert: es ist
+als einziger kein Repo-Orchestrator, sondern ein Fach-Skill, und „bau eine
+landing page" wäre ein natürlicher Auto-Trigger. Der Einwand wurde **nicht**
+im Review entschieden — die Invocation-Menge ist ein Gate-1-Entscheid des
+Users und wird an Gate 2 zur Drehung angeboten.
+
+**Diese Abhängigkeit steht hier und nur hier.** Jedes Akzeptanz-Kriterium,
+das eine Menge oder eine Schranke nennt, ist gegen die an Gate 2 bestätigte
+Fassung zu lesen — die beiden Varianten sind dort ausgewiesen, wo sie sich
+zahlenmässig unterscheiden. Ohne diesen einen Satz müsste jedes betroffene
+Kriterium seine eigene Fallunterscheidung führen, und die würden
+auseinanderlaufen.
+
 ## Scope
 
 **Neun `SKILL.md`** — Frontmatter (Invocation), `description` (Trigger statt
@@ -115,19 +130,28 @@ nach dem etablierten Muster der Gruppe C (zuerst rot).
 Jedes Kriterium ist als Assertion in `tests/validate-context-doctrine.mjs`
 prüfbar; die Suite ist am Ende grün und war es zu Beginn (44/44).
 
-- [ ] Genau fünf `SKILL.md` tragen `disable-model-invocation: true`:
-      `projekt-setup`, `spec-to-implementation`, `dependency-audit`,
-      `web-audit`, `landing-page`.
+- [ ] Genau die an Gate 2 bestätigte Menge trägt
+      `disable-model-invocation: true` — als **exakte Menge** geprüft, nicht
+      als Stichprobe, sonst rutscht ein sechster Skill unbemerkt durch.
+      Vorgesehen sind `projekt-setup`, `spec-to-implementation`,
+      `dependency-audit`, `web-audit`, `landing-page`; über `landing-page`
+      ist noch nicht endgültig entschieden (§ Entscheide).
 - [ ] Der neue Router-Skill trägt es ebenfalls, nennt alle neun Skills mit
       ihrem **Anlass** in je einer Zeile und erzählt dabei keine
       `description` nach.
-- [ ] **Die verbleibende Grundlast ist echt gesunken.** Die vier
-      model-invoked `description`-Felder summieren sich auf ≤ **1.150**
-      Zeichen. Die Schranke ist bewusst unter dem heutigen Stand dieser
-      vier (1.484) gesetzt: läge sie darüber, wäre sie allein durch das
+- [ ] **Die verbleibende Grundlast ist echt gesunken.** Die model-invoked
+      `description`-Felder summieren sich auf ≤ **1.150** Zeichen (vier
+      Skills, heute zusammen 1.484). Die Schranke liegt bewusst **unter**
+      dem heutigen Stand: läge sie darüber, wäre sie allein durch das
       Umflaggen erfüllt und würde die im Scope versprochene
       Description-Überarbeitung nicht messen. Gesamt gegen heute (3.375):
       mindestens **66 %** weniger.
+
+      Bleibt `landing-page` nach Gate 2 model-invoked (§ Entscheide, offener
+      Einwand), gilt statt dessen ≤ **1.400** über dann fünf Felder (heute
+      zusammen 1.819) — dieselbe Anforderung von rund 23 % echter Kürzung,
+      nur über eine andere Menge. Genau eine der beiden Schranken ist
+      gültig; welche, entscheidet Gate 2.
 - [ ] **Das 500-Zeichen-Budget ist als Regression verankert**, nicht als
       Momentaufnahme: eine Assertion in Gruppe B prüft *jede* `SKILL.md`
       inklusive der Vorlage, sodass auch ein künftig hinzugefügter Skill

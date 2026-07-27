@@ -9,8 +9,8 @@
   "specPath": "docs/specs/2026-07-27-skill-set-optimierung-design.md",
   "planDir": "docs/plans/2026-07-27-skill-set-optimierung",
   "branch": "claude/skills-optimization-spec-i2hiix",
-  "stage": 2,
-  "stageStatus": "spec-review-done",
+  "stage": 4,
+  "stageStatus": "plan-review-done — gate-2-pending",
   "approvedAt": null,
   "reviews": {
     "spec": {
@@ -21,9 +21,11 @@
       ]
     },
     "plan": {
-      "rounds": 0,
+      "rounds": 6,
       "reviewer": "orchestrator",
-      "rejected": []
+      "rejected": [
+        "landing-page user-invoked (Gate-1-Entscheid des Users, an Gate 2 zur Drehung vorgelegt)"
+      ]
     }
   },
   "agentFallbacks": [
@@ -34,11 +36,13 @@
     "specsDir": "docs/specs",
     "plansDir": "docs/plans",
     "defaultBranch": "main",
-    "maxReviewRounds": 5,
+    "maxReviewRounds": 6,
     "verifyCommands": [
-      "node tests/validate-context-doctrine.mjs"
+      "node tests/validate-context-doctrine.mjs",
+      "bash -n install.sh"
     ],
-    "derived": "keine workflow.config.json im Repo — Defaults abgeleitet, pwsh nicht verfuegbar"
+    "derived": "keine workflow.config.json im Repo — Defaults abgeleitet, pwsh nicht verfuegbar",
+    "maxReviewRoundsNote": "von 5 auf 6 angehoben — User-Ansage \"bis no_findings\" schlaegt die Config"
   },
   "verification": {
     "baseline": "44/44 gruen vor Beginn"
