@@ -20,7 +20,7 @@ In Claude Code (CLI oder Web) genügen zwei Befehle:
 ```
 
 Danach stehen die Skills, Agents und Hooks der Plugins in jedem Projekt zur
-Verfügung. Skills ruft man über ihren Namen auf (z.B. `/projekt-setup`)
+Verfügung. Skills ruft man über ihren Namen auf (z.B. `/grilling` (Anforderungen im Wechsel klären, eine Frage nach der anderen), `/domain-modeling` (Projekt-Glossar in `CONTEXT.md` pflegen), `/projekt-setup`)
 oder eindeutig mit Plugin-Präfix (`/context-kit:projekt-setup`) — Claude
 lädt sie auch selbstständig, wenn die Aufgabe passt. Updates holt man sich
 mit:
@@ -123,7 +123,7 @@ Plugin-READMEs.
 | Plugin | Inhalt |
 |---|---|
 | [`context-kit`](plugins/context-kit/) | Kontext-Lebenszyklus + Wegweiser: `/skill-kompass` (welcher Skill passt gerade? Anlässe und Übergänge — der Einstieg, wenn du nicht weisst, wonach du greifen sollst), `/projekt-setup` (erstmalige, schlanke CLAUDE.md ≤ ~120 Zeilen mit Prüfankern + optionale Workflow-Verdrahtung) und `/kontext-audit` (hält den Kontext aktuell und schlank: Budget-, Drift-, Duplikat- und Kontext-Bomben-Check). Gemeinsame Doktrin: Schichten-Modell + „eine Wahrheit, dünne Adapter". |
-| [`dev-toolkit`](plugins/dev-toolkit/) | Alltags-Skills: `/prior-art-check` (ist das Problem schon gelöst? Eigencode → Bibliotheken → CS-Problemklassen → Natur-Heuristiken, mit Build/Buy/Adapt-Empfehlung), `/dependency-audit` (risikogestufter Update-Plan, Report zuerst), `/adr` (Architecture Decision Records unter `docs/decisions/`), `/bug-triage` (Meldung → Repro → Root-Cause-Hypothesen → Light-Mode-Input), `/web-audit` (Accessibility/Performance/SEO mit Fundstellen-Report) und `/landing-page` (Conversion-Struktur, Copy-Prinzipien, Launch-Checkliste). |
+| [`dev-toolkit`](plugins/dev-toolkit/) | Alltags-Skills: `/prior-art-check` (ist das Problem schon gelöst? Eigencode → Bibliotheken → CS-Problemklassen → Natur-Heuristiken, mit Build/Buy/Adapt-Empfehlung), `/dependency-audit` (risikogestufter Update-Plan, Report zuerst), `/adr` (Architecture Decision Records unter `docs/decisions/`), `/bug-triage` (Meldung → Repro → Root-Cause-Hypothesen → Light-Mode-Input), `/web-audit` (Accessibility/Performance/SEO mit Fundstellen-Report) `/landing-page` (Conversion-Struktur, Copy-Prinzipien, Launch-Checkliste) und `/resolving-merge-conflicts` (Merge-/Rebase-Konflikte nach Absicht auflösen). |
 | [`feature-workflow`](plugins/feature-workflow/) | Spec-to-Implementation-Pipeline: `$spec-to-implementation`/`/spec-to-implementation` (Brainstorm → Spec → Review → Plan → Review → Implementation mit zwei Gates, Stage-Manifest plus `.superpowers/sdd/progress.md`, begrenztem Codex-Rollen-Pool, Light-Mode und Smoke-Gate), Rollen-Agenten, Branch-Schutz-Hook und Konfigurations-Vorlagen. |
 
 ## Struktur

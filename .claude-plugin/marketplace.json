@@ -4,18 +4,18 @@
     "name": "Dominic Bue"
   },
   "description": "Generische, wiederverwendbare Claude-Code-Skills, -Agents und -Workflows zum Teilen",
-  "version": "0.6.0",
+  "version": "0.7.0",
   "plugins": [
     {
       "name": "dev-toolkit",
       "source": "./plugins/dev-toolkit",
-      "description": "Alltags-Skills: /prior-art-check (ist das Problem schon gelöst?), /dependency-audit (risikogestufter Update-Plan), /adr (Entscheidungs-Log), /bug-triage (Meldung → Repro → Root-Cause), /web-audit (A11y/Performance/SEO) und /landing-page (Conversion-Struktur + Copy)",
+      "description": "Alltags-Skills: /prior-art-check (ist das Problem schon gelöst?), /dependency-audit (risikogestufter Update-Plan), /adr (Entscheidungs-Log), /bug-triage (Meldung → Repro → Root-Cause), /web-audit (A11y/Performance/SEO) und /landing-page (Conversion-Struktur + Copy) und /resolving-merge-conflicts (Merge-Konflikte nach Absicht auflösen)",
       "license": "MIT"
     },
     {
       "name": "context-kit",
       "source": "./plugins/context-kit",
-      "description": "Kontext-Lebenszyklus: /projekt-setup (erstmalige CLAUDE.md + Workflow-Verdrahtung), /kontext-audit (Budgets, Drift, Duplikate, Kontext-Bomben) und /skill-kompass (welcher Skill passt gerade?) auf Basis einer gemeinsamen Kontext-Architektur-Doktrin",
+      "description": "Kontext-Lebenszyklus, Sprache und Wegweiser: /projekt-setup, /kontext-audit, /grilling (Anforderungen im Wechsel klären), /domain-modeling (Projekt-Glossar) und /skill-kompass (welcher Skill passt gerade?)",
       "license": "MIT"
     },
     {
