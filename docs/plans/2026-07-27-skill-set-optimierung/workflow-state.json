@@ -1,0 +1,32 @@
+{
+  "featureSlug": "skill-set-optimierung",
+  "mode": "full",
+  "environment": {
+    "tool": "claude-code-web",
+    "reviewer": "orchestrator",
+    "browser": "n/a"
+  },
+  "specPath": null,
+  "planDir": "docs/plans/2026-07-27-skill-set-optimierung",
+  "branch": "claude/skills-optimization-spec-i2hiix",
+  "stage": 1,
+  "stageStatus": "gate-1-pending",
+  "approvedAt": null,
+  "reviews": {
+    "spec": { "rounds": 0, "reviewer": "orchestrator", "rejected": [] },
+    "plan": { "rounds": 0, "reviewer": "orchestrator", "rejected": [] }
+  },
+  "agentFallbacks": [
+    "reviewer=orchestrator statt claude-subagent: Session-Vorgabe untersagt Agent-Tool ohne expliziten Auftrag",
+    "branch: Spec/Plan bleiben auf claude/skills-optimization-spec-i2hiix statt defaultBranch — Session-Vorgabe schlaegt Grundsatz 3"
+  ],
+  "config": {
+    "specsDir": "docs/specs",
+    "plansDir": "docs/plans",
+    "defaultBranch": "main",
+    "maxReviewRounds": 5,
+    "verifyCommands": ["node tests/validate-context-doctrine.mjs"],
+    "derived": "keine workflow.config.json im Repo — Defaults abgeleitet, pwsh nicht verfuegbar"
+  },
+  "verification": { "baseline": "44/44 gruen vor Beginn" }
+}
