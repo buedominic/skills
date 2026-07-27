@@ -1,6 +1,6 @@
 ---
 name: kontext-audit
-description: Use to keep a project's Claude context current and lean — audits CLAUDE.md, AGENTS.md and linked living documents for budget violations, stale facts (drift against the code), duplicated doctrine, colliding or over-constraining instructions and context bombs, then proposes and applies a cleanup (e.g. "räum die CLAUDE.md auf", "kontext audit", "die doku stimmt nicht mehr mit dem code überein", "status.md ist zu gross").
+description: Use when a project's Claude context has gone stale or bloated — CLAUDE.md, AGENTS.md or linked living documents drifting from the code, exceeding their budget, duplicating doctrine or colliding (e.g. "räum die CLAUDE.md auf", "kontext audit", "die doku stimmt nicht mehr mit dem code überein").
 ---
 
 # Kontext-Audit — Kontext aktuell + schlank halten

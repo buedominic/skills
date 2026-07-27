@@ -82,3 +82,38 @@ Akzeptanz-Zeile der Spec. Die Schranke wird in diesem Fall auf
 Descriptions echt gekürzt werden (heute zusammen 1.804), statt sie allein
 durchs Umflaggen zu erfüllen. Der Entscheid gehört an Gate 2, nicht in die
 Implementation.
+
+## Ergebnis
+
+**Grundlast: 3.341 → 990 Zeichen (−70 %).** Die vier geladenen Descriptions
+fielen von 1.470 auf 990 (−33 %); die fünf user-invoked tragen null.
+
+| Skill | Vorher | Nachher |
+|---|---|---|
+| `kontext-audit` | 421 | 296 |
+| `prior-art-check` | 395 | 269 |
+| `bug-triage` | 330 | 232 |
+| `adr` | 324 | 193 |
+| fünf user-invoked | 1.871 | 0 (geladen) |
+
+### Anlass-Gegenprobe
+
+Vorgezogen aus Phase 07, solange die Alt-Fassungen frisch sind. Gestrichen
+wurde ausschliesslich Body-Inhalt und Synonyme — mit **einer Ausnahme, die
+der Durchgang gefunden hat**:
+
+- `adr` hatte drei Auslöser („after a build/buy decision, a review
+  escalation **or a fundamental design choice**"). Die dritte ist kein
+  Synonym der beiden anderen — ein Modul-Schnitt oder eine DB-Wahl entsteht
+  ohne vorherigen Prior-Art-Check und ohne Review-Eskalation. Sie war
+  gestrichen und wurde zurückgeholt (+25 Zeichen).
+- `kontext-audit`: „status.md ist zu gross" entfiel als Formulierung, der
+  Anlass (lebendes Dokument über Budget) steht weiterhin drin. „Context
+  bombs" und „over-constraining" sind Begriffe der Skill-Schritte 4 und 5 —
+  Body-Inhalt.
+- `prior-art-check`: die vier Ebenen und „as spec input" beschreiben den
+  Ablauf, nicht den Anlass. Drei der vier Ebenen bleiben als Kurzform
+  erhalten, weil sie sagen, *wonach* gesucht wird.
+- `bug-triage`: „ending in a light-mode-ready mini document" und „it does
+  NOT apply the fix" sind Ablauf und Abgrenzung. Eine Abgrenzung ist keine
+  Trigger-Bedingung.
