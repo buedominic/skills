@@ -248,6 +248,7 @@ const USER_INVOKED = [
   'plugins/context-kit/skills/skill-kompass/SKILL.md',
   'plugins/dev-toolkit/skills/dependency-audit/SKILL.md',
   'plugins/dev-toolkit/skills/landing-page/SKILL.md',
+  'plugins/dev-toolkit/skills/resolving-merge-conflicts/SKILL.md',
   'plugins/dev-toolkit/skills/web-audit/SKILL.md',
   'plugins/feature-workflow/skills/spec-to-implementation/SKILL.md',
 ];

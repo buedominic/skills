@@ -13,6 +13,14 @@ import path from 'node:path';
 // Datei-Write-Tools, die der Hook abdeckt.
 const WRITE_TOOLS = new Set(['Edit', 'Write', 'MultiEdit', 'NotebookEdit']);
 
+// Zwei Git-Operationen, die unwiederbringlich sind: kein Reflog, kein
+// `--abort`, keine Kopie. Alles andere bleibt unangetastet — ein Guardrail,
+// der legitime Arbeit blockt, wird umgangen und schützt dann gar nichts.
+// `--force-with-lease` ist ausdrücklich erlaubt: es ist der Weg nach einem
+// Rebase und bricht von selbst ab, wenn jemand anderes gepusht hat.
+const FORCE_PUSH = /\bgit\s+push\b(?=.*(?:--force\b|\s-f\b))(?!.*--force-with-lease)/;
+const HARD_RESET = /\bgit\s+(?:reset\s+--hard|checkout\s+--\s|restore\s)/;
+
 // Repo-Wurzel aus CLAUDE_PROJECT_DIR (vom Hook-Runner gesetzt), Fallback cwd.
 // Sonst checkt der Hook bei Aufruf aus fremdem cwd den falschen Branch/Root.
 const repoRoot = process.env.CLAUDE_PROJECT_DIR ?? process.cwd();
@@ -89,6 +97,46 @@ const event = parseEvent(await readStdin());
 if (!event) process.exit(0); // Im Zweifel nicht blockieren.
 
 const toolName = event.tool_name ?? '';
+
+// --- Git-Guardrail (Bash) ------------------------------------------------
+if (toolName === 'Bash') {
+  const cmd = String(event.tool_input?.command ?? '');
+
+  if (FORCE_PUSH.test(cmd)) {
+    process.stderr.write(
+      'Git-Schutz: `push --force` überschreibt fremde Commits ohne Vorwarnung.\n' +
+        'Nimm `git push --force-with-lease` — es tut dasselbe und bricht ab,\n' +
+        'wenn jemand anderes zwischenzeitlich gepusht hat.\n',
+    );
+    process.exit(2);
+  }
+
+  // Nur blocken, wenn tatsächlich etwas zu verlieren ist: bei sauberem
+  // Worktree ist `reset --hard` harmlos und ein Block wäre reine Schikane.
+  if (HARD_RESET.test(cmd)) {
+    let dirty = '';
+    try {
+      dirty = execSync('git status --porcelain --untracked-files=no', {
+        encoding: 'utf8',
+        cwd: repoRoot,
+      }).trim();
+    } catch {
+      dirty = ''; // Kein Git-Repo o.ä. -> nicht blockieren.
+    }
+    if (dirty) {
+      process.stderr.write(
+        'Git-Schutz: nicht committete Änderungen an getrackten Dateien gingen\n' +
+          'dabei verloren — ohne Reflog-Rettung.\n' +
+          'Sichere sie zuerst: `git stash` (oder committe sie auf einen Branch).\n',
+      );
+      process.exit(2);
+    }
+  }
+
+  process.exit(0);
+}
+
+// --- Branch-Schutz (Datei-Writes) ----------------------------------------
 if (!WRITE_TOOLS.has(toolName)) process.exit(0);
 
 const branch = currentBranch();
