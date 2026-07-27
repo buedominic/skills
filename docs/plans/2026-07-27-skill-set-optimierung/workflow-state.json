@@ -9,8 +9,8 @@
   "specPath": "docs/specs/2026-07-27-skill-set-optimierung-design.md",
   "planDir": "docs/plans/2026-07-27-skill-set-optimierung",
   "branch": "claude/skills-optimization-spec-i2hiix",
-  "stage": 5,
-  "stageStatus": "implementation-ready",
+  "stage": 7,
+  "stageStatus": "implementation-done — merge offen",
   "approvedAt": "2026-07-27",
   "reviews": {
     "spec": {
@@ -45,7 +45,16 @@
     "maxReviewRoundsNote": "von 5 auf 6 angehoben — User-Ansage \"bis no_findings\" schlaegt die Config"
   },
   "verification": {
-    "baseline": "44/44 gruen vor Beginn"
+    "baseline": "44/44 gruen vor Beginn",
+    "final": "64/64 gruen",
+    "grundlast": {
+      "vorher": 3341,
+      "nachher": 990,
+      "reduktion": "70%"
+    },
+    "diffBasis": "origin/main 053dc7d (lokaler main-Ref war 4 Commits veraltet)",
+    "regression": "12 entfernte Steuerungs-Zeilen, alle zugeordnet; A6-A10 durchgehend gruen",
+    "ungeprueft": "tests/validate-feature-workflow.ps1 — kein pwsh im Container"
   },
   "openPoints": [
     "Wirksamkeit von disable-model-invocation ist erst in einem Zielprojekt mit installiertem Marketplace belegbar"

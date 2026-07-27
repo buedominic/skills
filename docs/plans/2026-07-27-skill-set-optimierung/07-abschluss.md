@@ -61,3 +61,73 @@ Pipeline. Ein Pull Request entsteht nur auf ausdrücklichen Auftrag.
 
 _(wird beim Ausführen gefüllt: Diff-Protokoll, Grundlast vorher/nachher,
 Zeilen-Bilanz, Testergebnis)_
+
+## Ergebnis
+
+### Grundlast
+
+**3.341 → 990 Zeichen (−70 %)** je Session, je Projekt.
+
+| | Vorher | Nachher |
+|---|---|---|
+| geladene Descriptions | 9 Skills, 3.341 Z. | 4 Skills, 990 Z. |
+| user-invoked | – | 6 (fünf plus Kompass), 0 Z. geladen |
+
+### Diff-Protokoll (Regressions-Nachweis)
+
+Basis ist **`origin/main` (053dc7d)**, nicht der lokale `main`-Ref — der war
+vier Commits veraltet und hätte PR #3 als Teil dieses Laufs ausgewiesen.
+Pfad-eingeschränkt auf die Artefakte: **14 Dateien, +273/−62.**
+
+Entfernte Zeilen mit Steuerungs-Charakter: **12, alle zugeordnet.**
+
+| Zeilen | Was | Beleg |
+|---|---|---|
+| 2 | Blockzitat-Reste der Doktrin-Kurzfassungen | Inhalt in `kontext-architektur.md` verifiziert (Phase 02) |
+| 8 | positiv gedrehte Leitplanken | Protokoll in `05-vorlage-und-negation.md` |
+| 2 | aufgelöstes Duplikat `dependency-audit` | Regel bleibt in der Tabelle |
+
+**Null unzugeordnete Entfernungen.** Keine Leitplanke mit realem
+Failure-Mode ist entfallen: die Anker `A6`–`A10` prüfen fünf davon als
+exakten String und blieben durchgehend grün.
+
+### Verifikation
+
+`node tests/validate-context-doctrine.mjs` — **64/64 grün** (44 Baseline
+plus 20 neue). `bash -n install.sh` sauber, Trockenläufe für Cursor und
+AGENTS.md geprüft. `tests/validate-feature-workflow.ps1` blieb ungeprüft:
+kein `pwsh` im Container.
+
+### Zeilen-Bilanz
+
+| Datei | Vorher | Nachher |
+|---|---|---|
+| `kontext-architektur.md` | 93 | 93 |
+| `kontext-audit/SKILL.md` | 117 | 113 |
+| `projekt-setup/SKILL.md` | 116 | 109 |
+| `spec-to-implementation/SKILL.md` | 199 | **200** |
+| `review-loop.md` | 91 | 91 |
+| `SKILL.template.md` | 78 | 104 |
+| Summe | 694 | 710 |
+
+**`spec-to-implementation` steht jetzt exakt auf dem `C16`-Cap von 200** —
+das Frontmatter-Feld hat die letzte freie Zeile verbraucht. Die nächste
+Ergänzung dort erzwingt eine Auslagerung nach `references/`. Das ist der
+Zweck des Caps, aber es ist ab sofort scharf.
+
+Die Vorlage wuchs um 26 Zeilen (Invocation-Achse). Sie wird kopiert, nicht
+geladen — Wachstum kostet dort nichts.
+
+### Versionen
+
+`context-kit` 1.0.1 → 1.2.0 · `dev-toolkit` 1.1.0 → 1.2.0 ·
+`feature-workflow` 1.4.0 → 1.5.0 · Marketplace 0.5.5 → 0.6.0. Minor
+durchgehend: die Achse ändert das Verhalten gegenüber dem Nutzer.
+
+### Offen geblieben
+
+Ob `disable-model-invocation` in der Runtime wirkt, ist hier **nicht
+belegbar** — dieses Repo ist die Quelle der Plugins, nicht ihr
+Installationsziel. Der Beleg gehört in die erste Session eines
+Zielprojekts mit installiertem Marketplace. Steht im Manifest unter
+`openPoints`.
