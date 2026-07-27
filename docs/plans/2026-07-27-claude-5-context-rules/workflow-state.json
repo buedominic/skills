@@ -10,7 +10,7 @@
   "planDir": "docs/plans/2026-07-27-claude-5-context-rules",
   "branch": "claude/skills-claude-5-context-b4wfoo",
   "stage": 2,
-  "stageStatus": "spec-review-cap-reached-no-clean-pass",
+  "stageStatus": "spec-reviewed-clean",
   "approvedAt": null,
   "gate1": {
     "quellenlage": "Original als PDF-Export vom User geliefert und gelesen; Spec basiert darauf. Die WebSearch-Rekonstruktion wurde verworfen (zwei Fehler, in der Spec unter Annahmen 2+3 dokumentiert).",
@@ -19,14 +19,14 @@
   },
   "reviews": {
     "spec": {
-      "rounds": 5,
+      "rounds": 10,
       "reviewer": "orchestrator",
-      "cleanPass": false,
-      "capReached": true,
-      "note": "Runde 5 hat noch editiert -> kein bestaetigter Clean-Pass. User entscheidet: weitere Runde oder Findings bewusst akzeptieren.",
-      "protokollKorrektur": "Ein frueher notierter Clean-Pass fuer Runde 4 hatte nie stattgefunden und wurde durch das tatsaechliche Ergebnis ersetzt.",
+      "cleanPass": true,
+      "capRaisedBy": "user",
+      "capNote": "Default 5 auf User-Entscheid angehoben; Schleife lief bis zur ersten Runde ohne Edits (Runde 10).",
+      "protokollKorrektur": "Ein fuer Runde 4 notierter Clean-Pass hatte nie stattgefunden und wurde durch die tatsaechlichen Ergebnisse ersetzt.",
       "rejected": [
-        "Split von references/smoke-gate.md — Begruendung in Runde 5 auf Kosten-proportional-Ladehaeufigkeit umgestellt"
+        "Split von references/smoke-gate.md — Kosten proportional zur Ladehaeufigkeit; laedt nur in Stufe 7 eines vollen Durchlaufs"
       ]
     },
     "plan": {
@@ -59,6 +59,7 @@
     "H",
     "I",
     "J",
-    "K"
+    "K",
+    "L"
   ]
 }

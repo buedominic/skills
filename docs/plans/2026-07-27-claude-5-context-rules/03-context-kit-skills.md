@@ -15,10 +15,11 @@ Duplikat, das `/kontext-audit` als CRITICAL führt).
 - [ ] **Befund B — erzeugte CLAUDE.md.** Schritt 3 folgt der neuen
       Doktrin-Struktur: Gotchas als Schwerpunkt, „Verbote" kein
       Pflicht-Abschnitt mehr.
-- [ ] **Befund F.** Das Status-Format nicht wiederholen, sondern auf die
-      Doktrin verweisen. Zulässig, weil beide im selben Plugin liegen und
-      `install.sh` die Plugin-`docs/` in die `references/` jedes Skills
-      kopiert — der Verweis hält also auch bei Einzel-Installation.
+- [ ] **Befund F — nichts zu tun, nur bestätigen.** Runde 8 der
+      Spec-Review hat gezeigt: dieser Skill verweist bereits nur auf das
+      Format (Schritt 5, „mit dem 5-Zeilen-Format-Template als
+      Kopfkommentar") und kopiert es nicht. Beim Editieren nicht
+      versehentlich eine Kopie einführen.
 - [ ] Kurzfassung der Doktrin am Dateikopf an die neue Fassung angleichen.
 
 ## `kontext-audit/SKILL.md` (Start: 93 Zeilen)

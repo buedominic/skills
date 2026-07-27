@@ -12,8 +12,11 @@ Befunde A, D, F (Quellseite), H sowie Rich References.
       Posten „Konventionen" und „Befehle" schrumpfen auf je eine Zeile mit
       Verweis. Der Test für einen Gotcha: er ist aus dem Repo *nicht* in
       30 Sekunden ableitbar und hat schon einmal jemanden gekostet.
-- [ ] **Befund A — Verbote entschärfen.** Punkt 4 („Verbote (Was NICHT tun):
-      kurz, imperativ") verliert den Pflicht-Charakter. Ersatz: eine Regel
+- [ ] **Befund A — Verbote entschärfen, an beiden Stellen.** Punkt 4
+      („Verbote (Was NICHT tun): kurz, imperativ", Zeile 38) verliert den
+      Pflicht-Charakter — **und** die Schichten-Tabelle (Zeile 11) führt
+      „Verbote" nicht mehr als CLAUDE.md-Inhalt, sondern die Gotchas.
+      Nur eine der beiden zu ändern macht die Doktrin widersprüchlich. Ersatz: eine Regel
       mit Urteils-Anker im Stil des Posts — nicht „nie X", sondern eine
       Beschreibung des Zielzustands, aus der Claude ableiten kann. Ein
       Verbot bleibt zulässig, wenn ein realer Failure-Mode dahintersteht

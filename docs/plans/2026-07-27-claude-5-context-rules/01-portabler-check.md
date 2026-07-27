@@ -14,7 +14,7 @@ laufen — seine beiden Assertions werden mit abgedeckt.
         `Git ist die Wahrheit` ebenda; `approvedAt` im Gate-2-Abschnitt;
         `Keine erfundenen Beweise` in `landing-page`; `Keine PII/Secrets`
         in `bug-triage` und `web-audit`; `.env` in beiden context-kit-Skills.
-      - **Frontmatter** aller acht `SKILL.md` plus der Vorlage: `name:`
+      - **Frontmatter** aller neun `SKILL.md` plus der Vorlage: `name:`
         vorhanden, `description:` vorhanden und nicht leer.
       - **codex-runtime-Verweis** in `spec-to-implementation/SKILL.md`
         (deckt die zweite PowerShell-Assertion ab).
