@@ -280,7 +280,14 @@ function descLength(rel) {
 
 const loaded = skillFiles.filter((rel) => fmFlag(rel, 'disable-model-invocation') !== 'true');
 const loadedTotal = loaded.reduce((sum, rel) => sum + descLength(rel), 0);
-assert(`G1  geladene description-Summe <= 1150 Zeichen (${loadedTotal})`, loadedTotal <= 1150);
+assert(`G1  geladene description-Summe <= 1250 Zeichen (${loadedTotal})`, loadedTotal <= 1250);
+
+// G2 — Obergrenze je einzelnem geladenem Feld. Ohne sie könnte ein Skill die
+// Gesamtschranke allein aufbrauchen und die übrigen aushungern. Bewusst
+// namenlos formuliert statt „die vier bestehenden zusammen <= X": eine
+// Liste von Skill-Namen deckt einen künftig hinzukommenden nicht ab.
+const widest = loaded.reduce((max, rel) => Math.max(max, descLength(rel)), 0);
+assert(`G2  kein geladenes description-Feld > 300 Zeichen (max ${widest})`, widest <= 300);
 
 // Budget je Feld — als Regression über ALLE Skills, nicht nur die
 // geladenen: ein künftig hinzugefügter Skill scheitert daran, auch wenn er
@@ -289,6 +296,45 @@ for (const rel of [...skillFiles, VORLAGE]) {
   const n = descLength(rel);
   assert(`B   description <= 500 Zeichen (${n}): ${rel}`, n > 0 && n <= 500);
 }
+
+// Gruppe H — die Übernahmen aus mattpocock/skills.
+const GRILLING = 'plugins/context-kit/skills/grilling/SKILL.md';
+const DOMAIN_MODELING = 'plugins/context-kit/skills/domain-modeling/SKILL.md';
+const MERGE_CONFLICTS = 'plugins/dev-toolkit/skills/resolving-merge-conflicts/SKILL.md';
+const TDD_REF = 'plugins/feature-workflow/skills/spec-to-implementation/references/tdd.md';
+const IMPLEMENTER = 'plugins/feature-workflow/agents/implementer.md';
+const LIGHT_MODE = 'plugins/feature-workflow/skills/spec-to-implementation/references/light-mode.md';
+
+// Beide sind model-invoked, weil Gate 1 bzw. andere Skills sie erreichen
+// müssen — ein user-invoked Skill ist für nichts als den Menschen sichtbar.
+assert('H1  grilling existiert und ist model-invoked',
+  read(GRILLING) !== null && fmFlag(GRILLING, 'disable-model-invocation') === null);
+assert('H2  domain-modeling existiert und ist model-invoked',
+  read(DOMAIN_MODELING) !== null && fmFlag(DOMAIN_MODELING, 'disable-model-invocation') === null);
+// H3 verhindert einen zweiten ADR-Erzeuger neben /adr. Anker sind die
+// Format-Marker, die /adr besitzt — nicht das Wort „ADR": darauf VERWEISEN
+// soll der Skill ja gerade.
+omits('H3a domain-modeling ohne eigene ADR-Statuszeile', DOMAIN_MODELING, 'Status: proposed');
+omits('H3b domain-modeling ohne eigene Supersede-Regel', DOMAIN_MODELING, 'superseded by');
+contains('H4  review-loop.md führt diff im target-Enum', REVIEW_LOOP, '`diff`');
+// Getrennt: bei einem gemeinsamen Anker sagt Rot nicht, welche Hälfte fehlt.
+assert('H5a references/tdd.md existiert', read(TDD_REF) !== null);
+contains('H5b implementer verweist auf references/tdd.md', IMPLEMENTER, 'tdd.md');
+assert('H6  resolving-merge-conflicts existiert und ist user-invoked',
+  read(MERGE_CONFLICTS) !== null && fmFlag(MERGE_CONFLICTS, 'disable-model-invocation') === 'true');
+
+// Gruppe C, Fortsetzung — CONTEXT.md als Schicht-2-Artefakt, der ausgelagerte
+// Light-Mode und der aufgelöste Grundsatz-2-Konflikt.
+contains('C25 Doktrin führt CONTEXT.md', DOKTRIN, 'CONTEXT.md');
+contains('C26 projekt-setup fragt nach CONTEXT.md', PROJEKT_SETUP, 'CONTEXT.md');
+contains('C27 kontext-audit inventarisiert CONTEXT.md', KONTEXT_AUDIT, 'CONTEXT.md');
+assert('C28 references/light-mode.md existiert', read(LIGHT_MODE) !== null);
+contains('C29 spec-to-implementation verweist auf light-mode.md', SPEC_SKILL, 'references/light-mode.md');
+// Gate 1 ist keine gebündelte Rückfrage mehr, sondern eine Schleife. Bliebe
+// die alte Formulierung im Grundsatz stehen, widerspräche er der Stufe —
+// die Kollisions-Klasse, die /kontext-audit selbst als CRITICAL führt.
+omits('C30 Grundsatz 2 ohne "gebündelte Rückfrage"', SPEC_SKILL, 'je als gebündelte Rückfrage');
+contains('C31 spec-to-implementation nennt Stufe 6b', SPEC_SKILL, '6b');
 
 // --- Ausgabe -------------------------------------------------------------
 
