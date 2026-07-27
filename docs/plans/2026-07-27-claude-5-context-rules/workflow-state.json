@@ -1,0 +1,32 @@
+{
+  "featureSlug": "claude-5-context-rules",
+  "mode": "full",
+  "environment": {
+    "tool": "claude-code-web",
+    "reviewer": "orchestrator",
+    "browser": "manual"
+  },
+  "specPath": "docs/specs/2026-07-27-claude-5-context-rules-design.md",
+  "planDir": "docs/plans/2026-07-27-claude-5-context-rules",
+  "branch": "claude/skills-claude-5-context-b4wfoo",
+  "stage": 0,
+  "stageStatus": "preflight-ok",
+  "approvedAt": null,
+  "reviews": {
+    "spec": { "rounds": 0, "reviewer": "orchestrator", "rejected": [] },
+    "plan": { "rounds": 0, "reviewer": "orchestrator", "rejected": [] }
+  },
+  "agentFallbacks": [
+    "reviewer=orchestrator: Subagenten-Dispatch ist in dieser Session ohne ausdrueckliche User-Anforderung untersagt; Reviews laufen als Orchestrator-Fallback.",
+    "doc-writer=orchestrator: lange Dokumente schreibt der Orchestrator selbst (gleicher Grund)."
+  ],
+  "deviations": [
+    "Grundsatz 3 (Branch-Strategie): Spec, Plan und Implementation laufen alle auf claude/skills-claude-5-context-b4wfoo statt Default-Branch + feature/<name>. Grund: Session-Mandat schreibt genau diesen Branch vor und verbietet Pushes auf main.",
+    "Quellenlage: claude.com ist durch die Netzwerk-Policy blockiert (403 CONNECT). Blogpost-Inhalt aus WebSearch-Snippet + Sekundaerquellen rekonstruiert, nicht im Original gelesen."
+  ],
+  "verification": {},
+  "smoke": {
+    "applicable": false,
+    "grund": "reine Doku-/Prompt-Inhalte, kein UI und kein Laufzeitverhalten"
+  }
+}
