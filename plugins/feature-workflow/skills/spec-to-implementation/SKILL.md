@@ -1,6 +1,7 @@
 ---
 name: spec-to-implementation
-description: Take a feature from idea to verified implementation or run a small fix through a light pipeline (e.g. "$spec-to-implementation FEATURE", "/spec-to-implementation FEATURE", "bau Feature X", "neues Feature von Spec bis Merge"). Use for the complete brainstorm→spec→review→plan→review→implement workflow with durable resume state, bounded Codex subagents, task progress and two human gates. Works across Codex and Claude; project specifics come from AGENTS.md/CLAUDE.md and optional workflow config.
+description: Feature von der Idee bis zum verifizierten Merge — Brainstorm, Spec, Plan, Implementation mit zwei Gates.
+disable-model-invocation: true
 ---
 
 # Spec-to-Implementation — Feature-Workflow von Idee bis Merge

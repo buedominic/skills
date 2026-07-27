@@ -1,6 +1,7 @@
 ---
 name: projekt-setup
-description: Use when setting up a repository for Claude Code for the first time — creating an initial lean CLAUDE.md, wiring the feature-workflow config, and anchoring context-maintenance rules (e.g. "richte das Projekt ein", "erstelle eine CLAUDE.md", "setup für claude code", "onboarding"). Also use when an existing CLAUDE.md should be restructured to the lean layered format.
+description: Repository erstmalig für Claude Code einrichten: schlanke CLAUDE.md, Workflow-Verdrahtung, Pflege-Regeln.
+disable-model-invocation: true
 ---
 
 # Projekt-Setup — Kontext erstmalig aufnehmen
@@ -12,35 +13,27 @@ nach Budget, optionale Workflow-Verdrahtung, verankerte Pflege-Regeln.
 `references/kontext-architektur.md` (neben dieser Datei — bei
 Einzel-Skill-Installation, z.B. Codex) oder
 `../../docs/kontext-architektur.md` (Plugin-/Repo-Layout). Sie ist die
-Wahrheit; dieser Skill beschreibt nur den Ablauf. Fehlen beide, gilt die
-Kurzfassung:
+Wahrheit; dieser Skill beschreibt nur den Ablauf.
 
-> CLAUDE.md wird in jeder Session geladen → hartes Budget ≤ ~120 Zeilen
-> (Kosten ∝ Ladehäufigkeit); Detail wandert in verlinkte Doku, Skill-
-> References oder Archive. **Gotchas sind der Schwerpunkt-Posten** mit dem
-> grössten Token-Anteil: nicht in 30 Sekunden aus dem Repo ableitbar und
-> hat schon einmal jemanden gekostet. Code schlägt Prosa: Test-Suite,
-> Mockup, zu portierende Funktion oder Rubric werden per `@`-Mention
-> bedarfsgeladen, nie nach CLAUDE.md kopiert. Regeln stehen als
-> Urteils-Anker (Zielzustand statt Einzelfall-Untersagung), ein Verbot nur
-> bei realem Failure-Mode. Eine Wahrheit, dünne Adapter: jeder Fakt genau
-> einmal, `AGENTS.md` & Co. verweisen statt kopieren. Kein Memory-Store —
-> Claude legt Sitzungsfunde selbst ab (Auto-Memory). Status-Einträge max.
-> 5 Zeilen, Historie in `*-archiv.md`.
+Fehlen beide, ist die Doktrin nicht mitinstalliert worden — sie liegt im
+Plugin `context-kit` unter `docs/kontext-architektur.md`. Dann diesen Skill
+anhalten und den Pfad klären, statt aus einer Kurzfassung zu arbeiten: eine
+nacherzählte Doktrin driftet von der echten weg, und der Schaden fällt in
+jedem Projekt an, das damit eingerichtet wurde.
 
 ## Ablauf
 
 ### 1. Bestandsaufnahme (read-only)
 
-- Existiert schon eine `CLAUDE.md`/`AGENTS.md`? → **NICHT überschreiben.**
-  Stattdessen Restrukturierung: Bestand gegen die Doktrin bewerten, Umbau
+- Existiert schon eine `CLAUDE.md`/`AGENTS.md`? → **Umbau-Vorschlag statt
+  Neuanlage.** Bestand gegen die Doktrin bewerten, Umbau
   als Vorschlag präsentieren (wie `/kontext-audit`, Neuaufbau statt Diät).
 - Repo analysieren: `package.json`/Build-Tooling (Befehle für dev, test,
   build, lint), Verzeichnisstruktur (nur Top-Level + auffällige
   Konventionen), Test-Setup, CI-Workflows, bestehende Doku unter `docs/`,
   `.env.example` (NICHT `.env` lesen).
-- Notiere, was aus dem Code ableitbar ist — das kommt NICHT in die
-  CLAUDE.md.
+- Notiere, was aus dem Code ableitbar ist — das leitet Claude in der
+  Session selbst ab und bleibt draussen.
 
 ### 2. Interview (gebündelt, max. 2 Runden `AskUserQuestion`)
 

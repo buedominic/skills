@@ -4,7 +4,7 @@
     "name": "Dominic Bue"
   },
   "description": "Generische, wiederverwendbare Claude-Code-Skills, -Agents und -Workflows zum Teilen",
-  "version": "0.5.5",
+  "version": "0.6.0",
   "plugins": [
     {
       "name": "dev-toolkit",
@@ -15,7 +15,7 @@
     {
       "name": "context-kit",
       "source": "./plugins/context-kit",
-      "description": "Kontext-Lebenszyklus: /projekt-setup (erstmalige CLAUDE.md + Workflow-Verdrahtung) und /kontext-audit (Budgets, Drift, Duplikate, Kontext-Bomben) auf Basis einer gemeinsamen Kontext-Architektur-Doktrin",
+      "description": "Kontext-Lebenszyklus: /projekt-setup (erstmalige CLAUDE.md + Workflow-Verdrahtung), /kontext-audit (Budgets, Drift, Duplikate, Kontext-Bomben) und /skill-kompass (welcher Skill passt gerade?) auf Basis einer gemeinsamen Kontext-Architektur-Doktrin",
       "license": "MIT"
     },
     {

@@ -1,6 +1,6 @@
 ---
 name: prior-art-check
-description: Use BEFORE building non-trivial functionality to check whether the problem is already solved (e.g. "gibt es das schon?", "müssen wir das selbst bauen?", "prior art", before writing a spec for an algorithmic/complex feature). Checks four levels — own codebase, ecosystem libraries, known CS problem classes, nature-inspired heuristics — and returns a build/buy/adapt recommendation as spec input.
+description: Use BEFORE building non-trivial functionality, to check whether the problem is already solved — in the codebase, in a library, or as a known problem class (e.g. "gibt es das schon?", "müssen wir das selbst bauen?", "prior art"). Returns a build/buy/adapt recommendation.
 ---
 
 # Prior-Art-Check — Ist das Problem schon gelöst?
@@ -75,9 +75,9 @@ Kurzes Dokument (≤ 1 Seite) — bei laufender Pipeline als
 
 ## Leitplanken
 
-- Keine Behauptung ohne Quelle: jeder Ökosystem-Kandidat mit Link, jeder
+- Jede Behauptung mit Quelle: jeder Ökosystem-Kandidat mit Link, jeder
   Eigencode-Treffer mit Datei-Pfad.
-- Keine Dependency-Empfehlung ohne Lizenz- und Wartungs-Check.
+- Jede Dependency-Empfehlung trägt einen Lizenz- und Wartungs-Check.
 - Zeitbudget: das ist ein Check, keine Studie — pro Ebene wenige gezielte
   Suchen; wenn nach ~15 Minuten nichts Brauchbares auftaucht, ist BUILD
   mit dokumentierter Suche das legitime Ergebnis.

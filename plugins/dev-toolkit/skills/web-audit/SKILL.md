@@ -1,12 +1,15 @@
 ---
 name: web-audit
-description: Use to audit a web application or page for accessibility, performance and SEO (e.g. "web audit", "ist die seite barrierefrei?", "warum lädt die seite langsam?", "seo check", "lighthouse-artige prüfung", before launching a page). Produces a findings report with file locations first; applies fixes only after confirmation. Manually triggered.
+description: Web-Seite auf Accessibility, Performance und SEO prüfen.
+disable-model-invocation: true
 ---
 
 # Web-Audit — Accessibility, Performance, SEO
 
 Die drei kritischen Dimensionen, die weder Design-Skills noch
-Security-Review abdecken. Report zuerst, Fixes nach Bestätigung.
+Security-Review abdecken.
+**Befund vor Eingriff:** erst erheben und klassifizieren, dann vorlegen —
+geändert wird auf Zusage.
 
 ## Ablauf
 
@@ -89,7 +92,7 @@ behobenen Punkte.
 
 ## Leitplanken
 
-- Keine Behauptung ohne Fundstelle; Laufzeit-Messwerte als Näherung
+- Jeder Befund mit Fundstelle; Laufzeit-Messwerte als Näherung
   kennzeichnen.
 - Kein Design-Umbau unter dem Deckmantel von A11y: Farbwerte nur minimal
   anpassen (Kontrast erfüllen, Charakter erhalten) — grössere visuelle

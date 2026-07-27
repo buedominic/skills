@@ -1,6 +1,6 @@
 ---
 name: adr
-description: Use to record an architecture/technology decision as an ADR (e.g. "halte den Entscheid fest", "warum haben wir X gewählt — dokumentieren", "adr schreiben", after a build/buy decision, a review escalation or a fundamental design choice). Creates docs/decisions/NNNN-<slug>.md with context, options, decision and consequences.
+description: Use to record an architecture or technology decision as an ADR (e.g. "halte den Entscheid fest", "adr schreiben", after a build/buy decision, a review escalation or a fundamental design choice).
 ---
 
 # ADR — Architektur-Entscheide festhalten
@@ -17,7 +17,7 @@ context-kit-Doktrin): CLAUDE.md verweist nur auf das Verzeichnis.
   Sicherheits-/Scope-Entscheid durch den User).
 - Technologie-/Struktur-Wahlen mit Alternativen (DB, Auth-Ansatz,
   Deployment, Modul-Schnitt).
-- NICHT für: umkehrbare Detail-Entscheide, reine Konventionen (→
+- Gehört woanders hin: umkehrbare Detail-Entscheide, reine Konventionen (→
   CLAUDE.md), Feature-Inhalte (→ Spec).
 
 ## Ablauf

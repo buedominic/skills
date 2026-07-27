@@ -1,11 +1,14 @@
 ---
 name: dependency-audit
-description: Use to audit and plan updates for project dependencies (e.g. "sind unsere pakete aktuell?", "dependency audit", "npm audit aufräumen", "update-plan für die dependencies", after security advisories). Produces a risk-tiered report and update plan; applies updates only after confirmation. Manually triggered — never runs automatically.
+description: Abhängigkeiten prüfen und risikogestuft aktualisieren.
+disable-model-invocation: true
 ---
 
 # Dependency-Audit — Abhängigkeiten prüfen + risikoarm aktualisieren
 
-Report zuerst, Updates erst nach Bestätigung. Wird manuell angestossen.
+**Befund vor Eingriff:** erst erheben und klassifizieren, dann vorlegen —
+geändert wird auf Zusage.
+Wird manuell angestossen.
 
 ## Ablauf
 
@@ -36,7 +39,7 @@ Konfigurations-Anpassungen statt manueller Updates.
 | SOFORT | Lücke mit Schweregrad high/critical und verfügbarem Fix | eigener, kleiner Update-Schritt — zuerst |
 | PATCH | reine Patch-Sprünge | gesammelt in einem Schritt |
 | MINOR | Minor-Sprünge | gesammelt, aber Changelog-Stichprobe bei zentralen Paketen |
-| MAJOR | Major-Sprünge | je Paket EIN eigener Schritt, NIE ohne Breaking-Changes-Lektüre |
+| MAJOR | Major-Sprünge | je Paket EIN eigener Schritt, Breaking Changes vorher gelesen |
 | ENTFERNEN | ungenutzt / durch Bordmittel ersetzbar | Vorschlag mit Fundstellen-Beleg |
 
 ### 3. Report + Bestätigung
@@ -65,9 +68,9 @@ Backlog-Item formulieren).
 
 ## Leitplanken
 
-- Kein Major-Update ohne gelesene Release-Notes/Changelog — „latest" ist
-  kein Argument.
-- Keine neuen Pakete einführen (das ist `/prior-art-check`-Territorium).
+- Bei Majors entscheidet der Changelog, nicht die Versionsnummer: „latest"
+  ist kein Argument (die Lese-Pflicht selbst steht in der Tabelle oben).
+- Neue Pakete gehören in `/prior-art-check`, nicht in ein Update.
 - Peer-Dependency-Konflikte nicht mit `--force`/`--legacy-peer-deps`
   übertünchen — als blockiert dokumentieren.
 - Registry-Skripte nicht blind ausführen; Installationen laufen mit den

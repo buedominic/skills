@@ -1,6 +1,6 @@
 ---
 name: bug-triage
-description: Use when a vague bug report needs to become an actionable fix input (e.g. "bei manchen teams stimmt die tabelle nicht", "irgendwas ist kaputt an X", "user meldet fehler Y"). Turns the report into a structured repro, evidence and ranked root-cause hypotheses, ending in a light-mode-ready mini document — it does NOT apply the fix.
+description: Use when a vague bug report needs to become an actionable fix input (e.g. "bei manchen teams stimmt die tabelle nicht", "irgendwas ist kaputt an X", "user meldet fehler Y"). Produces repro, evidence and ranked root-cause hypotheses.
 ---
 
 # Bug-Triage — von der Meldung zum fix-fertigen Dokument
@@ -76,8 +76,8 @@ oder FULL (Schema-/Security-/Scope-Berührung) — mit einem Satz Begründung.
 
 ## Leitplanken
 
-- **Kein Fix während der Triage** — auch kein „kleiner Quick-Fix nebenbei".
-  Einzige Ausnahme: der billige Prüfschritt aus Schritt 4 (read-only bzw.
+- **Die Triage endet mit dem Dokument** — der Fix ist der nächste Schritt,
+  auch der „kleine nebenbei". Einzige Ausnahme: der billige Prüfschritt aus Schritt 4 (read-only bzw.
   ein neuer, noch roter Test — der bleibt als Repro-Test liegen).
 - Repro schlägt Theorie: eine unbestätigte Hypothese wird nie als Ursache
   verkauft.

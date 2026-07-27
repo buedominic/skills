@@ -15,11 +15,37 @@ und Inhalt an.
   Scripts, Templates) können im selben Ordner liegen und aus dem Skill heraus
   referenziert werden.
 
+## Zuerst entscheiden: greift Claude selbst, oder tippst nur du?
+
+Diese Wahl bestimmt, was die `description` überhaupt ist — und ob der Skill
+Grundlast kostet.
+
+**Model-invoked** (kein Extra-Feld) — die `description` liegt in **jeder**
+Session im Kontext. Claude findet den Skill selbst, und andere Skills können
+ihn erreichen. Der Preis ist permanent: jedes Zeichen wird immer geladen,
+auch wenn der Skill monatelang nicht dran ist. Wähle das, wenn der Skill bei
+einer Lage greifen soll, die du nicht als solche erkennst — eine rohe
+Fehlermeldung, spürbare Doku-Drift.
+
+**User-invoked** (`disable-model-invocation: true`) — die `description`
+verlässt den Kontext. Kosten: null. Erreichbar nur, indem du den Namen
+tippst; auch kein anderer Skill kann ihn auslösen. Die `description` wird
+damit an *dich* gerichtet: eine Zeile, was der Skill tut, keine
+Trigger-Liste. Wähle das für alles, was du ohnehin bewusst anstösst —
+Setup-Läufe, Pipelines, Audits.
+
+Die Wahl kostet an beiden Enden etwas: model-invoked kostet Kontext,
+user-invoked kostet dein Gedächtnis. Häufen sich die user-invoked Skills,
+fängt ein Wegweiser-Skill das auf (selbst user-invoked, also gratis).
+
 ## Die `description` ist das Interface
 
-Sie ist das einzige immer geladene Stück des Skills und damit die
-**autoritative** Stelle für die Bedienung — keine Zusammenfassung des Bodys.
-Was hier nicht steht, existiert für die Auswahl nicht.
+Für **model-invoked** Skills ist sie das einzige immer geladene Stück und
+damit die **autoritative** Stelle für die Bedienung — keine Zusammenfassung
+des Bodys. Was hier nicht steht, existiert für die Auswahl nicht. Sie trägt
+die **Anlässe**, je einen pro unterscheidbarem Fall: Ablauf, Output-Format
+und Abgrenzungen gehören in den Body, und Synonyme desselben Anlasses sind
+bezahlte Wiederholung.
 
 Die Bedienung tragen Verträge und feste Wertebereiche, nicht Beispiele: ein
 Status-Feld mit dem Enum `pending`/`in_progress`/`completed` plus ein Satz zum
