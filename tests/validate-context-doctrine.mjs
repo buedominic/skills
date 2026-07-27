@@ -190,6 +190,16 @@ contains('C18 Vorlage nennt description', VORLAGE, 'description');
 contains('C19 Vorlage nennt Progressive Disclosure', VORLAGE, 'Progressive Disclosure');
 contains('C20 Vorlage nennt Urteils-Anker', VORLAGE, 'Urteils-Anker');
 contains('C21 Vorlage nennt Meinung', VORLAGE, 'Meinung');
+// C22–C24: die Doktrin steht in genau einer Datei. Beide Skills trugen
+// zusätzlich eine Kurzfassung als Blockzitat — und die waren gedriftet
+// (Gotcha-Definition nur hier, Tiefen-Regel nur dort). Anker ist die
+// Formulierung, die beide Fassungen teilen.
+omits('C22 projekt-setup ohne Doktrin-Kurzfassung', PROJEKT_SETUP, 'hartes Budget');
+omits('C23 kontext-audit ohne Doktrin-Kurzfassung', KONTEXT_AUDIT, 'hartes Budget');
+// Ohne diesen Anker bleibt die Vorlage bei „die description ist immer
+// geladen" — und der nächste Skill wiederholt den Fehler, den dieser Lauf
+// behebt.
+contains('C24 Vorlage nennt disable-model-invocation', VORLAGE, 'disable-model-invocation');
 
 // Gruppe D — Status-Format-Literal. Bewusst nur plugins/ und templates/:
 // docs/specs und docs/plans dürfen das Format zitieren, ohne den Check zu
@@ -201,6 +211,69 @@ for (const rel of [...walk('plugins'), ...walk('templates')]) {
 }
 const formatTotal = formatHits.reduce((sum, h) => sum + h.n, 0);
 assert(`D1  Status-Format genau 2x unter plugins/ und templates/ (${formatTotal})`, formatTotal === 2);
+
+// Gruppe F — Invocation-Achse. `disable-model-invocation: true` macht einen
+// Skill user-invoked: seine description wird nicht mehr in jede Session
+// geladen. Geprüft wird das Frontmatter-Feld, nicht ein Substring — im
+// Fliesstext steht der Feldname legitim (Vorlage, Router, portabilitaet.md).
+function fmFlag(rel, field) {
+  const fm = frontmatter(read(rel));
+  if (fm === null) return null;
+  const m = fm.match(new RegExp(`^${field}:\\s*(\\S+)`, 'm'));
+  return m ? m[1] : null;
+}
+
+const USER_INVOKED = [
+  'plugins/context-kit/skills/projekt-setup/SKILL.md',
+  'plugins/context-kit/skills/skill-kompass/SKILL.md',
+  'plugins/dev-toolkit/skills/dependency-audit/SKILL.md',
+  'plugins/dev-toolkit/skills/landing-page/SKILL.md',
+  'plugins/dev-toolkit/skills/web-audit/SKILL.md',
+  'plugins/feature-workflow/skills/spec-to-implementation/SKILL.md',
+];
+
+// Als exakte Menge geprüft, nicht als Stichprobe: sonst rutscht ein
+// zusätzlich umgeflaggter Skill unbemerkt durch und seine Trigger sind
+// still weg.
+const flagged = skillFiles.filter((rel) => fmFlag(rel, 'disable-model-invocation') === 'true').sort();
+const expected = [...USER_INVOKED].sort();
+assert(
+  `F1  genau die vorgesehenen Skills sind user-invoked (${flagged.length}/${expected.length})`,
+  flagged.length === expected.length && flagged.every((rel, i) => rel === expected[i]),
+);
+assert(
+  'F2  die uebrigen Skills bleiben model-invoked',
+  skillFiles.filter((rel) => !expected.includes(rel)).every((rel) => fmFlag(rel, 'disable-model-invocation') === null),
+);
+// Der Router heilt die kognitive Last, die user-invoked Skills erzeugen —
+// und ist selbst user-invoked, kostet also nichts.
+assert(
+  'F3  Router-Skill existiert und ist user-invoked',
+  read('plugins/context-kit/skills/skill-kompass/SKILL.md') !== null &&
+    fmFlag('plugins/context-kit/skills/skill-kompass/SKILL.md', 'disable-model-invocation') === 'true',
+);
+
+// Gruppe G — Grundlast. Nur model-invoked descriptions werden geladen; sie
+// sind der Preis, den jede Session jedes Projekts zahlt. Die Schranke liegt
+// unter dem Ist-Stand der verbleibenden vier (1484), damit sie nicht schon
+// durchs blosse Umflaggen erfüllt ist.
+function descLength(rel) {
+  const fm = frontmatter(read(rel));
+  const m = fm?.match(/^description:[ \t]*(.*)$/m);
+  return m ? m[1].trim().length : 0;
+}
+
+const loaded = skillFiles.filter((rel) => fmFlag(rel, 'disable-model-invocation') !== 'true');
+const loadedTotal = loaded.reduce((sum, rel) => sum + descLength(rel), 0);
+assert(`G1  geladene description-Summe <= 1150 Zeichen (${loadedTotal})`, loadedTotal <= 1150);
+
+// Budget je Feld — als Regression über ALLE Skills, nicht nur die
+// geladenen: ein künftig hinzugefügter Skill scheitert daran, auch wenn er
+// heute noch user-invoked ist.
+for (const rel of [...skillFiles, VORLAGE]) {
+  const n = descLength(rel);
+  assert(`B   description <= 500 Zeichen (${n}): ${rel}`, n > 0 && n <= 500);
+}
 
 // --- Ausgabe -------------------------------------------------------------
 
