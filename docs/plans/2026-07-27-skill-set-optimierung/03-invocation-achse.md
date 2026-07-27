@@ -5,22 +5,22 @@ model-invoked und werden dabei auf Trigger eingedampft.
 
 ## Ausgangslage
 
-Neun `description`-Felder, **3.375 Zeichen**, in jeder Session jedes
+Neun `description`-Felder, **3.341 Zeichen**, in jeder Session jedes
 Projekts geladen:
 
 | Skill | Zeichen | Nachher |
 |---|---|---|
-| `spec-to-implementation` | 506 | user-invoked → 0 geladen |
-| `kontext-audit` | 425 | bleibt geladen, wird gekürzt |
-| `prior-art-check` | 400 | bleibt geladen, wird gekürzt |
-| `projekt-setup` | 370 | user-invoked → 0 |
-| `web-audit` | 343 | user-invoked → 0 |
-| `dependency-audit` | 337 | user-invoked → 0 |
-| `landing-page` | 335 | user-invoked → 0 |
-| `bug-triage` | 332 | bleibt geladen, wird gekürzt |
-| `adr` | 327 | bleibt geladen, wird gekürzt |
+| `spec-to-implementation` | 496 | user-invoked → 0 geladen |
+| `kontext-audit` | 421 | bleibt geladen, wird gekürzt |
+| `prior-art-check` | 395 | bleibt geladen, wird gekürzt |
+| `projekt-setup` | 367 | user-invoked → 0 |
+| `web-audit` | 341 | user-invoked → 0 |
+| `dependency-audit` | 333 | user-invoked → 0 |
+| `landing-page` | 334 | user-invoked → 0 |
+| `bug-triage` | 330 | bleibt geladen, wird gekürzt |
+| `adr` | 324 | bleibt geladen, wird gekürzt |
 
-Die vier bleibenden liegen zusammen bei **1.484**. Das Ziel ist
+Die vier bleibenden liegen zusammen bei **1.470**. Das Ziel ist
 **≤ 1.150** — die Schranke ist mit Absicht unter dem Ist gesetzt, sonst
 wäre sie allein durch das Umflaggen erfüllt (Finding aus Runde 1 des
 Spec-Reviews).
@@ -70,12 +70,15 @@ Auto-Trigger. Der Einwand kam im Spec-Review (Runde 1, `MINOR`) und wurde
 als Gate-1-Entscheid des Users bewusst nicht re-litigiert. Er steht in der
 Gate-2-Zusammenfassung zur Drehung.
 
+**An Gate 2 bestätigt: `landing-page` bleibt user-invoked.** Der Einwand
+wurde geprüft und abgelehnt. Der folgende Absatz dokumentiert, was eine
+Drehung gekostet hätte — er ist ab hier historisch.
+
 **Fällt der Entscheid um, ist es kein Einzeiler.** `landing-page` brächte
-seine 335 Zeichen zurück in die geladene Menge: 1.484 − 334 + 335 =
-**1.485**, und die Schranke `G ≤ 1.150` wäre unerreichbar. Betroffen sind
+seine 334 Zeichen zurück in die geladene Menge: 1.470 + 334 = **1.804**, und die Schranke `G ≤ 1.150` wäre unerreichbar. Betroffen sind
 dann drei Stellen — die Mengen in `F1`/`F2`, die Schranke in `G`, und die
 Akzeptanz-Zeile der Spec. Die Schranke wird in diesem Fall auf
 **≤ 1.400** gesetzt: das hält die Anforderung, dass die vier — dann fünf —
-Descriptions echt gekürzt werden (heute zusammen 1.819), statt sie allein
+Descriptions echt gekürzt werden (heute zusammen 1.804), statt sie allein
 durchs Umflaggen zu erfüllen. Der Entscheid gehört an Gate 2, nicht in die
 Implementation.

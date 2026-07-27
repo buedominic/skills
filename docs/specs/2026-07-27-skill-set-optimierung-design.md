@@ -7,10 +7,10 @@ sind Lauf 2 und hier ausdrücklich Nicht-Ziel.
 ## Problem
 
 Das Skill-Set ist inhaltlich stark, aber es fehlt ihm eine Achse, und es
-verletzt an drei Stellen seine eigene Doktrin.
+verletzt an zwei Stellen seine eigene Doktrin.
 
 **Die fehlende Achse — Invocation.** Alle neun Skills sind model-invoked.
-Ihre `description`-Felder summieren sich auf **3.375 Zeichen**, die in jeder
+Ihre `description`-Felder summieren sich auf **3.341 Zeichen**, die in jeder
 Session jedes Projekts geladen werden — auch die von `/landing-page`, wenn
 gerade eine Datenbank migriert wird. Fünf dieser Skills sind Orchestratoren,
 die man ohnehin tippt; ihre Auto-Auffindbarkeit ist bezahlte Last ohne
@@ -18,17 +18,15 @@ Gegenwert. `SKILL.template.md:20` setzt „immer geladen" sogar als
 unveränderliche Eigenschaft voraus — die Wahl existiert in der eigenen
 Autoren-Doktrin nicht.
 
-**Die drei Selbstverstösse.**
+**Die zwei Selbstverstösse.**
 
-1. `spec-to-implementation` hat eine `description` von **506 Zeichen** —
-   über dem Budget von ≤ ~500, das `kontext-audit:60` selbst aufstellt.
-2. `projekt-setup:24-38` und `kontext-audit:20-33` tragen beide eine
+1. `projekt-setup:24-38` und `kontext-audit:20-33` tragen beide eine
    „Kurzfassung" der Doktrin, und sie sind **gedriftet**: die Gotcha-
    Definition steht nur in der einen, „umso tiefer je seltener" nur in der
    anderen. Das ist der Befund, den `kontext-audit` Schritt 4 selbst als
    `CRITICAL` klassifiziert. Der Fallback ist zudem weitgehend unnötig:
    `install.sh:43-48` kopiert die Doktrin in jedes `references/`.
-3. `kontext-audit` Schritt 4 klassifiziert Über-Constraints in
+2. `kontext-audit` Schritt 4 klassifiziert Über-Constraints in
    *Zielprojekten*; die Skills selbst steuern durchgehend per Verbot. Die
    Vorlage kennt den Urteils-Anker (`SKILL.template.md:42-53`) — angewendet
    wurde er auf den Bestand nur teilweise.
@@ -53,7 +51,12 @@ Der Spec-Review hat `landing-page` als schwächsten der fünf markiert: es ist
 als einziger kein Repo-Orchestrator, sondern ein Fach-Skill, und „bau eine
 landing page" wäre ein natürlicher Auto-Trigger. Der Einwand wurde **nicht**
 im Review entschieden — die Invocation-Menge ist ein Gate-1-Entscheid des
-Users und wird an Gate 2 zur Drehung angeboten.
+Users und wurde an Gate 2 zur Drehung vorgelegt.
+
+**An Gate 2 entschieden: `landing-page` bleibt user-invoked.** Der Skill ist
+mit Interview, Struktur-Tabelle und Launch-Checkliste ein Orchestrator wie
+die anderen vier, und eine Landing Page baut man bewusst statt nebenbei.
+Damit gilt durchgehend die Menge von fünf und die Schranke ≤ 1.150.
 
 **Diese Abhängigkeit steht hier und nur hier.** Jedes Akzeptanz-Kriterium,
 das eine Menge oder eine Schranke nennt, ist gegen die an Gate 2 bestätigte
@@ -130,28 +133,24 @@ nach dem etablierten Muster der Gruppe C (zuerst rot).
 Jedes Kriterium ist als Assertion in `tests/validate-context-doctrine.mjs`
 prüfbar; die Suite ist am Ende grün und war es zu Beginn (44/44).
 
-- [ ] Genau die an Gate 2 bestätigte Menge trägt
-      `disable-model-invocation: true` — als **exakte Menge** geprüft, nicht
-      als Stichprobe, sonst rutscht ein sechster Skill unbemerkt durch.
-      Vorgesehen sind `projekt-setup`, `spec-to-implementation`,
-      `dependency-audit`, `web-audit`, `landing-page`; über `landing-page`
-      ist noch nicht endgültig entschieden (§ Entscheide).
+- [ ] Genau fünf `SKILL.md` tragen `disable-model-invocation: true` —
+      `projekt-setup`, `spec-to-implementation`, `dependency-audit`,
+      `web-audit`, `landing-page` (an Gate 2 bestätigt). Als **exakte
+      Menge** geprüft, nicht als Stichprobe, sonst rutscht ein sechster
+      Skill unbemerkt durch und seine Trigger sind still weg.
 - [ ] Der neue Router-Skill trägt es ebenfalls, nennt alle neun Skills mit
       ihrem **Anlass** in je einer Zeile und erzählt dabei keine
       `description` nach.
 - [ ] **Die verbleibende Grundlast ist echt gesunken.** Die model-invoked
       `description`-Felder summieren sich auf ≤ **1.150** Zeichen (vier
-      Skills, heute zusammen 1.484). Die Schranke liegt bewusst **unter**
+      Skills, heute zusammen 1.470). Die Schranke liegt bewusst **unter**
       dem heutigen Stand: läge sie darüber, wäre sie allein durch das
       Umflaggen erfüllt und würde die im Scope versprochene
-      Description-Überarbeitung nicht messen. Gesamt gegen heute (3.375):
-      mindestens **66 %** weniger.
+      Description-Überarbeitung nicht messen. Gesamt gegen heute (3.341):
+      mindestens **65 %** weniger.
 
-      Bleibt `landing-page` nach Gate 2 model-invoked (§ Entscheide, offener
-      Einwand), gilt statt dessen ≤ **1.400** über dann fünf Felder (heute
-      zusammen 1.819) — dieselbe Anforderung von rund 23 % echter Kürzung,
-      nur über eine andere Menge. Genau eine der beiden Schranken ist
-      gültig; welche, entscheidet Gate 2.
+      Die Alternativschranke ≤ 1.400 über fünf Felder entfiel mit dem
+      Gate-2-Entscheid (§ Entscheide).
 - [ ] **Das 500-Zeichen-Budget ist als Regression verankert**, nicht als
       Momentaufnahme: eine Assertion in Gruppe B prüft *jede* `SKILL.md`
       inklusive der Vorlage, sodass auch ein künftig hinzugefügter Skill
