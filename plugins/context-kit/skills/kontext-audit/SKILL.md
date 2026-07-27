@@ -31,7 +31,9 @@ Falls die Runtime `/doctor` anbietet: vor Schritt 1 laufen lassen.
 Sammle die Steuerungs-Artefakte: `CLAUDE.md`, `AGENTS.md`, weitere
 Tool-Handbücher (z.B. `WORKFLOW.md`), `.claude/` (skills, agents, config),
 plus alle Dokumente, die CLAUDE.md als Pflicht-Referenz verlinkt
-(status, backlog, Spezifikationen). Miss pro Datei die Zeilenzahl.
+(status, backlog, Spezifikationen, `CONTEXT.md`). Miss pro Datei die
+Zeilenzahl — `CONTEXT.md` ausgenommen, es hat bewusst keine Schranke
+(Doktrin, Schichten-Tabelle).
 
 ### 2. Budget-Check
 
@@ -55,6 +57,10 @@ das Repo — mit Fundstelle:
   stimmt die Aussage noch mit dem Code überein?
 - Skill-/Tool-Referenzen: sind referenzierte Skills/MCP-Server (noch)
   verfügbar bzw. verfügbarkeits-neutral formuliert?
+- Glossar (`CONTEXT.md`, falls vorhanden): heisst im Code noch so, was das
+  Glossar so nennt? Ein Begriff, der nur noch im Glossar existiert, ist
+  Drift wie jede andere — und der teuerste Fall, weil er die Sprache
+  beschädigt, mit der alle anderen Fakten beschrieben werden.
 
 Jeder Befund: `{ stelle, behauptet, tatsächlich (mit Datei:Zeile), fix }`.
 

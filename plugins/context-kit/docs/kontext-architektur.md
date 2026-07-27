@@ -11,12 +11,23 @@ Claude 5 generation models" (Anthropic, 24.07.2026).
 |---|---|---|---|
 | 1. `CLAUDE.md` | **immer** (jede Session) | **≤ ~120 Zeilen** | Nur was JEDE Session braucht: Gotchas, Projekt-Kern, Konventionen, Befehle, Verweise |
 | 2. Kern-Doku (`docs/…`) | bei Bedarf, per Verweis | pro Dokument ein Thema | Spezifikationen, Workflow-Pipeline, Architektur-Entscheide |
+| 2. `CONTEXT.md` (Glossar) | bei Bedarf, per Verweis | keine Zeilenschranke — Grenze ist Relevanz | Begriffe, die Aussenstehende falsch verstehen |
 | 3. Skill-References | erst beim Stufen-Eintritt (Progressive Disclosure) | — | Detail-Maschinerie von Skills |
 | 4. Lebende Dokumente (`status.md`, `backlog.md`) | bei Bedarf | status < ~50 Z. (5-Zeilen-Format), Backlog mit Archiv | aktueller Stand, offene Items |
 | Archiv (`*-archiv.md`) | praktisch nie | unbegrenzt | Historie — bewusst aus dem heissen Pfad entfernt |
 
 **Kernregel: Kosten ∝ Ladehäufigkeit.** Was immer geladen wird, muss am
 schlanksten sein. Detail wandert so weit nach unten wie möglich.
+
+**Das Glossar ist Schicht 2, nicht Schicht 1.** Ein Projekt-Vokabular wächst
+mit der Domäne, das 120-Zeilen-Budget der `CLAUDE.md` nicht — deshalb steht
+es in `CONTEXT.md` und wird von dort verwiesen. Der Gewinn ist Kürze im
+Betrieb: wer „Materialisierungs-Kaskade" sagen kann, braucht dafür nicht
+jedes Mal drei Nebensätze, und Variablen, Dateien und Tests heissen
+durchgängig gleich. Grenze des Dokuments ist **Relevanz, keine Zeilenzahl** —
+aber es ist ein Glossar und kein Ablageort: keine Spezifikationen, keine
+Implementierungs-Entscheide, keine Notizen. Ohne diese Grenze wird es das
+Auffangbecken für alles, was sonst nirgends passt.
 
 **Code schlägt Prosa.** Test-Suite, HTML-Mockup, zu portierende Funktion oder
 Rubric schlagen jede Beschreibung desselben. Solche `Rich Reference`-Artefakte
