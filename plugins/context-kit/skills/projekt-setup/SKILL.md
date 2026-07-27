@@ -12,21 +12,13 @@ nach Budget, optionale Workflow-Verdrahtung, verankerte Pflege-Regeln.
 `references/kontext-architektur.md` (neben dieser Datei — bei
 Einzel-Skill-Installation, z.B. Codex) oder
 `../../docs/kontext-architektur.md` (Plugin-/Repo-Layout). Sie ist die
-Wahrheit; dieser Skill beschreibt nur den Ablauf. Fehlen beide, gilt die
-Kurzfassung:
+Wahrheit; dieser Skill beschreibt nur den Ablauf.
 
-> CLAUDE.md wird in jeder Session geladen → hartes Budget ≤ ~120 Zeilen
-> (Kosten ∝ Ladehäufigkeit); Detail wandert in verlinkte Doku, Skill-
-> References oder Archive. **Gotchas sind der Schwerpunkt-Posten** mit dem
-> grössten Token-Anteil: nicht in 30 Sekunden aus dem Repo ableitbar und
-> hat schon einmal jemanden gekostet. Code schlägt Prosa: Test-Suite,
-> Mockup, zu portierende Funktion oder Rubric werden per `@`-Mention
-> bedarfsgeladen, nie nach CLAUDE.md kopiert. Regeln stehen als
-> Urteils-Anker (Zielzustand statt Einzelfall-Untersagung), ein Verbot nur
-> bei realem Failure-Mode. Eine Wahrheit, dünne Adapter: jeder Fakt genau
-> einmal, `AGENTS.md` & Co. verweisen statt kopieren. Kein Memory-Store —
-> Claude legt Sitzungsfunde selbst ab (Auto-Memory). Status-Einträge max.
-> 5 Zeilen, Historie in `*-archiv.md`.
+Fehlen beide, ist die Doktrin nicht mitinstalliert worden — sie liegt im
+Plugin `context-kit` unter `docs/kontext-architektur.md`. Dann diesen Skill
+anhalten und den Pfad klären, statt aus einer Kurzfassung zu arbeiten: eine
+nacherzählte Doktrin driftet von der echten weg, und der Schaden fällt in
+jedem Projekt an, das damit eingerichtet wurde.
 
 ## Ablauf
 

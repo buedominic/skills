@@ -6,25 +6,21 @@ description: Use to keep a project's Claude context current and lean — audits 
 # Kontext-Audit — Kontext aktuell + schlank halten
 
 Prüft die Steuerungs-Artefakte eines Projekts gegen die Doktrin und räumt
-auf. Report zuerst, Edits erst nach User-Bestätigung.
+auf.
+
+**Befund vor Eingriff:** erst erheben und klassifizieren, dann vorlegen —
+geändert wird auf Zusage.
 
 **Doktrin ZUERST lesen** (erster Fund gewinnt):
 `references/kontext-architektur.md` (neben dieser Datei — bei
 Einzel-Skill-Installation, z.B. Codex) oder
 `../../docs/kontext-architektur.md` (Plugin-/Repo-Layout) —
-Schichten-Modell, Budgets, Adapter-Regel. Fehlen beide, gilt die
-Kurzfassung:
+Schichten-Modell, Budgets, Adapter-Regel.
 
-> CLAUDE.md wird in jeder Session geladen → hartes Budget ≤ ~120 Zeilen
-> (Kosten ∝ Ladehäufigkeit); Detail wandert in verlinkte Doku/Archive, umso
-> tiefer je seltener es gebraucht wird. Code schlägt Prosa: Test-Suite,
-> Mockup, zu portierende Funktion oder Rubric werden per `@`-Mention
-> bedarfsgeladen, nie nach CLAUDE.md kopiert. Schwerpunkt-Posten sind die
-> Gotchas; Regeln stehen als Urteils-Anker, ein Verbot nur bei realem
-> Failure-Mode. Kein Memory-Store — Claude legt Sitzungsfunde selbst ab
-> (Auto-Memory). Eine Wahrheit, dünne Adapter: jeder Fakt genau einmal,
-> Adapter verweisen statt kopieren. Status-Einträge max. 5 Zeilen, Historie
-> in `*-archiv.md`.
+Fehlen beide, ist die Doktrin nicht mitinstalliert worden — sie liegt im
+Plugin `context-kit` unter `docs/kontext-architektur.md`. Dann das Audit
+anhalten und den Pfad klären: ein Audit gegen eine nacherzählte Doktrin
+misst gegen die falsche Wahrheit und meldet Befunde, die keine sind.
 
 ## Ablauf
 

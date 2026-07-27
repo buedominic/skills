@@ -212,6 +212,21 @@ for (const rel of [...walk('plugins'), ...walk('templates')]) {
 const formatTotal = formatHits.reduce((sum, h) => sum + h.n, 0);
 assert(`D1  Status-Format genau 2x unter plugins/ und templates/ (${formatTotal})`, formatTotal === 2);
 
+// D2 — dasselbe Muster für das Leitwort „Befund vor Eingriff". Es benennt
+// die geteilte Haltung dreier Audit-Skills (kontext-audit, dependency-audit,
+// web-audit), und die liegen über zwei Plugins verteilt. Ein Verweis auf
+// eine gemeinsame Quelle ginge nicht: `install.sh` kopiert Doku plugin-weise,
+// dev-toolkit sähe eine context-kit-Datei nie. Also wortgleich dupliziert —
+// und gezählt, damit die Kopien nicht auseinanderlaufen.
+const LEITWORT = '**Befund vor Eingriff:** erst erheben und klassifizieren, dann vorlegen —\ngeändert wird auf Zusage.';
+const leitwortHits = [];
+for (const rel of [...walk('plugins'), ...walk('templates')]) {
+  const n = countOccurrences(read(rel) ?? '', LEITWORT);
+  if (n > 0) leitwortHits.push({ rel, n });
+}
+const leitwortTotal = leitwortHits.reduce((sum, h) => sum + h.n, 0);
+assert(`D2  Leitwort "Befund vor Eingriff" genau 3x, wortgleich (${leitwortTotal})`, leitwortTotal === 3);
+
 // Gruppe F — Invocation-Achse. `disable-model-invocation: true` macht einen
 // Skill user-invoked: seine description wird nicht mehr in jede Session
 // geladen. Geprüft wird das Frontmatter-Feld, nicht ein Substring — im

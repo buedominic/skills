@@ -5,7 +5,9 @@ description: Use to audit and plan updates for project dependencies (e.g. "sind 
 
 # Dependency-Audit — Abhängigkeiten prüfen + risikoarm aktualisieren
 
-Report zuerst, Updates erst nach Bestätigung. Wird manuell angestossen.
+**Befund vor Eingriff:** erst erheben und klassifizieren, dann vorlegen —
+geändert wird auf Zusage.
+Wird manuell angestossen.
 
 ## Ablauf
 

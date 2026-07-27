@@ -63,6 +63,27 @@ Plugin-Grenze das falsche Werkzeug: dann bleiben die drei Formulierungen
 stehen und werden nur wortgleich gemacht. Diese Entscheidung fällt beim
 Schreiben der Definitionszeile — passt sie nicht in **eine** Zeile, gewinnt
 die Wortgleichheit.
+
+## Ausgeführt: der Rückfallpfad, aus einem zweiten Grund
+
+Umgesetzt wurde **nicht** die Doktrin-Variante, sondern der Rückfall auf drei
+wortgleiche Fassungen. Zwei Gründe, der zweite ist der stärkere:
+
+1. **Der Aufwand kippt die Bilanz.** Doktrin-Abschnitt plus Verweis plus zwei
+   markierte Kopien mit Herkunfts-Erklärung wären rund zehn Zeilen für eine
+   Regel, die heute drei belegt — ein Aufräum-Schritt, der die Datei wachsen
+   lässt.
+2. **Die Doktrin ist der falsche Ort.** `kontext-architektur.md` handelt von
+   Kontext-Architektur: Schichten, Budgets, eine Wahrheit. „Befund vor
+   Eingriff" ist eine Haltung von Audit-Skills, keine Kontext-Regel. Sie
+   dort einzuquartieren, weil es der einzige geteilte Ort ist, wäre genau
+   der Platzierungsfehler, den `kontext-audit` Schritt 4 selbst aufspürt —
+   ein Fakt an einer Stelle, an die er thematisch nicht gehört.
+
+Der Gewinn bleibt trotzdem: die drei Stellen tragen jetzt **denselben
+Begriff** statt dreier Umschreibungen, `D2` zählt sie wortgleich, und Drift
+ist ausgeschlossen. Was entfällt, ist nur die einzelne Definitionsstelle —
+und die hätte hier keinen Ort gehabt, den sie verdient.
 - [ ] **Kurzfassungs-Block in `projekt-setup` streichen** (`:24-38`).
       Ersetzt durch eine Zeile, die sagt, wo die Doktrin liegt und was
       gilt, wenn sie fehlt: die Skill-Schritte selbst, nicht eine
