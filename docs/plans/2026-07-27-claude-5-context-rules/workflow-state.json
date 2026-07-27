@@ -9,9 +9,14 @@
   "specPath": "docs/specs/2026-07-27-claude-5-context-rules-design.md",
   "planDir": "docs/plans/2026-07-27-claude-5-context-rules",
   "branch": "claude/skills-claude-5-context-b4wfoo",
-  "stage": 0,
-  "stageStatus": "preflight-ok",
+  "stage": 1,
+  "stageStatus": "gate1-blocked-awaiting-source",
   "approvedAt": null,
+  "gate1": {
+    "quellenlage": "Original abwarten — User fuegt den Blogpost-Text ein; die Spec wird darauf aufgebaut, nicht auf der WebSearch-Rekonstruktion.",
+    "reichweite": "alle sieben Befunde A-G",
+    "selbstanwendung": "Mittelweg — Guidance aendern UND eigene Skills dort entschlacken, wo das Verbot klar Geschmack ist; harte Constraints (Secrets/Daten-Grenze, Git-als-Wahrheit, Gate-Bypass-Schutz, keine erfundenen Fakten) bleiben unveraendert."
+  },
   "reviews": {
     "spec": { "rounds": 0, "reviewer": "orchestrator", "rejected": [] },
     "plan": { "rounds": 0, "reviewer": "orchestrator", "rejected": [] }
