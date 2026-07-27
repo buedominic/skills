@@ -5,143 +5,97 @@ description: Take a feature from idea to verified implementation or run a small 
 
 # Spec-to-Implementation — Feature-Workflow von Idee bis Merge
 
-Dünner Orchestrator für die Pipeline **Brainstorm → Spec → Review → Plan →
-Review → Implementation → Verifikation → Smoke → Finish**. Detail-Maschinerie
-liegt in Referenz-Files (Progressive Disclosure) und wird **erst beim
-Eintritt in die jeweilige Stufe** gelesen:
+Dünner Orchestrator für **Brainstorm → Spec → Review → Plan → Review →
+Implementation → Verifikation → Smoke → Finish**. Die Detail-Maschinerie steht
+autoritativ in den Referenz-Files, gelesen **erst beim Eintritt in die Stufe**:
 
-- `references/review-loop.md` — Review-Schleifen-Mechanik + Triage (Stufen 2+4)
+- `references/review-loop.md` — Review-Schleife + Triage (Stufen 2+4, L2)
 - `references/smoke-gate.md` — Smoke-Gate-Maschinerie (Stufe 7)
-- `references/codex-runtime.md` — Codex-Dispatch, Artefaktprüfung und
-  Thread-Lifecycle (vor erstem Codex-Subagenten)
-- `references/progress-ledger.md` — `.superpowers/sdd/progress.md` für
-  taskgenaues Resume (beim Eintritt in Stufe 5/L3)
+- `references/codex-runtime.md` — Codex-Dispatch, Artefaktvertrag, Threads
+- `references/progress-ledger.md` — Task-Zyklus + Resume (Stufe 5/L3)
 
 ## Projekt-Konfiguration (ZUERST lesen)
 
 Projektspezifisches kommt aus dem Ziel-Repo, in dieser Reihenfolge:
 
-1. `.codex/workflow.config.json` oder `.claude/workflow.config.json` (falls
-   vorhanden; bei beiden gewinnt `.codex/` in Codex und `.claude/` in Claude;
-   Schema siehe
-   Plugin-`templates/workflow.config.example.json`): `specsDir`, `plansDir`,
-   `verifyCommands[]`, `devServer`, `defaultBranch`, `maxReviewRounds`.
-2. Die anwendbaren `AGENTS.md`-Dateien und die `CLAUDE.md` des Projekts
-   (Konventionen, Verifikations-Befehle, Branch-Strategie,
-   Spec-/Plan-Format). **Explizit einlesen.** Bei Konflikt gilt in Codex
-   `AGENTS.md`, in Claude `CLAUDE.md`; den Konflikt sichtbar notieren.
+1. `.codex/` bzw. `.claude/workflow.config.json` (Verzeichnis der laufenden
+   Runtime gewinnt; Schema: Plugin-`templates/workflow.config.example.json`):
+   `specsDir`, `plansDir`, `verifyCommands[]`, `devServer`, `defaultBranch`,
+   `maxReviewRounds`, optional `models`.
+2. Anwendbare `AGENTS.md` und `CLAUDE.md` — **explizit einlesen**. Bei Konflikt
+   gilt in Codex `AGENTS.md`, in Claude `CLAUDE.md`; sichtbar notieren.
 3. `package.json`-Scripts als Fallback.
 
-Defaults: `specsDir = docs/specs`, `plansDir = docs/plans`,
-`defaultBranch = main`, `maxReviewRounds = 5`. Fehlen essenzielle Angaben,
-leite sie aus dem Projekt ab und bestätige sie in Gate 1 gleich mit.
+Defaults: `specsDir = docs/specs`, `plansDir = docs/plans`, `defaultBranch = main`,
+`maxReviewRounds = 5`. Fehlendes ableiten und in Gate 1 mitbestätigen.
 
 ## Grundsätze (NICHT verhandelbar)
 
-1. Git ist die Wahrheit; das Manifest `workflow-state.json` ist der
-   Stage-Anker. In Stufe 5/L3 ist `.superpowers/sdd/progress.md` zusätzlich
-   der taskgenaue Recovery-Ledger. Bei Divergenz: anhalten, diagnostizieren,
-   User fragen — NICHT blind fortfahren.
-2. Genau **zwei menschliche Workflow-Gates** (Klärungsfragen vor der
-   Spec-Finalisierung; Plan-Approval vor der Implementation) plus die
-   separate **Merge-Bestätigung**. Beide Gates laufen als einfache gebündelte
-   User-Rückfrage über das verfügbare Fragetool oder im Chat — kein
-   Plan-Mode-Umweg.
-3. Spec + Plan + Review-State auf dem Default-Branch; Implementation auf
-   `feature/<name>` bzw. `fix/<name>`. Source-Edits auf dem Default-Branch
-   sind blockiert (Branch-Guard-Hook, falls im Projekt aktiviert — sonst
-   gilt die Regel prozedural).
+1. **Git ist die Wahrheit**; `workflow-state.json` ist der Stage-Anker, ab
+   Stufe 5/L3 zusätzlich `.superpowers/sdd/progress.md` als Recovery-Ledger.
+   Bei Divergenz: anhalten, diagnostizieren, User fragen — nie blind weiter.
+2. Genau **zwei menschliche Workflow-Gates** (Klärung vor der Spec-Finalisierung,
+   Plan-Approval vor der Implementation) plus die separate **Merge-Bestätigung** —
+   je als gebündelte Rückfrage im Fragetool oder Chat, kein Plan-Mode-Umweg.
+3. Spec + Plan + Review-State auf dem Default-Branch, Implementation auf
+   `feature/<name>` bzw. `fix/<name>`; Source-Edits auf dem Default-Branch
+   sind blockiert (Branch-Guard-Hook, sonst prozedural).
 4. Review-Findings werden **triagiert** (anwenden / bewusst akzeptieren /
    bewusst ablehnen / eskalieren), jede Entscheidung dokumentiert.
-5. Daten-Grenze: Reviewer erhalten ausschliesslich git-getrackte,
+5. **Daten-Grenze:** Subagenten erhalten ausschliesslich git-getrackte,
    nicht-geheime Pfade (`git ls-files --error-unmatch <pfad>` vor jedem
    Dispatch); nie `.env`, Logs, Dumps, Auth-Artefakte.
+6. **Zustand und Entscheide, nicht Inhalte.** Lange Dokumente schreibt der
+   `doc-writer` (Spec, Plan-Files, Findings-Einarbeitung, L1-Dokument); zurück
+   kommen Pfad + Zusammenfassung (≤ 8 Zeilen), nicht das Dokument. Aus grossen
+   Dateien nur die benötigte Sektion; Rückgaben ≤ ~10 Zeilen, keine Dumps.
+7. **Gates sind Session-Grenzen.** Nach Gate 2 und wenn der Kontext eng wird:
+   Manifest committen, frischen Kontext empfehlen statt degradiert weiter —
+   der Resume liest Manifest + Stufe, nicht die Historie.
+8. **Subagenten sind optional, Ergebnisse nicht.** Jeden Dispatch durch Datei,
+   Diff, Commit, Tests oder parsebare Findings verifizieren; leere Rückgabe ist ein
+   Fehlerpfad. Vor dem ersten Codex-Dispatch `references/codex-runtime.md` lesen.
 
-## Kontext-Disziplin (verbindlich — der Orchestrator bleibt schlank)
-
-Der Orchestrator hält Zustand und Entscheide, NICHT Inhalte:
-
-1. **Lange Dokumente schreibt der `doc-writer`-Agent**, nie der
-   Orchestrator selbst: Spec (Stufe 1), Plan-Files (Stufe 3), das
-   Einarbeiten triagierter Findings (Stufen 2/4), das L1-Mini-Dokument.
-   Zurück kommen nur Pfad + Kurz-Zusammenfassung (≤ 8 Zeilen) — der
-   Orchestrator liest das Dokument danach NICHT komplett ein.
-2. **Abschnittsweise lesen:** aus grossen Dokumenten nur die gerade
-   benötigte Sektion (z.B. nur `## Akzeptanz` für das Smoke-Gate,
-   nur den betroffenen Plan-Task für den `implementer`-Dispatch).
-   Nichts doppelt einlesen, was schon zusammengefasst im Kontext steht.
-3. **Subagenten-Rückgaben sind Verträge:** kompakt (Richtwert ≤ 10
-   Zeilen), keine Datei-Dumps, keine Diffs — Details stehen in Dateien
-   und Commits.
-4. **Gates sind Session-Grenzen.** Das Manifest existiert genau dafür:
-   Nach Gate 2 (Plan-Approval) dem User aktiv einen frischen Kontext
-   empfehlen (`/clear` bzw. neue Session) — der Resume liest nur Manifest
-   + aktuelle Stufe, nicht die Historie. Dasselbe gilt, wann immer der
-   Kontext eng wird: Manifest committen, sauberen Wiedereinstieg
-   anbieten, NICHT degradiert weiterarbeiten.
-5. **Subagenten sind optional, Ergebnisse nicht.** Vor dem ersten Codex-
-   Dispatch `references/codex-runtime.md` lesen. Jeden Dispatch durch Datei,
-   Diff, Commit, Tests oder parsebare Findings verifizieren. Leere Rückgabe
-   ist ein Fehlerpfad. Thread-Slots begrenzen und Threads schliessen oder pro
-   Rolle wiederverwenden; niemals für jede Task unbeschränkt neue Threads
-   ansammeln.
-
-## Drei Weichen (Stufe 0 erkennen, im Manifest persistieren)
+## Vier Weichen (in Stufe 0 erkennen, im Manifest persistieren — Browser: Stufe 7)
 
 | Weiche | Werte | Auflösung |
 |---|---|---|
 | **Umgebung** | `codex-local` · `codex-cloud` · `claude-code-local` · `claude-code-web` · `other` | Tool-/Datei-Proben beim Start, kein Raten; bei Ambiguität User fragen |
 | **Reviewer** | `codex-subagent` · `codex-mcp` · `claude-subagent` · `orchestrator` | nach tatsächlich verfügbarem Dispatch-/Review-Tool; keine Tool-Namen erfinden |
 | **Grösse** | `full` · `light` | Heuristik + kurze User-Bestätigung (§ Light-Mode) |
-
-Browser-Fähigkeit für das Smoke-Gate analog erkennen:
-`chrome-mcp` · `playwright` (headless Chromium vorhanden, z.B. Remote-Session)
-· `manual`. Ergebnis in `environment.browser`.
-
-**Modell-Wahl für Subagenten:** Ohne Konfiguration erben `spec-reviewer`
-und `implementer` die Runtime-Konfiguration. Der optionale `models`-Block
-der `workflow.config.json` ist eine Präferenz pro Rolle. Nur wenn das konkrete
-Dispatch-Tool Modell/Effort unterstützt, diese Werte mitgeben; andernfalls
-sichtbar protokollieren, dass die Runtime-Vorgabe gilt. `models.reviewer`
-steuert zusätzlich die Reviewer-Weiche: `auto` · `codex` · `claude`.
-Eine Ansage des Users im Gespräch schlägt die Config.
+| **Browser** | `chrome-mcp` · `playwright` · `manual` | **erst bei Eintritt in Stufe 7** erkennen (Fähigkeitsprobe: headless Chromium da?), dann in `environment.browser` persistieren |
 
 Jede Kombination ist gültig. Resume in einer **anderen** Umgebung als
-`environment.tool` ist für Stufen 0–4 erlaubt (reine Doc-Arbeit) und
-blockiert ab Stufe 5 mit Diagnose.
+`environment.tool` ist für Stufen 0–4 erlaubt und blockiert ab Stufe 5 mit
+Diagnose. `models` ist eine Präferenz pro Rolle: nur mitgeben, wenn das
+Dispatch-Tool Modell/Effort kennt, sonst die Runtime-Vorgabe protokollieren;
+`models.reviewer` (`auto` · `codex` · `claude`) steuert die Reviewer-Weiche mit.
+Eine Ansage des Users schlägt die Config.
 
 ## Zustands-Manifest
 
-`<plansDir>/YYYY-MM-DD-<feature>/workflow-state.json` — angelegt in
-Stufe 0, aktualisiert am Ende jeder Stufe:
+`<plansDir>/YYYY-MM-DD-<feature>/workflow-state.json` — in Stufe 0 angelegt,
+am Ende jeder Stufe aktualisiert:
 
 ```jsonc
 {
-  "featureSlug": "…",
-  "mode": "full | light",
+  "featureSlug": "…", "mode": "full | light",
   "environment": { "tool": "…", "reviewer": "…", "browser": "…" },
   "specPath": "…", "planDir": "…", "branch": "…",
   "stage": 0, "stageStatus": "…", "approvedAt": null,
   "reviews": { "spec": { "rounds": 0, "reviewer": "…", "rejected": [] },
                "plan": { "rounds": 0, "reviewer": "…", "rejected": [] } },
-  "agentFallbacks": [],
-  "verification": {},
-  "smoke": {},        // optionaler Block — Details in references/smoke-gate.md
-  "devServer": {}     // optionaler Block — nur bei selbst gestartetem Server
+  "agentFallbacks": [], "verification": {},
+  "smoke": {},        // optional — Details in references/smoke-gate.md
+  "devServer": {}     // optional — nur bei selbst gestartetem Server
 }
 ```
 
-Resume-Grundregel: unbekannter Block ≠ Fehler; fehlender erwarteter
-Block = Block. Bei jedem Aufruf zuerst Manifest lesen, dann gegen den
-Repo-Zustand validieren (Spec-Datei da? Phasen-Files da — nicht nur das
-Verzeichnis? Branch?).
-
-## Erste Handlung
-
-Mit dem nativen Plan-/Todo-Werkzeug der Runtime eine sichtbare Liste mit einem
-Eintrag pro Stufe anlegen (inkl. der zwei Gates). Fehlt ein solches Werkzeug,
-eine kurze Checkliste im Chat führen. Beim Resume zuerst Manifest und — ab
-Stufe 5/L3 — den Progress-Ledger lesen, erst danach die Liste rekonstruieren.
+Bei **jedem** Aufruf sichtbar eine Liste mit einem Eintrag pro Stufe plus Gates
+führen — natives Todo-Werkzeug, sonst kurze Checkliste im Chat. Resume-Grundregel:
+unbekannter Block ≠ Fehler; fehlender erwarteter Block = Block. Immer zuerst
+Manifest und — ab Stufe 5/L3 — Ledger lesen und gegen den Repo-Zustand validieren
+(Spec-Datei? Phasen-Files, nicht nur das Verzeichnis? Branch?).
 
 ## Stufen (Modus FULL)
 
@@ -153,81 +107,75 @@ Stufe 5/L3 — den Progress-Ledger lesen, erst danach die Liste rekonstruieren.
 | 3 | Plan via `doc-writer`: `<plansDir>/YYYY-MM-DD-<feature>/README.md` + `01-…md` … Phasen-Files mit TDD-Step-Checkboxen | Default-Branch |
 | 4 | Plan-Review-Schleife → `references/review-loop.md` | **ein** Squash-Commit |
 | G2 | **Gate 2: Plan-Approval** | Default-Branch |
-| 5 | Implementation: `references/progress-ledger.md` lesen; Plan-Tasks sequenziell über den begrenzten `implementer`-Rollen-Pool (TDD), Task-Review dazwischen; nach jedem Task Artefaktvertrag und `git diff --name-only` gegen den erwarteten Schreibbereich prüfen | `feature/<name>` |
+| 5 | Implementation (§ Stufe 5) | `feature/<name>` |
 | 6 | Verifikation: `verifyCommands` des Projekts, alle grün; Liste im Manifest dokumentieren | `feature/<name>` |
 | 7 | Smoke-Gate → `references/smoke-gate.md` | `feature/<name>` |
 | 8 | Finish: Backlog/Status nachziehen (§ Abschluss); **Merge nur auf explizite Bestätigung** | Merge |
 
 ### Gate 1 — Klärungsfragen (in Stufe 1)
 
-Anforderungen klären (falls in der aktuellen Runtime als Skill verfügbar via
-`superpowers:brainstorming`,
-sonst strukturiert selbst: Problem, Nutzer, Randbedingungen, Nicht-Ziele).
-Offene Punkte gebündelt über das verfügbare Fragetool oder im Chat (max. 3
-Runden; danach Lücken
-mit dokumentierten Annahmen füllen). Dann die Spec vom `doc-writer`-Agent
-nach `<specsDir>/YYYY-MM-DD-<topic>-design.md` schreiben lassen
-(Material: geklärte Anforderungen + Annahmen; Format wie bestehende Specs
-des Projekts, mindestens `## Annahmen` + `## Akzeptanz`-Checkliste mit
-testbaren Bullets). Commit: `docs(spec): <topic> design`.
+Anforderungen klären (via `superpowers:brainstorming`, falls verfügbar; sonst
+selbst: Problem, Nutzer, Randbedingungen, Nicht-Ziele). Offene Punkte gebündelt
+fragen (max. 3 Runden, danach Lücken mit dokumentierten Annahmen füllen). Dann
+die Spec vom `doc-writer` nach `<specsDir>/YYYY-MM-DD-<topic>-design.md`
+schreiben lassen — Format wie bestehende Specs, mindestens `## Annahmen` +
+`## Akzeptanz` mit testbaren Bullets. Commit: `docs(spec): <topic> design`.
+
+**Rich References bevorzugen.** Existiert ein reicheres Artefakt als Prosa, ist
+es der bessere Spec-Träger: ein HTML-`Mockup` statt einer Design-Beschreibung
+(und statt eines Screenshots), eine Test-Suite statt der Beschreibung des
+erwarteten Outputs, die zu portierende Funktion statt ihrer Erklärung, eine
+Rubric statt „soll gut sein". Dateien in Code haben Vorrang; liegen sie im Repo,
+ist der getrackte Pfad die Referenz (Daten-Grenze gilt). Das Markdown-Dokument
+bleibt Träger von Annahmen und Akzeptanz und **verweist** darauf, statt es
+nachzuerzählen.
 
 ### Gate 2 — Plan-Approval
 
-Einfache gebündelte User-Rückfrage („Plan genehmigt → Implementation
-starten?") mit
-Zusammenfassung: Spec-Pfad, Plan-Pfad, triagierte Findings (Spec + Plan),
-Branch-Name, Implementations-Ablauf. Nach Approval: `approvedAt`,
-`stage = 5`, `stageStatus = "implementation-ready"` ins Manifest committen,
-**bevor** der Pre-Implementation-Preflight läuft (der genau diese Felder
-prüft: `approvedAt` gesetzt + sauberer Worktree — sonst Approval-Bypass).
-Danach dem User einen **frischen Kontext für Stufe 5** empfehlen
-(Kontext-Disziplin § 4) — der Resume steigt über das Manifest direkt in
-die Implementation ein.
+Gebündelte Rückfrage („Plan genehmigt → Implementation starten?") mit Spec-Pfad,
+Plan-Pfad, triagierten Findings (Spec + Plan), Branch-Name und
+Implementations-Ablauf. Nach Approval `approvedAt`, `stage = 5`,
+`stageStatus = "implementation-ready"` ins Manifest committen, **bevor** der
+Pre-Implementation-Preflight läuft — der prüft genau diese Felder
+(`approvedAt` gesetzt + sauberer Worktree), sonst wäre es ein Approval-Bypass.
+Danach frischen Kontext für Stufe 5 empfehlen (Grundsatz 7).
 
-### Stufe 5 — Branch-Wechsel (idempotent)
+### Stufe 5 — Implementation
 
-Existiert `feature/<name>` schon (Resume) → `git checkout` + gegen Manifest
-validieren; sonst `git checkout -b` vom Default-Branch.
-
-Danach `references/progress-ledger.md` lesen und den Ledger vor dem ersten
-Implementer-Dispatch initialisieren beziehungsweise validieren. Die
-Implementation läuft sequenziell. In Codex gelten zusätzlich Slot-Budget,
-Thread-Reuse/Close und der Artefaktvertrag aus `references/codex-runtime.md`.
-Pro Task: Task-Brief erzeugen → `implementer` → Report/Diff/Tests prüfen →
-Review-Paket aus `baseCommit..HEAD` erzeugen → `spec-reviewer` mit
-`target=task` → Critical/Important beheben und re-reviewen → erst dann die
-Complete-Zeile in den Ledger schreiben.
+Branch idempotent: `feature/<name>` existiert (Resume) → `git checkout` +
+Manifest-Abgleich, sonst `git checkout -b` vom Default-Branch. Dann
+`references/progress-ledger.md` lesen, Ledger anlegen bzw. validieren und die
+Plan-Tasks sequenziell nach dessen Zyklus abarbeiten: Task-Brief → `implementer` →
+Report/Diff/Tests plus `git diff --name-only` gegen den Schreibbereich →
+Task-Review (`spec-reviewer` mit `target=task`) → Complete-Zeile. In Codex gelten
+zusätzlich Slot-/Thread- und Artefaktvertrag aus `references/codex-runtime.md`.
 
 ## Light-Mode (Grösse `light`)
 
 **Qualifikation (Heuristik):** kein Schema-/Migrations-Change · Kern-Diff
 ≤ ~3 Dateien (Tests zählen nicht) · kein neues Event / kein neuer Endpoint ·
-kein Security-Touchpoint (Auth/Rollen). Bei qualifizierenden Aufgaben den
-Light-Mode aktiv **vorschlagen**; kurze User-Bestätigung ist Pflicht;
-Übersteuern in beide Richtungen jederzeit möglich. Wird die Heuristik
-mittendrin verletzt (doch Schema-Change nötig) → anhalten, auf FULL
-eskalieren (Spec/Plan nachziehen), nicht still weitermachen.
+kein Security-Touchpoint (Auth/Rollen). Bei Qualifikation aktiv **vorschlagen**;
+kurze User-Bestätigung ist Pflicht, Übersteuern jederzeit möglich. Wird die
+Heuristik mittendrin verletzt → anhalten, auf FULL eskalieren, nicht still weiter.
 
 | Schritt | Inhalt |
 |---|---|
 | L0 | Preflight + Manifest (`mode: "light"`) |
 | L1 | **Ein** Mini-Dokument `<specsDir>/<datum>-<slug>-fix.md`: Problem, Root-Cause (falls bekannt), Fix-Ansatz, Akzeptanz (3–5 Bullets) — Commit auf Default-Branch |
 | L2 | **Eine** Review-Runde (Reviewer-Weiche wie FULL); Triage; ein Squash-Commit |
-| L3 | Implementation auf `fix/<name>` (TDD bleibt); Task-Ledger und Codex-Runtime-Vertrag gelten analog |
+| L3 | Implementation auf `fix/<name>` (TDD wie im Plan); Ledger und Codex-Runtime-Vertrag gelten analog |
 | L4 | Verifikation: Typecheck + betroffene Test-Suites + Build (Integration nur bei API-/DB-Berührung) |
 | L5 | Finish: Backlog/Status (5-Zeilen-Format), Merge auf Bestätigung |
 
-Kein Gate 1 (Klärungsfragen nur bei Bedarf, formlos), kein
-Plan-Approval-Gate, kein Smoke-Gate-Apparat (manuelle Bestätigung oder ein
-gezielter Browser-Check genügt, im Manifest notiert). Die Merge-Bestätigung
-bleibt.
+Kein Gate 1 (Klärung formlos bei Bedarf), kein Plan-Approval-Gate, kein
+Smoke-Gate-Apparat (manuelle Bestätigung oder gezielter Browser-Check, im
+Manifest notiert) — die Merge-Bestätigung bleibt.
 
 ## Abschluss-Pflichten (Stufe 8 / L5)
 
-- Backlog des Projekts (falls vorhanden): umgesetzte Items als erledigt
-  markieren, neue Funde eintragen.
+- Backlog (falls vorhanden): umgesetzte Items abhaken, neue Funde eintragen.
 - Status-Dokument (falls das Projekt eines führt): **max. 5 Zeilen** pro
-  Abschluss —
+  Abschluss, alles Längere gehört in Spec/Plan/Commits —
 
   ```markdown
   - **YYYY-MM-DD — <Titel>** (`<branch>`): <Was + Warum, 1–2 Sätze>.
@@ -235,22 +183,17 @@ bleibt.
     Spec: `<pfad>` · Plan: `<pfad>` · Tests: <kurz>.
   ```
 
-  Alles Längere gehört in Spec/Plan/Commits.
-- Führt das Projekt weder Backlog noch Status: Akzeptanz-Checkliste der
-  Spec abhaken.
+  Dieser Block ist eine **bewusste Kopie über Plugin-Grenzen**: Quelle ist die
+  context-kit-Doktrin (`kontext-architektur.md`), dupliziert weil Plugins
+  einzeln gecacht sind — kein Drift-Befund.
+- Weder Backlog noch Status im Projekt: Akzeptanz-Checkliste der Spec abhaken.
 
 ## Fehlerverhalten
 
-- Review-Backend nicht verfügbar → Reviewer-Weiche greift. Scheitert ein
-  Agent-Dispatch oder liefert er weder parsebaren Status noch nachweisbares
-  Artefakt, einmal gezielt nachfassen und danach den dokumentierten
-  Orchestrator-Fallback nutzen beziehungsweise hart blockieren. Niemals einen
-  Review oder eine Implementation still überspringen.
-- Agent-Slot-Limit erreicht → vorhandenen Rollen-Thread schliessen oder
-  wiederverwenden; keine Spawn-Schleife.
-- Branch-Hook blockt einen Edit → du bist noch auf dem Default-Branch; in
-  Stufe 5 zuerst den Feature-Branch anlegen.
-- Manifest/Repo-Divergenz → blockieren, Diagnose dokumentieren,
-  User-Entscheid.
-- Preflight rot (dirty Worktree, falscher Branch, Slug-Kollision) → klare
-  Abbruch-Meldung mit Fix-Hinweis, kein stilles Fortfahren.
+- Dispatch scheitert oder liefert weder parsebaren Status noch Artefakt → einmal
+  gezielt nachfassen, danach dokumentierter Orchestrator-Fallback oder harter
+  Block. Review oder Implementation nie still überspringen.
+- Agent-Slot-Limit erreicht → Rollen-Thread schliessen oder wiederverwenden.
+- Branch-Hook blockt → du bist auf dem Default-Branch (Stufe 5: erst Branch).
+- Manifest/Repo-Divergenz oder roter Preflight (dirty Worktree, falscher Branch,
+  Slug-Kollision) → blockieren, Diagnose dokumentieren, User-Entscheid.

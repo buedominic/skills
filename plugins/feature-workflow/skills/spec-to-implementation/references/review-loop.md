@@ -5,8 +5,18 @@ der Vertrag ist reviewer-unabhängig.
 
 ## Review-Vertrag
 
+- Dispatch-Parameter `target`: `spec` (Stufe 2) | `plan` (Stufe 4) | `task`
+  (Task-Review in Stufe 5/L3, Zyklus in `progress-ledger.md`) — kein anderer Wert
 - Finding: `{ severity: CRITICAL|IMPORTANT|MINOR, stelle, problem, empfehlung }`
 - Antwort ohne Findings: exakt `NO_FINDINGS`
+- Dieser Vertrag **ist** das Interface des Reviewers: das `severity`-Enum trägt
+  die Bedienung und die Triage-Priorität. Beim Umbau die Feldnamen und das Enum
+  schärfen — nicht durch Prosa-Beispiele guter Findings ersetzen
+- **Rubric als Reviewer-Input:** liegt für die Domäne eine `Rubric` vor — eine
+  strukturierte Beschreibung dessen, was „gut" heisst (Kriterien, Skala,
+  Ausschlüsse) — wird sie als zusätzlicher `contextPath` mitgegeben, und der
+  Reviewer bewertet gegen sie statt gegen seinen Geschmack. Sie durchläuft
+  denselben Allowlist-Check wie jeder andere `contextPath` (Schritt 2)
 - Cap: `maxReviewRounds` Dispatches pro Stufe (Default 5); bei Cap ohne
   bestätigten Clean-Pass → User entscheidet (weitere Runde / bewusst
   akzeptieren), NICHT still weiter
@@ -49,7 +59,7 @@ Halte `rejected = {}` und `round = 0`:
    die Spec-Datei; Stufe 4: README + Phasen-Files — das Verzeichnis
    expandiert der Orchestrator, nicht der Agent) und `contextPaths`
    (anwendbare Projekt-`AGENTS.md`, Projekt-`CLAUDE.md`, Quell-Spec, ggf.
-   verwandte Specs) jeweils mit
+   verwandte Specs, ggf. die Rubric) jeweils mit
    `git ls-files --error-unmatch <pfad>` als git-tracked + nicht-secret
    verifizieren; bei Treffer auf Secret/Ignore → Abbruch.
 3. `spec-reviewer` mit `target`, `targetFiles`, `contextPaths` dispatchen.

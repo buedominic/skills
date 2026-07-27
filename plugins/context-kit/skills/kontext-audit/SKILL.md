@@ -1,6 +1,6 @@
 ---
 name: kontext-audit
-description: Use to keep a project's Claude context current and lean — audits CLAUDE.md, AGENTS.md and linked living documents for budget violations, stale facts (drift against the code), duplicated doctrine and context bombs, then proposes and applies a cleanup (e.g. "räum die CLAUDE.md auf", "kontext audit", "die doku stimmt nicht mehr mit dem code überein", "status.md ist zu gross").
+description: Use to keep a project's Claude context current and lean — audits CLAUDE.md, AGENTS.md and linked living documents for budget violations, stale facts (drift against the code), duplicated doctrine, colliding or over-constraining instructions and context bombs, then proposes and applies a cleanup (e.g. "räum die CLAUDE.md auf", "kontext audit", "die doku stimmt nicht mehr mit dem code überein", "status.md ist zu gross").
 ---
 
 # Kontext-Audit — Kontext aktuell + schlank halten
@@ -12,16 +12,23 @@ auf. Report zuerst, Edits erst nach User-Bestätigung.
 `references/kontext-architektur.md` (neben dieser Datei — bei
 Einzel-Skill-Installation, z.B. Codex) oder
 `../../docs/kontext-architektur.md` (Plugin-/Repo-Layout) —
-Schichten-Modell, Budgets, Adapter-Regel. Ist keine der beiden vorhanden,
-gilt die Kurzfassung:
+Schichten-Modell, Budgets, Adapter-Regel. Fehlen beide, gilt die
+Kurzfassung:
 
-> CLAUDE.md wird in jeder Session geladen → hartes Budget ≤ ~120 Zeilen;
-> Detail in verlinkte Doku/Archive. Eine Wahrheit, dünne Adapter: jeder
-> Fakt genau einmal, Adapter verweisen statt kopieren. Status-Einträge
-> max. 5 Zeilen, Historie in `*-archiv.md`; Pflicht-Referenzen > ~300
-> Zeilen sind Kontext-Bomben (Archiv-Split).
+> CLAUDE.md wird in jeder Session geladen → hartes Budget ≤ ~120 Zeilen
+> (Kosten ∝ Ladehäufigkeit); Detail wandert in verlinkte Doku/Archive, umso
+> tiefer je seltener es gebraucht wird. Code schlägt Prosa: Test-Suite,
+> Mockup, zu portierende Funktion oder Rubric werden per `@`-Mention
+> bedarfsgeladen, nie nach CLAUDE.md kopiert. Schwerpunkt-Posten sind die
+> Gotchas; Regeln stehen als Urteils-Anker, ein Verbot nur bei realem
+> Failure-Mode. Kein Memory-Store — Claude legt Sitzungsfunde selbst ab
+> (Auto-Memory). Eine Wahrheit, dünne Adapter: jeder Fakt genau einmal,
+> Adapter verweisen statt kopieren. Status-Einträge max. 5 Zeilen, Historie
+> in `*-archiv.md`.
 
 ## Ablauf
+
+Falls die Runtime `/doctor` anbietet: vor Schritt 1 laufen lassen.
 
 ### 1. Inventar
 
@@ -37,7 +44,8 @@ plus alle Dokumente, die CLAUDE.md als Pflicht-Referenz verlinkt
 | `CLAUDE.md` (und jeder weitere Adapter) | ≤ ~120 Zeilen | Diät: Absätze → 1 Zeile + Verweis; Enzyklopädisches → Schicht-2-Doku |
 | Status-Dokument | < ~50 Zeilen | Alt-Einträge → `status-archiv.md`; künftige Einträge aufs 5-Zeilen-Format |
 | Backlog | funktionsfähig mit Archiv | erledigte/verwaiste Items → Archiv |
-| immer geladene Skill-Prompts (`SKILL.md`) | Orchestrator-Kern ~150–200 Zeilen | Detail-Maschinerie → `references/`-Files (Progressive Disclosure) |
+| Skill-`description` (lädt in jeder Session) | ≤ ~500 Zeichen, ein Absatz | auf die Trigger-Anlässe kürzen, Bedienung in den Body |
+| `SKILL.md`-Body (lädt beim Trigger, flutet dann den Kontext) | Orchestrator-Kern ~150–200 Zeilen | über Budget **mit** `references/`-Datei-Baum ist gesund, **ohne** ist der Befund: Detail-Maschinerie auslagern (Progressive Disclosure) |
 
 ### 3. Drift-Check (Fakten gegen Code)
 
@@ -54,14 +62,29 @@ das Repo — mit Fundstelle:
 
 Jeder Befund: `{ stelle, behauptet, tatsächlich (mit Datei:Zeile), fix }`.
 
-### 4. Duplikat-Check (eine Wahrheit, dünne Adapter)
+### 4. Konsistenz-Check (eine Wahrheit, keine Kollisionen)
 
-Suche dieselbe Regel/denselben Fakt an mehr als einer Stelle (CLAUDE.md ↔
-AGENTS.md ↔ Handbücher ↔ Agent-Definitionen). Pro Duplikat: die EINE
-Quelle bestimmen (wo gehört es nach Schichten-Modell hin?), alle anderen
-Stellen durch Verweis ersetzen. Bereits gedriftete Duplikate (Kopien mit
-abweichendem Inhalt) sind CRITICAL — hier zusätzlich klären, welche
-Version stimmt.
+Ein Durchgang über dieselbe Menge — CLAUDE.md ↔ AGENTS.md ↔ Handbücher ↔
+Skills ↔ Agent-Definitionen — mit zwei Fragen je Regel/Fakt:
+
+- **Steht sie mehrfach?** Die EINE Quelle nach Schichten-Modell bestimmen,
+  alle anderen Stellen durch Verweis ersetzen.
+- **Widerspricht sie sich?** Gedriftete Kopien und **kollidierende**
+  Instruktionen (Post-Muster: „leave documentation as appropriate" gegen
+  „DO NOT add comments" im selben Request) kosten bei jedem Request
+  Auflösungsarbeit. Bei gedrifteten **Fakten** zuerst per Fundstelle klären,
+  welche Version stimmt; Präzedenz entscheidet nur bei Regeln.
+
+Einstiegsheuristik für Kandidaten: Scan nach NIE/NIEMALS/NICHT/NEVER/
+ALWAYS und ALL-CAPS-Imperativen. Sie liefert Fundstellen, entschieden wird
+über die Klassifikation — nicht über den Grep:
+
+| Klasse | Test | Folge |
+|---|---|---|
+| realer Failure-Mode | Secrets, Daten-Grenze, Gate-Bypass, erfundene Fakten | bleibt wörtlich |
+| kodierte Domänen-Meinung | Fach-Praxis, die der Skill bewusst vertritt | bleibt |
+| Geschmack = **Über-Constraint** | kein nachweisbarer Schaden bei Verstoss | wird Urteils-Anker oder entfällt |
+| Kollision | zwei Stellen fordern Unvereinbares | eine Seite gewinnt, die andere wird angeglichen oder durch Verweis ersetzt |
 
 ### 5. Kontext-Bomben
 
@@ -74,10 +97,10 @@ Format-Vorgabe selbst korrigieren, sonst wächst es nach.
 ### 6. Report + Umsetzung
 
 Report als kompakte Findings-Liste, sortiert nach Schwere
-(`CRITICAL` gedriftete Duplikate/falsche Fakten → `HOCH` Budget/Bomben →
-`MITTEL` Redundanz/Politur), je 1–2 Zeilen mit Fundstelle und konkretem
-Fix. Dann EINE gebündelte Rückfrage (`AskUserQuestion`): alles umsetzen /
-nur CRITICAL+HOCH / nur Report.
+(`CRITICAL` Kollisionen, gedriftete Duplikate, falsche Fakten → `HOCH`
+Budget, Bomben, Über-Constraints → `MITTEL` Redundanz/Politur), je 1–2
+Zeilen mit Fundstelle und konkretem Fix. Dann EINE gebündelte Rückfrage
+(`AskUserQuestion`): alles umsetzen / nur CRITICAL+HOCH / nur Report.
 
 Umsetzung: thematisch gebündelte Commits (Diät, Archiv-Umzug,
 Duplikat-Auflösung getrennt), Archiv-Umzüge verlustfrei (verschieben,
@@ -85,9 +108,10 @@ nicht löschen). Abschluss: neue Zeilen-Stände gegen die Budgets.
 
 ## Leitplanken
 
-- Inhalte werden verschoben oder verwiesen, NIE ersatzlos gelöscht —
-  ausser sie sind nachweislich falsch (dann mit Befund dokumentiert).
-- Konventions-INHALTE sind nicht Gegenstand des Audits (nur ihre
-  Duplikation/Platzierung); fachliche Regel-Änderungen → User.
-- Keine Edits vor der Bestätigung in Schritt 6.
+- Inhalte werden verschoben oder verwiesen, NIE ersatzlos gelöscht — ausser
+  sie sind nachweislich falsch ODER als Geschmack klassifiziert (Schritt 4),
+  immer mit Befund und erst nach Bestätigung in Schritt 6.
+- Fachliche Schwellen und Inhalte bleiben unberührt; Gegenstand sind
+  Duplikation, Platzierung und die Form der Constraints. Fachliche
+  Regel-Änderungen → User.
 - `.env`/Secrets nie lesen; Audit-Report enthält keine Secret-Werte.
