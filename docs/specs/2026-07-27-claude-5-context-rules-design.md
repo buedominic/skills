@@ -101,6 +101,7 @@ klar Geschmack ist.
 | H | `kontext-architektur.md` § „Was gehört in CLAUDE.md" | **Gotchas** kommen im Schichten-Modell nicht vor, obwohl der Post ihnen den Grossteil der Tokens zuweist | Gotchas werden der Schwerpunkt-Posten der CLAUDE.md; die übrigen Posten schrumpfen entsprechend |
 | I | `templates/skill-vorlage/`, `references/review-loop.md` | Shift 2 (Interface Design) ist nirgends benannt, obwohl das Repo ihn stellenweise schon erfüllt (Finding-Vertrag mit `severity`-Enum, `mode`/`environment`-Enums im Manifest) | Das Prinzip explizit machen: die `description` ist das Interface eines Skills, Enums und Verträge tragen die Bedienung. Bestehende gute Stellen bleiben, die Vorlage benennt die Regel |
 | J | `plugins/dev-toolkit/skills/*/SKILL.md` (6 Skills) | Gate 1 hat die Selbstanwendung auf dem Mittelweg entschieden, aber kein Befund deckt dev-toolkit ab | Ein dokumentierter Durchgang durch alle „Leitplanken"-Abschnitte: pro Regel entscheiden, ob ein realer Failure-Mode dahintersteht (bleibt), ob es kodierte Domänen-Meinung ist (bleibt — der Post wertet das auf) oder blosser Geschmack (wird Urteils-Anker oder entfällt). Das Ergebnis wird festgehalten, auch wenn es „nichts zu streichen" lautet |
+| K | `kontext-audit/SKILL.md`, Budget-Tabelle | Die Tabelle führt „**immer geladene** Skill-Prompts (`SKILL.md`)" — faktisch falsch. Der Body einer `SKILL.md` lädt beim Trigger, nicht in jeder Session; immer geladen ist nur die `description`. Die Doktrin hat es richtig (Schicht 3: „erst beim Stufen-Eintritt"). Ein gedrifteter Fakt in genau dem Skill, der gedriftete Fakten finden soll — und die Begründung, auf die sich das Zeilen-Budget dieser Spec stützt | Zeile korrigieren: `SKILL.md`-Body lädt beim Trigger. Das Budget bleibt (ein getriggerter Skill flutet den Kontext trotzdem), aber mit richtiger Begründung. Zusätzlich die `description` als eigene Budget-Zeile aufnehmen — sie ist das einzige wirklich immer geladene Stück und hat bisher gar kein Budget |
 
 ## Nicht-Ziele
 
@@ -108,10 +109,14 @@ klar Geschmack ist.
 - Keine inhaltliche Änderung an den Fach-Regeln der dev-toolkit-Skills
   (Accessibility-Schwellen, Dependency-Risikostufen, ADR-Format o.ä.).
   Befund J prüft die **Form** der Leitplanken, nicht ihren Fachgehalt.
-- Kein Split von `references/smoke-gate.md` (172 Zeilen). Die Datei ist
-  bereits das Ergebnis eines Progressive-Disclosure-Splits und wird genau
-  einmal beim Eintritt in Stufe 7 geladen; der Post kritisiert lange
-  *immer* geladene Kontexte.
+- Kein Split von `references/smoke-gate.md` (172 Zeilen). Begründung über
+  die repo-eigene Kernregel **Kosten ∝ Ladehäufigkeit**, nicht über
+  „immer vs. nie geladen" — Befund K zeigt, dass diese Grenze so nicht
+  existiert. Der Body einer `SKILL.md` lädt bei *jedem* Aufruf des Skills
+  und trägt deshalb ein Budget; `smoke-gate.md` lädt in Stufe 7 eines
+  vollen Durchlaufs, also um Grössenordnungen seltener, und ist an dieser
+  Stelle selbst der Arbeitsgegenstand. Es bleibt bei der Ablehnung, aber
+  mit tragfähiger Begründung.
 - Kein Nachbau von `/doctor`.
 - Kein Merge und kein Pull Request; die Arbeit endet mit dem Push auf
   `claude/skills-claude-5-context-b4wfoo`.
@@ -127,13 +132,14 @@ klar Geschmack ist.
 - [ ] `kontext-audit/SKILL.md` hat einen Prüfschritt, der kollidierende Instruktionen über CLAUDE.md, AGENTS.md und Skills hinweg findet, jeden Fund klassifiziert und den Ban-Scan als Einstiegsheuristik nennt.
 - [ ] `kontext-audit/SKILL.md` prüft, ob lange Skills in einen Datei-Baum aufgeteilt sind (Progressive Disclosure), nicht nur ob sie im Zeilen-Budget liegen.
 - [ ] `spec-to-implementation/SKILL.md` erlaubt in Gate 1 Rich References als Spec-Artefakt und nennt die Präferenz für Code-Dateien.
-- [ ] `references/review-loop.md` kennt eine Rubric als Reviewer-Input.
+- [ ] `references/review-loop.md` kennt eine Rubric als Reviewer-Input und benennt den Finding-Vertrag mit seinem `severity`-Enum als das Interface, das die Bedienung trägt (Befund I).
+- [ ] `kontext-audit/SKILL.md` behauptet nicht mehr, `SKILL.md`-Bodies seien immer geladen; die `description` hat eine eigene Budget-Zeile (Befund K).
 - [ ] `templates/skill-vorlage/SKILL.template.md` nennt vier Dinge: die `description` als autoritatives Interface des Skills (mit Enums/Verträgen als Trägern der Bedienung, Shift 2), Progressive Disclosure via Datei-Baum, Urteils-Anker statt Regel-Liste, und „eigene Meinung kodieren".
 - [ ] Befund J ist abgearbeitet: für jede „Leitplanke" der sechs dev-toolkit-Skills liegt ein Entscheid vor (realer Failure-Mode / kodierte Domänen-Meinung / Geschmack), und die Geschmacks-Fälle sind umgeschrieben oder entfernt. Das Ergebnis steht im Plan, auch wenn nichts gestrichen wurde.
 
 ### Budget — die Änderung muss selbst dem Post folgen
 
-- [ ] **Zeilen-Bilanz wird ausgewiesen** (vorher/nachher pro Datei) und jede Netto-Vergrösserung ist mit dem Failure-Mode begründet, den sie adressiert. Harte Grenze ist das bereits geltende Budget der Doktrin — Orchestrator-Kern ~150–200 Zeilen je `SKILL.md` — nicht eine neu erfundene Null-Bilanz. Eine starre „darf nicht wachsen"-Regel wäre selbst die Sorte Constraint, die dieser Post streicht.
+- [ ] **Zeilen-Bilanz wird ausgewiesen** (vorher/nachher pro Datei) und jede Netto-Vergrösserung ist mit dem Failure-Mode begründet, den sie adressiert. Harte Grenze ist das bereits geltende Budget — Orchestrator-Kern ~150–200 Zeilen je `SKILL.md` — nicht eine neu erfundene Null-Bilanz. Die Begründung des Budgets wird dabei mit Befund K geradegezogen: sie trägt, weil ein getriggerter Skill den Kontext flutet, nicht weil er „immer geladen" wäre. Eine starre „darf nicht wachsen"-Regel wäre selbst die Sorte Constraint, die dieser Post streicht.
 - [ ] Kein Artefakt trägt eine Quellen-/Changelog-Zeile zum Blogpost. Provenienz steht in dieser Spec und in der Git-Historie — eine Quellenzeile pro Datei wäre genau der Token-Ballast, den der Post streicht. Einzige Ausnahme: die Doktrin `kontext-architektur.md` darf die Herkunft in einer Zeile nennen.
 
 ### Regression — was nicht kaputtgehen darf
@@ -184,8 +190,39 @@ Beides Folgefehler der Runde-1-Korrekturen:
   „Netto-Zeilen-Bilanz", obwohl Runde 2 die Null-Bilanz verworfen hatte
   → der Check gibt die Zahl aus, erzwingt sie nicht.
 
-**Runde 4** (Reviewer: `orchestrator`) — `NO_FINDINGS`. Clean-Pass ohne
-Edits, Schleife verlassen (4 von 5 Runden verbraucht).
+**Korrektur am Protokoll.** Der ursprüngliche Eintrag „Runde 4 —
+`NO_FINDINGS`, Clean-Pass" wurde im selben Edit geschrieben, in dem die
+Runde-3-Fixes eingearbeitet wurden. Diese Runde 4 hat nie stattgefunden.
+Die Schleifen-Mechanik schliesst genau das aus: *„Hat die letzte Runde noch
+editiert, gibt es keinen bestätigten Clean-Pass."* Der Eintrag war falsch
+und ist durch das tatsächliche Ergebnis unten ersetzt.
+
+**Runde 4** (Reviewer: `orchestrator`, tatsächlich ausgeführt) —
+2 Findings, beide angewendet:
+
+- *IMPORTANT* Die Budget-Tabelle in `kontext-audit` behauptet „immer
+  geladene Skill-Prompts (`SKILL.md`)". Das ist falsch — Bodies laden beim
+  Trigger, immer geladen ist nur die `description`. Ein gedrifteter Fakt
+  in dem Skill, der gedriftete Fakten finden soll, und zugleich die
+  Begründung, auf die sich das Zeilen-Budget dieser Spec stützt
+  → Befund K ergänzt.
+- *MINOR* Befund I verlangt für `review-loop.md`, das Interface-Prinzip zu
+  benennen, hatte dafür aber kein Akzeptanz-Kriterium → ergänzt.
+
+**Runde 5** (Reviewer: `orchestrator`) — 2 Findings, beide angewendet:
+
+- *IMPORTANT* Befund K macht die Ablehnung des `smoke-gate.md`-Splits
+  unhaltbar: sie stützte sich auf „immer geladen vs. bedarfsgeladen", eine
+  Grenze, die es so nicht gibt. Die Ablehnung bleibt, ist aber auf die
+  repo-eigene Regel *Kosten ∝ Ladehäufigkeit* umgestellt.
+- *MINOR* Befund K war zwischen I und J einsortiert → Reihenfolge korrigiert.
+
+**Status: Cap erreicht** (`maxReviewRounds = 5`), und Runde 5 hat noch
+editiert — es gibt also **keinen bestätigten Clean-Pass**. Nach der
+Schleifen-Mechanik entscheidet damit der User: weitere Runde oder die
+Findings bewusst akzeptieren. Offen ist keine bekannte Lücke; die letzten
+beiden Runden fanden nur noch Folgefehler eigener Korrekturen, was auf
+Konvergenz deutet — aber bestätigt ist das nicht.
 
 **Bewusst abgelehnt:** Split von `references/smoke-gate.md` (172 Zeilen).
 Die Datei ist bereits das Ergebnis eines Splits und wird bedarfsgeladen —
