@@ -65,3 +65,60 @@ Regeln dagegen — im Zweifel bleibt die Formulierung wie sie ist, und keine
 Fundstelle wird ohne Protokoll-Zeile angefasst. Eine Regel, die sich nicht
 ohne Bedeutungsverlust positiv formulieren lässt, ist damit fertig
 klassifiziert: sie bleibt.
+
+## Protokoll des Durchgangs
+
+Scan-Treffer: **26**. Davon sind 6 gar keine Steuerungs-Negationen
+(beschreibende Verzweigungen wie „Repro NICHT gelungen →", die
+Grep-Heuristik in `kontext-audit:74`, die Überschrift „Grundsätze (NICHT
+verhandelbar)"). Bleiben 20 zur Klassifikation.
+
+### Bleibt wörtlich — realer Failure-Mode (10)
+
+| Stelle | Failure-Mode |
+|---|---|
+| `projekt-setup` `.env.example` (NICHT `.env` lesen) | Secrets |
+| `projekt-setup` `.env`/Secrets nie lesen | Secrets |
+| `projekt-setup` Keine Fakten erfinden | erfundene Fakten |
+| `projekt-setup` Nichts löschen ohne Auftrag | Datenverlust |
+| `projekt-setup` `AGENTS.md` NIE als Kopie | Drift (Folge benennbar) |
+| `kontext-audit` NIE ersatzlos gelöscht | Datenverlust |
+| `bug-triage` Keine PII/Secrets aus Logs | Secrets |
+| `web-audit` Keine PII/Secrets aus der Laufzeit | Secrets |
+| `landing-page` Keine erfundenen Beweise | erfundene Fakten |
+| `dependency-audit` NICHT den nächsten Schritt draufsetzen | kaskadierende Fehler |
+
+Die Testanker `A6`–`A10` prüfen fünf davon als exakten String und blieben
+den ganzen Durchgang grün — der beste verfügbare Beleg, dass die harten
+Leitplanken unberührt sind.
+
+### Bleibt — kodierte Domänen-Meinung (2)
+
+- `landing-page` **Keine Dark Patterns**: Fake-Countdown, vorgetäuschte
+  Knappheit, versteckte Kosten. Die Aufzählung *ist* der Wert — sie benennt,
+  was gemeint ist.
+- `web-audit` **Kein Design-Umbau unter dem Deckmantel von A11y**: der
+  positive Teil („Farbwerte nur minimal anpassen, Charakter erhalten") führt
+  bereits; das „Deckmantel"-Bild trägt die eigentliche Warnung.
+
+### Gedreht (8)
+
+| Stelle | Vorher | Nachher |
+|---|---|---|
+| `projekt-setup` | „**NICHT überschreiben.** Stattdessen Restrukturierung" | „**Umbau-Vorschlag statt Neuanlage.**" |
+| `projekt-setup` | „das kommt NICHT in die CLAUDE.md" | „das leitet Claude selbst ab und bleibt draussen" |
+| `adr` | „NICHT für: …" | „Gehört woanders hin: …" |
+| `bug-triage` | „**Kein Fix während der Triage**" | „**Die Triage endet mit dem Dokument**" |
+| `dependency-audit` | „NIE ohne Breaking-Changes-Lektüre" | „Breaking Changes vorher gelesen" |
+| `dependency-audit` | „Kein Major-Update ohne gelesene Release-Notes" | Duplikat der Tabellen-Zeile → aufgelöst, Urteils-Anker bleibt |
+| `dependency-audit` | „Keine neuen Pakete einführen" | „Neue Pakete gehören in `/prior-art-check`" |
+| `prior-art-check` / `web-audit` | „Keine Behauptung ohne Quelle/Fundstelle" | „Jede Behauptung mit Quelle" / „Jeder Befund mit Fundstelle" |
+
+Vier der acht hatten den positiven Zielzustand **bereits im Satz**, nur an
+zweiter Stelle — das Verbot stand vorn und bestimmte, worauf die
+Aufmerksamkeit fiel. Umstellen genügte, formulieren musste niemand.
+
+Ein Duplikat fiel nebenbei auf: `dependency-audit` trug die
+Breaking-Changes-Regel zweimal (Tabelle **und** Leitplanke). Die Tabelle
+behält die Regel, die Leitplanke den Urteils-Anker („‚latest' ist kein
+Argument").

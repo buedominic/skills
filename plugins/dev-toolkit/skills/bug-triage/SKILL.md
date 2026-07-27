@@ -76,8 +76,8 @@ oder FULL (Schema-/Security-/Scope-Berührung) — mit einem Satz Begründung.
 
 ## Leitplanken
 
-- **Kein Fix während der Triage** — auch kein „kleiner Quick-Fix nebenbei".
-  Einzige Ausnahme: der billige Prüfschritt aus Schritt 4 (read-only bzw.
+- **Die Triage endet mit dem Dokument** — der Fix ist der nächste Schritt,
+  auch der „kleine nebenbei". Einzige Ausnahme: der billige Prüfschritt aus Schritt 4 (read-only bzw.
   ein neuer, noch roter Test — der bleibt als Repro-Test liegen).
 - Repro schlägt Theorie: eine unbestätigte Hypothese wird nie als Ursache
   verkauft.
