@@ -6,15 +6,25 @@
     "reviewer": "orchestrator",
     "browser": "n/a"
   },
-  "specPath": null,
+  "specPath": "docs/specs/2026-07-27-skill-set-optimierung-design.md",
   "planDir": "docs/plans/2026-07-27-skill-set-optimierung",
   "branch": "claude/skills-optimization-spec-i2hiix",
-  "stage": 1,
-  "stageStatus": "gate-1-pending",
+  "stage": 2,
+  "stageStatus": "spec-review-done",
   "approvedAt": null,
   "reviews": {
-    "spec": { "rounds": 0, "reviewer": "orchestrator", "rejected": [] },
-    "plan": { "rounds": 0, "reviewer": "orchestrator", "rejected": [] }
+    "spec": {
+      "rounds": 3,
+      "reviewer": "orchestrator",
+      "rejected": [
+        "landing-page user-invoked (Gate-1-Entscheid des Users, nicht im Review re-litigiert)"
+      ]
+    },
+    "plan": {
+      "rounds": 0,
+      "reviewer": "orchestrator",
+      "rejected": []
+    }
   },
   "agentFallbacks": [
     "reviewer=orchestrator statt claude-subagent: Session-Vorgabe untersagt Agent-Tool ohne expliziten Auftrag",
@@ -25,8 +35,15 @@
     "plansDir": "docs/plans",
     "defaultBranch": "main",
     "maxReviewRounds": 5,
-    "verifyCommands": ["node tests/validate-context-doctrine.mjs"],
+    "verifyCommands": [
+      "node tests/validate-context-doctrine.mjs"
+    ],
     "derived": "keine workflow.config.json im Repo — Defaults abgeleitet, pwsh nicht verfuegbar"
   },
-  "verification": { "baseline": "44/44 gruen vor Beginn" }
+  "verification": {
+    "baseline": "44/44 gruen vor Beginn"
+  },
+  "openPoints": [
+    "Wirksamkeit von disable-model-invocation ist erst in einem Zielprojekt mit installiertem Marketplace belegbar"
+  ]
 }

@@ -62,7 +62,14 @@ Claude-nativ. Cursor-Rules entstehen heute für *jeden* Skill mit
 „Agent Requested"-Modus, der genau per description lädt. Ohne Anpassung
 gilt die Achse nur in Claude.
 
-**`plugins/context-kit/skills/<router>/`** — neuer Skill.
+**`plugins/context-kit/skills/<router>/`** — neuer Skill. Er darf die neun
+`description`-Felder **nicht nacherzählen**, sonst entsteht eine dritte
+Kopie derselben Information und der Aufräum-Lauf produziert genau die
+Duplikat-Klasse, die er beseitigt. Die eine Quelle je Skill bleibt dessen
+Frontmatter; der Router trägt ausschliesslich das, was dort *nicht* steht:
+den **Anlass** („wann greife ich zu welchem") und die Übergänge zwischen
+den Skills. Pro Skill maximal eine Zeile. Die README-Tabelle wird zum
+Adapter und verweist auf den Router, statt eine dritte Fassung zu führen.
 
 **`tests/validate-context-doctrine.mjs`** — Assertions für den Soll-Zustand,
 nach dem etablierten Muster der Gruppe C (zuerst rot).
@@ -83,6 +90,10 @@ nach dem etablierten Muster der Gruppe C (zuerst rot).
 1. **`disable-model-invocation: true` ist das gültige Claude-Feld** für
    user-invoked Skills. Belegt durch `mattpocock/skills` (9 Skills nutzen
    es produktiv), nicht durch offizielle Doku, die im Repo vorliegt.
+   **Risiko:** kennt die Runtime das Feld nicht, ignoriert sie es still —
+   die Skills blieben model-invoked, und eine reine Dateiprüfung wäre
+   trotzdem grün. Die Achse wird deshalb an der laufenden Runtime
+   verifiziert, nicht nur am Dateiinhalt (§ Akzeptanz).
 2. **Codex ehrt das Feld vermutlich nicht.** `docs/portabilitaet.md:60`
    beschreibt Auto-Laden per description. Behandelt wie Cursor: durch
    `install.sh` emuliert statt vorausgesetzt.
@@ -107,12 +118,21 @@ prüfbar; die Suite ist am Ende grün und war es zu Beginn (44/44).
 - [ ] Genau fünf `SKILL.md` tragen `disable-model-invocation: true`:
       `projekt-setup`, `spec-to-implementation`, `dependency-audit`,
       `web-audit`, `landing-page`.
-- [ ] Der neue Router-Skill trägt es ebenfalls und nennt alle neun Skills
-      mit ihrem Anlass.
-- [ ] Die vier verbleibenden model-invoked `description`-Felder summieren
-      sich auf ≤ 1.600 Zeichen (heute 3.375 über neun) — mindestens **52 %**
-      weniger Grundlast.
-- [ ] Kein `description`-Feld überschreitet 500 Zeichen.
+- [ ] Der neue Router-Skill trägt es ebenfalls, nennt alle neun Skills mit
+      ihrem **Anlass** in je einer Zeile und erzählt dabei keine
+      `description` nach.
+- [ ] **Die verbleibende Grundlast ist echt gesunken.** Die vier
+      model-invoked `description`-Felder summieren sich auf ≤ **1.150**
+      Zeichen. Die Schranke ist bewusst unter dem heutigen Stand dieser
+      vier (1.484) gesetzt: läge sie darüber, wäre sie allein durch das
+      Umflaggen erfüllt und würde die im Scope versprochene
+      Description-Überarbeitung nicht messen. Gesamt gegen heute (3.375):
+      mindestens **66 %** weniger.
+- [ ] **Das 500-Zeichen-Budget ist als Regression verankert**, nicht als
+      Momentaufnahme: eine Assertion in Gruppe B prüft *jede* `SKILL.md`
+      inklusive der Vorlage, sodass auch ein künftig hinzugefügter Skill
+      daran scheitert. (Als reines Ist-Kriterium wäre es nach dem Umbau
+      wirkungslos — die einzige Überschreitung wird user-invoked.)
 - [ ] Weder `projekt-setup` noch `kontext-audit` enthalten einen
       Doktrin-Kurzfassungs-Block; beide nennen stattdessen den Pfad der
       Doktrin.
@@ -124,8 +144,60 @@ prüfbar; die Suite ist am Ende grün und war es zu Beginn (44/44).
 - [ ] Der Leitwort-Kollaps ist vollzogen: „Report zuerst, Edits erst nach
       Bestätigung" steht nicht mehr dreimal ausgeschrieben, sondern als ein
       Begriff in der Doktrin plus Verweis.
-- [ ] Verhaltens-Regression: kein Ablauf-Schritt, keine Schwelle und keine
-      Leitplanke mit realem Failure-Mode wurde entfernt — belegt durch die
-      unveränderten Gruppe-A/C-Assertions.
+- [ ] **Die Invocation-Achse ist als offener Punkt geführt, nicht als
+      erledigt.** Sie lässt sich in diesem Repo nicht abschliessen: hier
+      ist es die *Quelle* der Plugins, nicht ihr Installationsziel — es
+      gibt keine Skill-Liste, gegen die man prüfen könnte. Der Beleg
+      gehört in die erste Session eines Zielprojekts mit installiertem
+      Marketplace (Skill-Liste bzw. `/doctor`). Bis dahin steht die
+      Wirksamkeit als offener Punkt im Manifest und ist im
+      Abschluss-Bericht benannt — ein Haken darf hier nicht aus einer
+      blossen Dateiprüfung entstehen (§ Annahme 1).
+- [ ] **Verhaltens-Regression: pro geänderter Datei einzeln belegt.** Die
+      Testsuite deckt das *nicht* ab — Gruppe A/C prüft punktuelle
+      String-Anker, an denen eine entfernte Leitplanke vorbeigeht. Der
+      Nachweis ist deshalb ein dokumentierter Diff-Durchgang: je Datei
+      hält eine Zeile fest, welche Änderungen rein formal waren und welche
+      Leitplanken bewusst umformuliert wurden — inklusive der Feststellung,
+      dass keine mit realem Failure-Mode (Secrets, Daten-Grenze,
+      Gate-Bypass) entfallen ist.
 - [ ] `README.md` und `marketplace.json` bilden den neuen Stand ab; alle
       drei `plugin.json` haben eine erhöhte Version.
+
+## Review-Notizen
+
+**Runde 1** (Reviewer: `orchestrator` — kein Subagenten-Dispatch, siehe
+Manifest `agentFallbacks`). 6 Findings, 5 eingearbeitet:
+
+- `CRITICAL` Das Grundlast-Kriterium war **vakuum**: die vier verbleibenden
+  Descriptions liegen heute schon bei 1.484 Zeichen, die Schranke stand bei
+  1.600. Es hätte allein durch das Umflaggen grün gemeldet und die im Scope
+  versprochene Description-Überarbeitung nie gemessen. Schranke auf 1.150
+  gesenkt, Begründung im Kriterium selbst.
+- `IMPORTANT` Das 500-Zeichen-Kriterium wäre nach dem Umbau wirkungslos
+  geworden (die einzige Überschreitung wird user-invoked). Von einer
+  Momentaufnahme zu einer Gruppe-B-Regression über *alle* `SKILL.md`
+  umgebaut.
+- `IMPORTANT` Der Router war als dritte Kopie der Descriptions angelegt —
+  die Duplikat-Klasse, die dieser Lauf beseitigt. Abgegrenzt auf das, was
+  im Frontmatter *nicht* steht (Anlass, Übergänge); README wird Adapter.
+- `IMPORTANT` Der Regressions-Nachweis berief sich auf die Gruppe-A/C-
+  Assertions. Die prüfen punktuelle String-Anker, an denen eine entfernte
+  Leitplanke vorbeigeht — die behauptete Deckung existiert nicht. Ersetzt
+  durch einen dokumentierten Diff-Durchgang je Datei.
+- `MINOR` Annahme 1 verschwieg den stillen Fehlerpfad (unbekanntes
+  Frontmatter wird ignoriert, Dateiprüfung trotzdem grün). Risiko benannt.
+- `MINOR` **Bewusst abgelehnt:** `landing-page` als user-invoked ist
+  angreifbar — es ist als einziger der fünf kein Repo-Orchestrator, und
+  „bau eine landing page" wäre ein natürlicher Auto-Trigger. Das ist ein
+  Gate-1-Entscheid des Users; er wird nicht im Review re-litigiert,
+  sondern in der Gate-2-Zusammenfassung zur Drehung angeboten.
+
+**Runde 2.** 1 Finding, eingearbeitet:
+
+- `IMPORTANT` Das in Runde 1 ergänzte Runtime-Kriterium war in diesem Repo
+  **nicht erfüllbar** — hier liegt die Quelle der Plugins, nicht ihr
+  Installationsziel. Es hätte am Ende als unbelegter Haken dagestanden.
+  Umgestellt auf einen offenen Punkt, der in ein Zielprojekt gehört.
+
+**Runde 3.** `NO_FINDINGS` — bestätigter Clean-Pass, Schleife verlassen.
