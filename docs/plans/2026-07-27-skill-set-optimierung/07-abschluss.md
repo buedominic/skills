@@ -59,11 +59,6 @@ Pipeline. Ein Pull Request entsteht nur auf ausdrücklichen Auftrag.
 
 ## Ergebnis
 
-_(wird beim Ausführen gefüllt: Diff-Protokoll, Grundlast vorher/nachher,
-Zeilen-Bilanz, Testergebnis)_
-
-## Ergebnis
-
 ### Grundlast
 
 **3.341 → 990 Zeichen (−70 %)** je Session, je Projekt.
