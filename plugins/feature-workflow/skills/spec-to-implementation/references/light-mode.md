@@ -16,5 +16,6 @@ Heuristik mittendrin verletzt → anhalten, auf FULL eskalieren, nicht still wei
 | L5 | Finish: Backlog/Status (5-Zeilen-Format), Merge auf Bestätigung |
 
 Kein Gate 1 (Klärung formlos bei Bedarf), kein Plan-Approval-Gate, kein
+Diff-Review (Stufe 6b — der Diff ist hier ≤ 3 Dateien und lief durch L2), kein
 Smoke-Gate-Apparat (manuelle Bestätigung oder gezielter Browser-Check, im
 Manifest notiert) — die Merge-Bestätigung bleibt.

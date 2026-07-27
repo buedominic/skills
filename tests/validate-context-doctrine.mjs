@@ -28,6 +28,7 @@ const DOKTRIN = 'plugins/context-kit/docs/kontext-architektur.md';
 const KONTEXT_AUDIT = 'plugins/context-kit/skills/kontext-audit/SKILL.md';
 const PROJEKT_SETUP = 'plugins/context-kit/skills/projekt-setup/SKILL.md';
 const VORLAGE = 'templates/skill-vorlage/SKILL.template.md';
+const ABSCHLUSS_REF = 'plugins/feature-workflow/skills/spec-to-implementation/references/abschluss.md';
 
 // Das Status-Format, das Doktrin und spec-to-implementation teilen.
 const STATUS_FORMAT = 'Spec: `<pfad>` · Plan: `<pfad>` · Tests: <kurz>.';
@@ -181,7 +182,11 @@ contains('C12 projekt-setup nennt Gotcha', PROJEKT_SETUP, 'Gotcha');
 omits('C13 projekt-setup ohne das Wort "Verbote"', PROJEKT_SETUP, 'Verbote');
 
 contains('C14 spec-to-implementation nennt Mockup', SPEC_SKILL, 'Mockup');
-contains('C15 spec-to-implementation markiert die Format-Kopie', SPEC_SKILL, 'bewusste Kopie über Plugin-Grenzen');
+// C15 zeigt seit der Auslagerung der Abschluss-Pflichten auf references/
+// statt auf die SKILL.md: die markierte Kopie ist umgezogen, nicht
+// verschwunden. Geprüft wird weiterhin, DASS sie markiert ist — der Anker
+// wurde verschoben, nicht abgeschwächt.
+contains('C15 Abschluss-Referenz markiert die Format-Kopie', ABSCHLUSS_REF, 'bewusste Kopie über Plugin-Grenzen');
 maxLines('C16 spec-to-implementation bleibt kompakt', SPEC_SKILL, 200);
 
 contains('C17 review-loop nennt Rubric', REVIEW_LOOP, 'Rubric');

@@ -16,6 +16,7 @@ autoritativ in den Referenz-Files, gelesen **erst beim Eintritt in die Stufe**:
 - `references/progress-ledger.md` — Task-Zyklus + Resume (Stufe 5/L3)
 - `references/light-mode.md` — Heuristik + Schritte L0–L5 (Grösse `light`)
 - `references/fehlerverhalten.md` — Dispatch-, Preflight- und Divergenz-Fälle
+- `references/abschluss.md` — Backlog/Status/Akzeptanz (Stufe 8 / L5)
 
 ## Projekt-Konfiguration (ZUERST lesen)
 
@@ -116,6 +117,7 @@ Manifest und — ab Stufe 5/L3 — Ledger lesen und gegen den Repo-Zustand valid
 | G2 | **Gate 2: Plan-Approval** | Default-Branch |
 | 5 | Implementation (§ Stufe 5) | `feature/<name>` |
 | 6 | Verifikation: `verifyCommands` des Projekts, alle grün; Liste im Manifest dokumentieren | `feature/<name>` |
+| 6b | Diff-Review: Gesamt-Diff gegen die Spec-Akzeptanz → `references/review-loop.md` | `feature/<name>` |
 | 7 | Smoke-Gate → `references/smoke-gate.md` | `feature/<name>` |
 | 8 | Finish: Backlog/Status nachziehen (§ Abschluss); **Merge nur auf explizite Bestätigung** | Merge |
 
@@ -153,6 +155,13 @@ Pre-Implementation-Preflight läuft — der prüft genau diese Felder
 (`approvedAt` gesetzt + sauberer Worktree), sonst wäre es ein Approval-Bypass.
 Danach frischen Kontext für Stufe 5 empfehlen (Grundsatz 7).
 
+### Stufe 6b — Diff-Review
+
+Stufe 6 beweist grüne Tests, nicht die bestellte Sache. 6b hält den
+Gesamt-Diff gegen die Akzeptanz-Bullets der Spec — Vergleichspunkt ist der
+Merge-Base mit dem **Remote**-Default-Branch, eingearbeitet wird vom
+`implementer` mit erneuter Verifikation. Mechanik: `references/review-loop.md`.
+
 ### Stufe 5 — Implementation
 
 Branch idempotent: `feature/<name>` existiert (Resume) → `git checkout` +
@@ -170,20 +179,8 @@ gelesen, sobald die Grössen-Weiche auf `light` steht.
 
 ## Abschluss-Pflichten (Stufe 8 / L5)
 
-- Backlog (falls vorhanden): umgesetzte Items abhaken, neue Funde eintragen.
-- Status-Dokument (falls das Projekt eines führt): **max. 5 Zeilen** pro
-  Abschluss, alles Längere gehört in Spec/Plan/Commits —
-
-  ```markdown
-  - **YYYY-MM-DD — <Titel>** (`<branch>`): <Was + Warum, 1–2 Sätze>.
-    <Besonderheiten/Bruchstellen, 0–2 Sätze>.
-    Spec: `<pfad>` · Plan: `<pfad>` · Tests: <kurz>.
-  ```
-
-  Dieser Block ist eine **bewusste Kopie über Plugin-Grenzen**: Quelle ist die
-  context-kit-Doktrin (`kontext-architektur.md`), dupliziert weil Plugins
-  einzeln gecacht sind — kein Drift-Befund.
-- Weder Backlog noch Status im Projekt: Akzeptanz-Checkliste der Spec abhaken.
+Backlog, Status-Dokument und Akzeptanz-Checkliste nachziehen:
+`references/abschluss.md` — gelesen beim Eintritt in Stufe 8.
 
 ## Fehlerverhalten
 

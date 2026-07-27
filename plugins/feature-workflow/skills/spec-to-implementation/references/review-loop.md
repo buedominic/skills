@@ -6,7 +6,8 @@ der Vertrag ist reviewer-unabhängig.
 ## Review-Vertrag
 
 - Dispatch-Parameter `target`: `spec` (Stufe 2) | `plan` (Stufe 4) | `task`
-  (Task-Review in Stufe 5/L3, Zyklus in `progress-ledger.md`) — kein anderer Wert
+  (Task-Review in Stufe 5/L3, Zyklus in `progress-ledger.md`) | `diff`
+  (Stufe 6b, § unten) — kein anderer Wert
 - Finding: `{ severity: CRITICAL|IMPORTANT|MINOR, stelle, problem, empfehlung }`
 - Antwort ohne Findings: exakt `NO_FINDINGS`
 - Dieser Vertrag **ist** das Interface des Reviewers: das `severity`-Enum trägt
@@ -78,6 +79,39 @@ Halte `rejected = {}` und `round = 0`:
 6. Manifest `reviews.<stufe>` aktualisieren (rounds, reviewer, rejected).
    Zurück zu 1.
 
+## Stufe 6b — `target=diff`
+
+Stufe 6 beweist, dass die Tests grün sind. Sie beweist nicht, dass gebaut
+wurde, was bestellt war. Das prüft 6b: der **Gesamt-Diff des Features** gegen
+die **Akzeptanz-Bullets der Spec**.
+
+**Der Vergleichspunkt wird aufgelöst, nicht beschrieben:**
+
+```
+git merge-base origin/<defaultBranch> HEAD
+```
+
+Der **Remote**-Ref, nicht der lokale. Ein lokaler `main` kann Commits
+hinterherhinken, die längst gemerged sind — dann liest der Review fremde
+Arbeit als Teil des Features und beurteilt einen Diff, den niemand gebaut
+hat. Beim Betreten der Stufe auflösen und als `verification.diffBase` ins
+Manifest schreiben, damit ein Resume denselben Punkt liest.
+
+Zwei Abweichungen von der Spec-/Plan-Mechanik oben, beide weil sich hier
+**Code** ändert statt eines Dokuments:
+
+1. **Einarbeitung durch den `implementer`**, nicht den `doc-writer`. Und nach
+   jedem eingearbeiteten Finding laufen die `verifyCommands` erneut — sonst
+   repariert 6b, was Stufe 6 bewiesen hat.
+2. **Commit auf `feature/<name>`**, nicht auf den Default-Branch.
+
+`targetFiles` sind die geänderten Pfade (der Orchestrator expandiert sie,
+nicht der Agent), `contextPaths` die Spec. Die Daten-Grenze gilt unverändert:
+jeder Pfad durch `git ls-files --error-unmatch`.
+
+Im Light-Mode entfällt 6b — der Diff umfasst dort ≤ 3 Dateien und lief
+bereits durch die L2-Runde.
+
 ## Commit-Regel: Squash pro Stufe
 
 Die Runden werden während der Schleife NICHT einzeln auf den Default-Branch
@@ -86,6 +120,8 @@ Commit:
 
 - Stufe 2: `docs(spec): <topic> — Review triagiert + eingearbeitet (<n> Runden, <reviewer>)`
 - Stufe 4: `docs(plan): <feature> — Review triagiert + eingearbeitet (<n> Runden, <reviewer>)`
+- Stufe 6b: `fix(<scope>): Diff-Review eingearbeitet (<n> Runden, <reviewer>)`
+  — auf `feature/<name>`, nicht auf den Default-Branch wie oben
 
 Die Runden-Details (Findings + Triage-Entscheide) stehen in den
 Review-Notizen des Dokuments — nicht in der Commit-Historie.
