@@ -30,6 +30,14 @@ fm_value() { # $1 = Datei, $2 = Key
   awk -v key="$2" '/^---$/{c++;next} c==1 && index($0,key ":")==1{sub("^" key ":[ ]*","");print;exit}' "$1"
 }
 
+# `disable-model-invocation: true` ist Claude-nativ: der Skill verlässt den
+# Kontext und ist nur noch durch Tippen erreichbar. Andere Clients kennen das
+# Feld nicht — dort erzeugt dieses Script die Auto-Ladung selbst und muss sie
+# entsprechend weglassen, sonst gilt die Achse nur in Claude.
+is_user_invoked() { # $1 = SKILL.md
+  [ "$(fm_value "$1" disable-model-invocation)" = "true" ]
+}
+
 copy_skills() { # $1 = Ziel-Verzeichnis für Skill-Ordner
   local target="$1"
   mkdir -p "$target"
@@ -91,8 +99,23 @@ agents_md_block() { # $1 = Projekt-Root: verwalteten Skills-Block in AGENTS.md s
     for skill in "$ROOT"/plugins/*/skills/*/; do
       local name desc
       name="$(basename "$skill")"
+      is_user_invoked "$skill/SKILL.md" && continue
       desc="$(fm_desc "$skill/SKILL.md" | sed 's/\. .*/./')"
       echo "| \`.agents/skills/$name/SKILL.md\` | $desc |"
+    done
+    echo
+    # Zweite Gruppe: diese Skills sollen NICHT von selbst greifen. Stünden
+    # sie in der Tabelle oben, böte ein AGENTS.md-Client sie bei jeder
+    # entfernt passenden Aufgabe an — die Achse wäre ausserhalb von Claude
+    # wirkungslos.
+    echo "Nur auf Zuruf — diese Skills startet der Mensch, nicht die Session:"
+    echo
+    for skill in "$ROOT"/plugins/*/skills/*/; do
+      local name desc
+      name="$(basename "$skill")"
+      is_user_invoked "$skill/SKILL.md" || continue
+      desc="$(fm_desc "$skill/SKILL.md" | sed 's/\. .*/./')"
+      echo "- \`.agents/skills/$name/SKILL.md\` — $desc"
     done
     echo "$end"
   } >> "$tmp"
@@ -189,7 +212,11 @@ case "$CLIENT" in
       desc="$(fm_desc "$skill/SKILL.md")"
       {
         echo "---"
-        echo "description: $desc"
+        # Mit `description` ist die Rule „Agent Requested" — Cursor lädt sie
+        # anhand der Beschreibung, also model-invoked. Ohne sie ist sie
+        # „Manual" und greift nur auf `@name`. Das Feld zu leeren genügt
+        # nicht: gesetzt ist gesetzt.
+        is_user_invoked "$skill/SKILL.md" || echo "description: $desc"
         echo "alwaysApply: false"
         echo "---"
         echo
@@ -212,6 +239,9 @@ case "$CLIENT" in
       desc="$(fm_desc "$skill/SKILL.md")"
       {
         echo "---"
+        # Copilot-Prompt-Files sind per Konstruktion Slash-Commands (`/name`
+        # im Chat) — hier ist schon alles user-invoked, und `description` ist
+        # bloss das Label in der Auswahl. Deshalb bewusst KEINE Weiche.
         echo "description: $desc"
         echo "---"
         echo

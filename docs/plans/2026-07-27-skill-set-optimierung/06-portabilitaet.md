@@ -59,3 +59,27 @@ Die drei Ziele verhalten sich unterschiedlich:
 Der Trockenlauf schreibt in den Scratchpad, nie ins Repo und nie ins Home.
 Läuft `install.sh` versehentlich gegen `.` oder `~`, überschreibt es
 `.cursor/rules/` und `AGENTS.md` — Pfad vor jedem Lauf prüfen.
+
+## Ergebnis
+
+Trockenlauf `./install.sh cursor <scratchpad>` — die Weiche greift:
+
+| Ohne `description` (Manual) | Mit `description` (Agent-Requested) |
+|---|---|
+| `projekt-setup`, `spec-to-implementation`, `dependency-audit`, `web-audit`, `landing-page`, `skill-kompass` | `kontext-audit`, `adr`, `bug-triage`, `prior-art-check` |
+
+`./install.sh agents <scratchpad>` erzeugt zwei Gruppen im AGENTS.md-Block:
+die Tabelle „Skill | Wann" führt nur noch die vier model-invoked, darunter
+steht „Nur auf Zuruf — diese Skills startet der Mensch, nicht die Session"
+mit den sechs übrigen. `bash -n install.sh` sauber, 64/64 grün.
+
+**Copilot blieb bewusst unverändert** und trägt das jetzt als Kommentar im
+Script: Prompt-Files sind per Konstruktion `/name`-Slash-Commands, dort ist
+alles user-invoked und `description` nur das Label in der Auswahl. Ohne den
+Kommentar hätte der nächste Durchgang die fehlende Weiche für einen Fehler
+gehalten und sie „repariert".
+
+**Codex ist ehrlich als unverifiziert gekennzeichnet.** Ob die Runtime das
+Feld ehrt, liess sich hier nicht prüfen; der AGENTS.md-Block trägt die
+Trennung deshalb selbst, statt sich auf das Feld zu verlassen. Das ist der
+belastbare Weg — er funktioniert in beiden Fällen.

@@ -17,6 +17,7 @@ Kopien im Repo.
 | Baustein | Claude Code | Codex | Cursor | GitHub Copilot | andere |
 |---|---|---|---|---|---|
 | Skills | nativ (Plugin) | **nativ**: `~/.agents/skills/` (`install.sh codex`) | `.agents/skills/` + generierte `.cursor/rules/*.mdc` (Agent-Requested — lädt per description, wie Skills) | `.agents/skills/` + generierte `.github/prompts/*.prompt.md` (Slash-Command) + AGENTS.md-Block | `install.sh agents` → `.agents/skills/` + AGENTS.md-Block (jeder AGENTS.md-Client) |
+| Invocation-Achse (`disable-model-invocation`) | **nativ** — Feld wirkt direkt | Feld **unbestätigt**; Auto-Laden per description ist der dokumentierte Weg, deshalb im AGENTS.md-Block getrennt ausgewiesen | emuliert: Rule ohne `description` ist „Manual" und greift nur auf `@name` | ohnehin gegeben — Prompt-Files sind Slash-Commands | emuliert via AGENTS.md-Block („nur auf Zuruf") |
 | Referenz-Files | nativ | mitkopiert | mitkopiert | mitkopiert | mitkopiert |
 | Agents (Rollen) | nativ als Subagenten | generierte `.codex/agents/*.toml`; Rollen-Prompts zusätzlich im installierten Skill unter `references/roles/` | `.agents/roles/*.md` — als Rollen-Prompt in frischem Kontext | `.agents/roles/*.md` — dito | dito |
 | Hook `guard-branch` | nativ (PreToolUse) | prozedural via AGENTS.md-Block | prozedural | prozedural | prozedural |
@@ -57,7 +58,10 @@ Repo klonen, dann den Universal-Installer aufrufen (Windows:
 Script erneut ausführen.
 
 **Codex** — unterstützt SKILL.md nativ; Skills werden wie bei Claude
-automatisch anhand der `description` geladen (`/skills` zeigt sie an):
+automatisch anhand der `description` geladen (`/skills` zeigt sie an).
+Ob Codex `disable-model-invocation` ehrt, ist **nicht verifiziert** — der
+AGENTS.md-Block weist die user-invoked Skills darum getrennt als „nur auf
+Zuruf" aus, statt sich auf das Feld zu verlassen:
 
 ```bash
 ./install.sh codex             # → ~/.agents/skills + ~/.codex/agents (alle Projekte)
@@ -71,7 +75,10 @@ Agenten (`spec-reviewer`, `implementer`, `doc-writer`) als
 `.codex/agents/*.toml`.
 
 **Cursor** — Regeln im „Agent Requested"-Modus laden per `description`,
-funktional dasselbe wie Skill-Auto-Loading:
+funktional dasselbe wie Skill-Auto-Loading. User-invoked Skills bekommen
+deshalb **keine** `description` in ihre Rule: ohne das Feld ist sie
+„Manual" und greift nur auf `@name`. Das Feld zu leeren genügt nicht —
+gesetzt ist gesetzt.
 
 ```bash
 ./install.sh cursor <projekt-pfad>
@@ -79,8 +86,8 @@ funktional dasselbe wie Skill-Auto-Loading:
 
 Kopiert die Skills nach `<projekt>/.agents/skills/`, die Rollen-Prompts
 nach `.agents/roles/` und generiert pro Skill eine dünne Zeiger-Regel
-`.cursor/rules/<name>.mdc` (description aus dem Skill, `alwaysApply:
-false`), die auf die SKILL.md verweist. Zusätzlich wird der
+`.cursor/rules/<name>.mdc` (`alwaysApply: false`; `description` aus dem
+Skill, sofern er model-invoked ist), die auf die SKILL.md verweist. Zusätzlich wird der
 AGENTS.md-Block gepflegt (Cursor liest auch AGENTS.md).
 
 **GitHub Copilot** — der Coding Agent liest `AGENTS.md` als primäre
