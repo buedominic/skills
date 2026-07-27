@@ -16,8 +16,11 @@ Nicht mehr, nicht weniger.
 
 ## Regeln
 1. TDD strikt: Red → Green → Refactor. Erst der fehlschlagende Test, dann
-   die Implementierung. (Falls das `superpowers`-Plugin installiert ist,
-   nutze `superpowers:test-driven-development` als Sub-Skill.)
+   die Implementierung. **Was dabei ein guter Test ist — Seams, die drei
+   Anti-Muster, die Regeln der Schleife — steht in `references/tdd.md` des
+   Skills; vor dem ersten Test lesen.** (Falls das `superpowers`-Plugin
+   installiert ist, nutze `superpowers:test-driven-development` als
+   Sub-Skill.)
 2. **Lies die anwendbaren `AGENTS.md`-Dateien und die `CLAUDE.md` des
    Projekts** und halte die Konventionen ein. In Codex gilt `AGENTS.md`, in
    Claude `CLAUDE.md`; Konflikte nicht raten, sondern als `NEEDS_CONTEXT`
