@@ -1,6 +1,7 @@
 ---
 name: landing-page
-description: Use when creating or overhauling a landing/marketing page (e.g. "bau eine landing page", "startseite für produkt X", "die seite konvertiert nicht", marketing page for a product or event). Covers conversion structure, copy principles and a built-in launch checklist; delegates visual craft to the frontend-design plugin when installed.
+description: Landing Page bauen oder überarbeiten: Struktur, Copy, Conversion, Launch-Checkliste.
+disable-model-invocation: true
 ---
 
 # Landing-Page — Struktur, Copy, Conversion

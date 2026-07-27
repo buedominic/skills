@@ -1,6 +1,6 @@
 ---
 name: bug-triage
-description: Use when a vague bug report needs to become an actionable fix input (e.g. "bei manchen teams stimmt die tabelle nicht", "irgendwas ist kaputt an X", "user meldet fehler Y"). Turns the report into a structured repro, evidence and ranked root-cause hypotheses, ending in a light-mode-ready mini document — it does NOT apply the fix.
+description: Use when a vague bug report needs to become an actionable fix input (e.g. "bei manchen teams stimmt die tabelle nicht", "irgendwas ist kaputt an X", "user meldet fehler Y"). Produces repro, evidence and ranked root-cause hypotheses.
 ---
 
 # Bug-Triage — von der Meldung zum fix-fertigen Dokument

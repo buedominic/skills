@@ -1,6 +1,7 @@
 ---
 name: dependency-audit
-description: Use to audit and plan updates for project dependencies (e.g. "sind unsere pakete aktuell?", "dependency audit", "npm audit aufräumen", "update-plan für die dependencies", after security advisories). Produces a risk-tiered report and update plan; applies updates only after confirmation. Manually triggered — never runs automatically.
+description: Abhängigkeiten prüfen und risikogestuft aktualisieren.
+disable-model-invocation: true
 ---
 
 # Dependency-Audit — Abhängigkeiten prüfen + risikoarm aktualisieren

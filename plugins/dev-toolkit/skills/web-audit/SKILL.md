@@ -1,6 +1,7 @@
 ---
 name: web-audit
-description: Use to audit a web application or page for accessibility, performance and SEO (e.g. "web audit", "ist die seite barrierefrei?", "warum lädt die seite langsam?", "seo check", "lighthouse-artige prüfung", before launching a page). Produces a findings report with file locations first; applies fixes only after confirmation. Manually triggered.
+description: Web-Seite auf Accessibility, Performance und SEO prüfen.
+disable-model-invocation: true
 ---
 
 # Web-Audit — Accessibility, Performance, SEO

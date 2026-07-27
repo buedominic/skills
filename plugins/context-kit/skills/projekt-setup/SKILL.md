@@ -1,6 +1,7 @@
 ---
 name: projekt-setup
-description: Use when setting up a repository for Claude Code for the first time — creating an initial lean CLAUDE.md, wiring the feature-workflow config, and anchoring context-maintenance rules (e.g. "richte das Projekt ein", "erstelle eine CLAUDE.md", "setup für claude code", "onboarding"). Also use when an existing CLAUDE.md should be restructured to the lean layered format.
+description: Repository erstmalig für Claude Code einrichten: schlanke CLAUDE.md, Workflow-Verdrahtung, Pflege-Regeln.
+disable-model-invocation: true
 ---
 
 # Projekt-Setup — Kontext erstmalig aufnehmen
