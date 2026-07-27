@@ -14,6 +14,9 @@ autoritativ in den Referenz-Files, gelesen **erst beim Eintritt in die Stufe**:
 - `references/smoke-gate.md` — Smoke-Gate-Maschinerie (Stufe 7)
 - `references/codex-runtime.md` — Codex-Dispatch, Artefaktvertrag, Threads
 - `references/progress-ledger.md` — Task-Zyklus + Resume (Stufe 5/L3)
+- `references/light-mode.md` — Heuristik + Schritte L0–L5 (Grösse `light`)
+- `references/fehlerverhalten.md` — Dispatch-, Preflight- und Divergenz-Fälle
+- `references/abschluss.md` — Backlog/Status/Akzeptanz (Stufe 8 / L5)
 
 ## Projekt-Konfiguration (ZUERST lesen)
 
@@ -36,8 +39,12 @@ Defaults: `specsDir = docs/specs`, `plansDir = docs/plans`, `defaultBranch = mai
    Stufe 5/L3 zusätzlich `.superpowers/sdd/progress.md` als Recovery-Ledger.
    Bei Divergenz: anhalten, diagnostizieren, User fragen — nie blind weiter.
 2. Genau **zwei menschliche Workflow-Gates** (Klärung vor der Spec-Finalisierung,
-   Plan-Approval vor der Implementation) plus die separate **Merge-Bestätigung** —
-   je als gebündelte Rückfrage im Fragetool oder Chat, kein Plan-Mode-Umweg.
+   Plan-Approval vor der Implementation) plus die separate **Merge-Bestätigung**.
+   Ihre Form unterscheidet sich, weil ihre Frage sich unterscheidet: Gate 1 ist
+   eine **Schleife** (`/grilling`) — was gebaut werden soll, erschliesst sich im
+   Wechsel. Gate 2 und die Merge-Bestätigung sind **gebündelte Rückfragen** im
+   Fragetool oder Chat — eine Ja/Nein-Entscheidung mit Kontext, kein
+   Plan-Mode-Umweg.
 3. Spec + Plan + Review-State auf dem Default-Branch, Implementation auf
    `feature/<name>` bzw. `fix/<name>`; Source-Edits auf dem Default-Branch
    sind blockiert (Branch-Guard-Hook, sonst prozedural).
@@ -110,15 +117,22 @@ Manifest und — ab Stufe 5/L3 — Ledger lesen und gegen den Repo-Zustand valid
 | G2 | **Gate 2: Plan-Approval** | Default-Branch |
 | 5 | Implementation (§ Stufe 5) | `feature/<name>` |
 | 6 | Verifikation: `verifyCommands` des Projekts, alle grün; Liste im Manifest dokumentieren | `feature/<name>` |
+| 6b | Diff-Review: Gesamt-Diff gegen die Spec-Akzeptanz → `references/review-loop.md` | `feature/<name>` |
 | 7 | Smoke-Gate → `references/smoke-gate.md` | `feature/<name>` |
 | 8 | Finish: Backlog/Status nachziehen (§ Abschluss); **Merge nur auf explizite Bestätigung** | Merge |
 
-### Gate 1 — Klärungsfragen (in Stufe 1)
+### Gate 1 — Klärung im Wechsel (in Stufe 1)
 
-Anforderungen klären (via `superpowers:brainstorming`, falls verfügbar; sonst
-selbst: Problem, Nutzer, Randbedingungen, Nicht-Ziele). Offene Punkte gebündelt
-fragen (max. 3 Runden, danach Lücken mit dokumentierten Annahmen füllen). Dann
-die Spec vom `doc-writer` nach `<specsDir>/YYYY-MM-DD-<topic>-design.md`
+Anforderungen per `/grilling` klären: eine Frage, warten, nächste, bis eine
+lückenlose Zusammenfassung der Entscheide steht (Problem, Nutzer,
+Randbedingungen, Nicht-Ziele). Fehlt der Skill, klärt der Orchestrator selbst —
+dann gebündelt, max. 3 Runden, Lücken als dokumentierte Annahmen.
+
+**Die Entscheide der Schleife gehören in die Spec**, nicht in den
+Gesprächsverlauf: Annahmen, Nicht-Ziele und Randbedingungen. Nur dann ist
+Stufe 1 eine Session-Grenze (Grundsatz 7) und Stufe 2 kann frisch beginnen.
+
+Dann die Spec vom `doc-writer` nach `<specsDir>/YYYY-MM-DD-<topic>-design.md`
 schreiben lassen — Format wie bestehende Specs, mindestens `## Annahmen` +
 `## Akzeptanz` mit testbaren Bullets. Commit: `docs(spec): <topic> design`.
 
@@ -141,6 +155,13 @@ Pre-Implementation-Preflight läuft — der prüft genau diese Felder
 (`approvedAt` gesetzt + sauberer Worktree), sonst wäre es ein Approval-Bypass.
 Danach frischen Kontext für Stufe 5 empfehlen (Grundsatz 7).
 
+### Stufe 6b — Diff-Review
+
+Stufe 6 beweist grüne Tests, nicht die bestellte Sache. 6b hält den
+Gesamt-Diff gegen die Akzeptanz-Bullets der Spec — Vergleichspunkt ist der
+Merge-Base mit dem **Remote**-Default-Branch, eingearbeitet wird vom
+`implementer` mit erneuter Verifikation. Mechanik: `references/review-loop.md`.
+
 ### Stufe 5 — Implementation
 
 Branch idempotent: `feature/<name>` existiert (Resume) → `git checkout` +
@@ -153,48 +174,16 @@ zusätzlich Slot-/Thread- und Artefaktvertrag aus `references/codex-runtime.md`.
 
 ## Light-Mode (Grösse `light`)
 
-**Qualifikation (Heuristik):** kein Schema-/Migrations-Change · Kern-Diff
-≤ ~3 Dateien (Tests zählen nicht) · kein neues Event / kein neuer Endpoint ·
-kein Security-Touchpoint (Auth/Rollen). Bei Qualifikation aktiv **vorschlagen**;
-kurze User-Bestätigung ist Pflicht, Übersteuern jederzeit möglich. Wird die
-Heuristik mittendrin verletzt → anhalten, auf FULL eskalieren, nicht still weiter.
-
-| Schritt | Inhalt |
-|---|---|
-| L0 | Preflight + Manifest (`mode: "light"`) |
-| L1 | **Ein** Mini-Dokument `<specsDir>/<datum>-<slug>-fix.md`: Problem, Root-Cause (falls bekannt), Fix-Ansatz, Akzeptanz (3–5 Bullets) — Commit auf Default-Branch |
-| L2 | **Eine** Review-Runde (Reviewer-Weiche wie FULL); Triage; ein Squash-Commit |
-| L3 | Implementation auf `fix/<name>` (TDD wie im Plan); Ledger und Codex-Runtime-Vertrag gelten analog |
-| L4 | Verifikation: Typecheck + betroffene Test-Suites + Build (Integration nur bei API-/DB-Berührung) |
-| L5 | Finish: Backlog/Status (5-Zeilen-Format), Merge auf Bestätigung |
-
-Kein Gate 1 (Klärung formlos bei Bedarf), kein Plan-Approval-Gate, kein
-Smoke-Gate-Apparat (manuelle Bestätigung oder gezielter Browser-Check, im
-Manifest notiert) — die Merge-Bestätigung bleibt.
+Heuristik, Schritte L0–L5 und Abgrenzungen: `references/light-mode.md` —
+gelesen, sobald die Grössen-Weiche auf `light` steht.
 
 ## Abschluss-Pflichten (Stufe 8 / L5)
 
-- Backlog (falls vorhanden): umgesetzte Items abhaken, neue Funde eintragen.
-- Status-Dokument (falls das Projekt eines führt): **max. 5 Zeilen** pro
-  Abschluss, alles Längere gehört in Spec/Plan/Commits —
-
-  ```markdown
-  - **YYYY-MM-DD — <Titel>** (`<branch>`): <Was + Warum, 1–2 Sätze>.
-    <Besonderheiten/Bruchstellen, 0–2 Sätze>.
-    Spec: `<pfad>` · Plan: `<pfad>` · Tests: <kurz>.
-  ```
-
-  Dieser Block ist eine **bewusste Kopie über Plugin-Grenzen**: Quelle ist die
-  context-kit-Doktrin (`kontext-architektur.md`), dupliziert weil Plugins
-  einzeln gecacht sind — kein Drift-Befund.
-- Weder Backlog noch Status im Projekt: Akzeptanz-Checkliste der Spec abhaken.
+Backlog, Status-Dokument und Akzeptanz-Checkliste nachziehen:
+`references/abschluss.md` — gelesen beim Eintritt in Stufe 8.
 
 ## Fehlerverhalten
 
-- Dispatch scheitert oder liefert weder parsebaren Status noch Artefakt → einmal
-  gezielt nachfassen, danach dokumentierter Orchestrator-Fallback oder harter
-  Block. Review oder Implementation nie still überspringen.
-- Agent-Slot-Limit erreicht → Rollen-Thread schliessen oder wiederverwenden.
-- Branch-Hook blockt → du bist auf dem Default-Branch (Stufe 5: erst Branch).
-- Manifest/Repo-Divergenz oder roter Preflight (dirty Worktree, falscher Branch,
-  Slug-Kollision) → blockieren, Diagnose dokumentieren, User-Entscheid.
+Scheitert ein Dispatch, ist ein Preflight rot, blockt der Branch-Hook oder
+divergieren Manifest und Repo: `references/fehlerverhalten.md` — **lesen,
+bevor improvisiert wird.**

@@ -45,6 +45,11 @@ Nur fragen, was nicht aus dem Repo ableitbar ist:
   konkrete Fälle mit Datei-Verweis stehen. Ein Verbot nur mit konkret
   genanntem Failure-Mode, sonst Urteils-Anker oder nichts.
 - Nicht-verhandelbare Konventionen (je 1 Zeile + Datei-Verweis).
+- **Glossar-Frage:** Gibt es Begriffe, die Aussenstehende falsch verstehen
+  oder die im Team verschieden gebraucht werden? Bei Ja: `CONTEXT.md`
+  anlegen und in die Verweis-Tabelle aufnehmen. Bei Nein: **nichts
+  anlegen** — eine leere Glossar-Datei ist eine Einladung, sie mit
+  Belanglosem zu füllen. Gepflegt wird sie danach von `/domain-modeling`.
 - Deploy-Weg (nur die eine Zeile Wahrheit + wo das Detail liegt).
 - Soll der Feature-Workflow (`/spec-to-implementation`) für dieses Projekt
   gelten? Soll der Branch-Schutz aktiv sein?

@@ -1,7 +1,7 @@
 {
   "name": "context-kit",
   "description": "Kontext-Lebenszyklus für Claude-Code-Projekte: /projekt-setup richtet CLAUDE.md + Workflow-Config erstmalig ein, /kontext-audit hält den Kontext aktuell und schlank (Budgets, Drift, Duplikate, Kontext-Bomben)",
-  "version": "1.2.0",
+  "version": "1.3.0",
   "author": {
     "name": "Dominic Bue"
   },
