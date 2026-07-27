@@ -92,7 +92,7 @@ behobenen Punkte.
 
 ## Leitplanken
 
-- Keine Behauptung ohne Fundstelle; Laufzeit-Messwerte als Näherung
+- Jeder Befund mit Fundstelle; Laufzeit-Messwerte als Näherung
   kennzeichnen.
 - Kein Design-Umbau unter dem Deckmantel von A11y: Farbwerte nur minimal
   anpassen (Kontrast erfüllen, Charakter erhalten) — grössere visuelle

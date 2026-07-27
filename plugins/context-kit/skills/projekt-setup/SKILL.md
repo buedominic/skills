@@ -25,15 +25,15 @@ jedem Projekt an, das damit eingerichtet wurde.
 
 ### 1. Bestandsaufnahme (read-only)
 
-- Existiert schon eine `CLAUDE.md`/`AGENTS.md`? → **NICHT überschreiben.**
-  Stattdessen Restrukturierung: Bestand gegen die Doktrin bewerten, Umbau
+- Existiert schon eine `CLAUDE.md`/`AGENTS.md`? → **Umbau-Vorschlag statt
+  Neuanlage.** Bestand gegen die Doktrin bewerten, Umbau
   als Vorschlag präsentieren (wie `/kontext-audit`, Neuaufbau statt Diät).
 - Repo analysieren: `package.json`/Build-Tooling (Befehle für dev, test,
   build, lint), Verzeichnisstruktur (nur Top-Level + auffällige
   Konventionen), Test-Setup, CI-Workflows, bestehende Doku unter `docs/`,
   `.env.example` (NICHT `.env` lesen).
-- Notiere, was aus dem Code ableitbar ist — das kommt NICHT in die
-  CLAUDE.md.
+- Notiere, was aus dem Code ableitbar ist — das leitet Claude in der
+  Session selbst ab und bleibt draussen.
 
 ### 2. Interview (gebündelt, max. 2 Runden `AskUserQuestion`)
 

@@ -75,9 +75,9 @@ Kurzes Dokument (≤ 1 Seite) — bei laufender Pipeline als
 
 ## Leitplanken
 
-- Keine Behauptung ohne Quelle: jeder Ökosystem-Kandidat mit Link, jeder
+- Jede Behauptung mit Quelle: jeder Ökosystem-Kandidat mit Link, jeder
   Eigencode-Treffer mit Datei-Pfad.
-- Keine Dependency-Empfehlung ohne Lizenz- und Wartungs-Check.
+- Jede Dependency-Empfehlung trägt einen Lizenz- und Wartungs-Check.
 - Zeitbudget: das ist ein Check, keine Studie — pro Ebene wenige gezielte
   Suchen; wenn nach ~15 Minuten nichts Brauchbares auftaucht, ist BUILD
   mit dokumentierter Suche das legitime Ergebnis.

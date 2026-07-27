@@ -17,7 +17,7 @@ context-kit-Doktrin): CLAUDE.md verweist nur auf das Verzeichnis.
   Sicherheits-/Scope-Entscheid durch den User).
 - Technologie-/Struktur-Wahlen mit Alternativen (DB, Auth-Ansatz,
   Deployment, Modul-Schnitt).
-- NICHT für: umkehrbare Detail-Entscheide, reine Konventionen (→
+- Gehört woanders hin: umkehrbare Detail-Entscheide, reine Konventionen (→
   CLAUDE.md), Feature-Inhalte (→ Spec).
 
 ## Ablauf
