@@ -8,7 +8,8 @@ Die Vorlage ist der Ort, an dem die neuen Regeln in jeden künftigen Skill
 dieses Repos einwandern. Sie darf dabei nicht zur Regel-Liste werden — das
 wäre genau der Fehler, den sie verhindern soll.
 
-- [ ] **Description als Interface** (Befund G + I). Der bestehende Hinweis
+- [ ] **Description als Interface** (Befund G, und der Vorlagen-Teil von
+      Befund I). Der bestehende Hinweis
       („das `description`-Feld ist das Wichtigste") wird präzisiert: die
       Description ist die *autoritative* Stelle für die Bedienung, nicht
       eine Zusammenfassung des Bodys. Enums und Verträge tragen die

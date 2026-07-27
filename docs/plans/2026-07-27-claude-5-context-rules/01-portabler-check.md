@@ -18,14 +18,25 @@ laufen — seine beiden Assertions werden mit abgedeckt.
         vorhanden, `description:` vorhanden und nicht leer.
       - **codex-runtime-Verweis** in `spec-to-implementation/SKILL.md`
         (deckt die zweite PowerShell-Assertion ab).
-      - **Status-Format:** genau zwei Vorkommen des Format-Literals im Repo
-        (Doktrin + `spec-to-implementation`), und das Vorkommen in
-        `spec-to-implementation` trägt die Ausnahme-Markierung.
+      - **Status-Format:** genau zwei Vorkommen des Format-Literals
+        **unterhalb `plugins/` und `templates/`** (Doktrin +
+        `spec-to-implementation`); die Doktrin ist als Quelle
+        gekennzeichnet, die Kopie als Plugin-Isolations-Ausnahme.
+        Der Scope ist bewusst eng: `docs/specs/` und `docs/plans/` dürfen
+        das Format zitieren, ohne den Check zu brechen — sonst wird jede
+        künftige Spec, die es erwähnt, zum Fehlschlag.
+      - **Befund K/L:** `kontext-audit` enthält keine Behauptung
+        „immer geladene Skill-Prompts" mehr, hat eine `description`-Zeile
+        in der Budget-Tabelle und nennt `/doctor`.
       - **Zeilen-Bilanz:** gibt die Zeilenzahlen der betroffenen Dateien
         aus. Reine Ausgabe, kein Fehlschlag — die Bewertung bleibt menschlich.
-- [ ] Check laufen lassen. Erwartung: **rot** beim Status-Format
-      (drei Vorkommen, keine Markierung), grün bei allen Ankern.
-      Das ist der rote Test vor der Änderung.
+- [ ] Check laufen lassen. Erwartung: **rot** bei der Markierung — das
+      Literal kommt heute schon genau zweimal vor (Runde 8 der Spec-Review
+      hat die ursprüngliche Drei-Fundstellen-Annahme widerlegt), aber weder
+      ist die Doktrin als Quelle gekennzeichnet noch die Kopie in
+      `spec-to-implementation` als Ausnahme. Ebenfalls rot: die
+      `description`-Budget-Zeile (Befund K) und die `/doctor`-Zeile
+      (Befund L) fehlen. Grün müssen alle zehn Anker sein.
 - [ ] Rotes Ergebnis im Plan festhalten (welche Assertion, welcher Wert).
 
 ## Abnahme

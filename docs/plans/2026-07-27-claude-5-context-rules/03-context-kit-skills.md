@@ -41,6 +41,17 @@ Duplikat, das `/kontext-audit` als CRITICAL führt).
       „ist die `SKILL.md` im Zeilen-Budget", sondern „ist ein langer Skill
       in einen Datei-Baum aufgeteilt". Ein Skill über Budget mit
       `references/` ist gesund; einer ohne ist der Befund.
+- [ ] **Befund K — falscher Fakt in der Budget-Tabelle.** Die Zeile
+      „immer geladene Skill-Prompts (`SKILL.md`)" stimmt nicht: der Body
+      lädt beim Trigger, nicht in jeder Session. Korrigieren — und die
+      `description` als eigene Budget-Zeile aufnehmen, denn sie ist das
+      einzige wirklich immer geladene Stück und hatte bisher gar kein
+      Budget. Das ist zugleich die Begründung, auf der das Zeilen-Budget
+      dieses ganzen Vorhabens ruht.
+- [ ] **Befund L — `/doctor` erwähnen.** Eine Zeile, verfügbarkeits-neutral
+      („falls die Runtime `/doctor` anbietet, …"), wie die Doktrin es für
+      Tool-Verweise vorschreibt. Kein Nachbau: der Skill deckt Drift,
+      Duplikate und Archiv-Mechanik ab, die `/doctor` nicht kennt.
 - [ ] Kurzfassung der Doktrin am Dateikopf angleichen.
 - [ ] Gegenfinanzierung: Der neue Schritt kostet Zeilen. Prüfen, ob der
       Duplikat-Check (Schritt 4) und der neue Über-Constraining-Check sich
@@ -53,5 +64,9 @@ Duplikat, das `/kontext-audit` als CRITICAL führt).
 - [ ] `kontext-audit` findet kollidierende Instruktionen, klassifiziert
       jeden Fund und nennt den Ban-Scan als Einstiegsheuristik.
 - [ ] `kontext-audit` prüft den Datei-Baum, nicht nur das Zeilen-Budget.
-- [ ] Status-Format-Literal steht nicht mehr in `projekt-setup`.
+- [ ] `kontext-audit` behauptet nicht mehr, `SKILL.md`-Bodies seien immer
+      geladen; die `description` hat eine eigene Budget-Zeile (K).
+- [ ] `kontext-audit` nennt `/doctor` in einer verfügbarkeits-neutralen
+      Zeile (L).
+- [ ] `projekt-setup` hat weiterhin keine Kopie des Status-Formats.
 - [ ] `.env`/Secrets-Leitplanken beider Skills unverändert (Check grün).

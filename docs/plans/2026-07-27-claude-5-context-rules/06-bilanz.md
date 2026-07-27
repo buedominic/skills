@@ -42,6 +42,18 @@ Budget der Doktrin (~150–200 Zeilen je `SKILL.md`); nur
 |---|---|---|---|
 | | | | |
 
+## Abnahme
+
+Diese Phase hat keine eigenen Kriterien — ihre Abnahme **ist** die
+Akzeptanz-Checkliste der Spec, vollständig abgehakt, plus:
+
+- [ ] Beide Tabellen oben sind ausgefüllt (keine leeren Zellen).
+- [ ] `node tests/validate-context-doctrine.mjs` grün.
+- [ ] Der Zustand des PowerShell-Tests ist entschieden und dokumentiert —
+      gelaufen oder als Umgebungsgrenze begründet, nicht stillschweigend
+      übergangen.
+- [ ] Branch gepusht, `main` unberührt, kein PR.
+
 ## Offene Risiken
 
 - Die Skills dieses Repos sind Prompt-Kontext. Ein zu aggressiver Schnitt

@@ -31,9 +31,16 @@ Phasen 02/03.
         die Referenz ist die autoritative Stelle (Shift 4).
 - [ ] **Unantastbar:** Grundsatz 1 (Git ist die Wahrheit), Grundsatz 5
       (Daten-Grenze mit `git ls-files --error-unmatch`), der
-      Gate-2-Approval-Passus mit `approvedAt`, der `codex-runtime`-Verweis.
+      Gate-2-Approval-Passus mit `approvedAt`, der Verweis auf
+      `references/codex-runtime.md`.
       Der Check aus Phase 01 hält das fest.
 - [ ] Ziel: ≤ 200 Zeilen, ohne dass ein Akzeptanz-Kriterium der Spec fällt.
+      **Fallback, falls beides nicht gleichzeitig geht:** anhalten und den
+      Konflikt melden, statt Substanz zu schneiden, um eine Zahl zu treffen.
+      Das Budget ist ein Urteils-Anker, kein Selbstzweck — genau die
+      Unterscheidung, um die es in diesem ganzen Vorhaben geht. Zweite
+      Option in dem Fall: Detail-Maschinerie in eine weitere `references/`-
+      Datei auslagern, statt sie zu löschen (Progressive Disclosure).
 
 ## `references/review-loop.md` (Start: 81 Zeilen)
 
