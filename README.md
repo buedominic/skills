@@ -96,10 +96,13 @@ Claude-Tool-Namen: [`docs/portabilitaet.md`](docs/portabilitaet.md).
    führt von der Idee bis zum Merge, mit genau zwei Rückfragen
    (Klärungsfragen + Plan-Freigabe). Kleine Fixes laufen automatisch als
    Light-Mode-Vorschlag.
-3. **Kontext pflegen:** bei Bedarf **manuell** `/kontext-audit` ausführen —
+3. **Den Überblick behalten:** `/skill-kompass` sagt, welcher Skill zu
+   welcher Lage passt und was danach kommt — nützlich, weil die
+   Orchestrator-Skills bewusst nicht von selbst auftauchen.
+4. **Kontext pflegen:** bei Bedarf **manuell** `/kontext-audit` ausführen —
    z.B. wenn sich die Doku falsch anfühlt oder `CLAUDE.md`/Status-Dokumente
    wachsen. Läuft bewusst nie automatisch.
-4. **Alltag drumherum:** `/prior-art-check` bevor etwas Nicht-Triviales
+5. **Alltag drumherum:** `/prior-art-check` bevor etwas Nicht-Triviales
    gebaut wird, `/bug-triage` für Fehlermeldungen (mündet in den
    Light-Mode), `/adr` für Grundsatz-Entscheide, `/dependency-audit` für
    die Paket-Pflege — alle manuell angestossen.
@@ -119,7 +122,7 @@ Plugin-READMEs.
 
 | Plugin | Inhalt |
 |---|---|
-| [`context-kit`](plugins/context-kit/) | Kontext-Lebenszyklus: `/projekt-setup` (erstmalige, schlanke CLAUDE.md ≤ ~120 Zeilen mit Prüfankern + optionale Workflow-Verdrahtung) und `/kontext-audit` (hält den Kontext aktuell und schlank: Budget-, Drift-, Duplikat- und Kontext-Bomben-Check). Gemeinsame Doktrin: Schichten-Modell + „eine Wahrheit, dünne Adapter". |
+| [`context-kit`](plugins/context-kit/) | Kontext-Lebenszyklus + Wegweiser: `/skill-kompass` (welcher Skill passt gerade? Anlässe und Übergänge — der Einstieg, wenn du nicht weisst, wonach du greifen sollst), `/projekt-setup` (erstmalige, schlanke CLAUDE.md ≤ ~120 Zeilen mit Prüfankern + optionale Workflow-Verdrahtung) und `/kontext-audit` (hält den Kontext aktuell und schlank: Budget-, Drift-, Duplikat- und Kontext-Bomben-Check). Gemeinsame Doktrin: Schichten-Modell + „eine Wahrheit, dünne Adapter". |
 | [`dev-toolkit`](plugins/dev-toolkit/) | Alltags-Skills: `/prior-art-check` (ist das Problem schon gelöst? Eigencode → Bibliotheken → CS-Problemklassen → Natur-Heuristiken, mit Build/Buy/Adapt-Empfehlung), `/dependency-audit` (risikogestufter Update-Plan, Report zuerst), `/adr` (Architecture Decision Records unter `docs/decisions/`), `/bug-triage` (Meldung → Repro → Root-Cause-Hypothesen → Light-Mode-Input), `/web-audit` (Accessibility/Performance/SEO mit Fundstellen-Report) und `/landing-page` (Conversion-Struktur, Copy-Prinzipien, Launch-Checkliste). |
 | [`feature-workflow`](plugins/feature-workflow/) | Spec-to-Implementation-Pipeline: `$spec-to-implementation`/`/spec-to-implementation` (Brainstorm → Spec → Review → Plan → Review → Implementation mit zwei Gates, Stage-Manifest plus `.superpowers/sdd/progress.md`, begrenztem Codex-Rollen-Pool, Light-Mode und Smoke-Gate), Rollen-Agenten, Branch-Schutz-Hook und Konfigurations-Vorlagen. |
 
@@ -145,10 +148,16 @@ an und trägt sie in der `marketplace.json` ein.
 ## Neuen Skill hinzufügen
 
 1. Ordner `plugins/<plugin>/skills/<skill-name>/` anlegen.
-2. `SKILL.md` mit Frontmatter (`name`, `description`) erstellen – die
-   Vorlage in `templates/skill-vorlage/` zeigt den Aufbau und gibt Tipps,
-   wie man projektspezifische Skills generalisiert.
-3. Version in `plugin.json` erhöhen, committen, pushen.
+2. **Invocation entscheiden:** soll Claude den Skill selbst greifen
+   (model-invoked — die `description` liegt in jeder Session im Kontext),
+   oder tippst nur du ihn (`disable-model-invocation: true` — kostet
+   nichts, dafür musst du dich erinnern)? Faustregel: alles, was du
+   ohnehin bewusst anstösst, wird user-invoked.
+3. `SKILL.md` mit Frontmatter (`name`, `description`) erstellen – die
+   Vorlage in `templates/skill-vorlage/` zeigt den Aufbau, erklärt beide
+   Invocation-Modi und gibt Tipps, wie man projektspezifische Skills
+   generalisiert.
+4. Version in `plugin.json` erhöhen, committen, pushen.
 
 ## Skills aus einem bestehenden Projekt übernehmen
 
