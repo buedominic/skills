@@ -54,3 +54,32 @@ ihm greifst und was danach kommt".
 Wächst der Router über eine Bildschirmseite, ist er zur Nacherzählung
 geworden. Dann zurück auf die Anlass-Zeilen — nicht die Seite kürzen,
 sondern die Nacherzählung streichen.
+
+## Ergebnis — und eine Abweichung von der Spec
+
+Der Skill heisst `skill-kompass` (`plugins/context-kit/skills/skill-kompass/`),
+ist user-invoked, 64 Zeilen.
+
+**Die Spec verlangt, dass der Router keine `description` nacherzählt. Für
+die vier model-invoked Skills tut er es teilweise doch** — die Spalte
+„Ausgangslage" nennt bei `kontext-audit`, `bug-triage`, `prior-art-check`
+und `adr` denselben Anlass, den ihre `description` trägt. Bewusst so
+belassen, aus zwei Gründen:
+
+1. **Der Spec-Satz trägt hier nicht.** Er begründet die Regel mit
+   vermiedener Duplikation — die kostet aber Tokens nur bei geladenen
+   Artefakten. Der Kompass ist user-invoked und lädt nur, wenn man ihn
+   tippt. Was bleibt, ist Wartungs-Drift, und die trifft eine Karte, keine
+   Doktrin.
+2. **Ohne sie zerfällt die Karte.** Ein Wegweiser, der vier von neun Wegen
+   auslässt, weil sie ohnehin von selbst gefunden werden, beantwortet die
+   Frage nicht mehr, für die man ihn tippt.
+
+Die Zeilen sind **Anlass-Formulierungen, keine Kopien**: „Doku fühlt sich
+falsch an, `CLAUDE.md` wächst" gegen „context has gone stale or bloated".
+Driftet eine, veraltet ein Wegweiser — kein Doktrin-Verstoss. Wer die Regel
+strenger will, streicht die vier Zeilen; der Kompass funktioniert dann für
+die fünf, die man tatsächlich erinnern muss.
+
+Die README-Tabelle bleibt vollständig (siehe Schritt oben) — sie beschreibt
+*was*, der Kompass *wann*.
