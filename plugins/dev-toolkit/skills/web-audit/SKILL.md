@@ -6,7 +6,9 @@ description: Use to audit a web application or page for accessibility, performan
 # Web-Audit — Accessibility, Performance, SEO
 
 Die drei kritischen Dimensionen, die weder Design-Skills noch
-Security-Review abdecken. Report zuerst, Fixes nach Bestätigung.
+Security-Review abdecken.
+**Befund vor Eingriff:** erst erheben und klassifizieren, dann vorlegen —
+geändert wird auf Zusage.
 
 ## Ablauf
 
