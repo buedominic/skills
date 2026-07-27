@@ -72,6 +72,16 @@ Vorgaben des Posts:
    Diese bleiben unverändert.
 6. Das Repo hat keine CLAUDE.md und keine `workflow.config.json`; Defaults
    gelten (`docs/specs`, `docs/plans`, `maxReviewRounds = 5`).
+7. **Plugin-Isolation ist bindend.** `install.sh` kopiert jeden Skill
+   selbsttragend (Plugin-`docs/` wandern in die `references/` des Skills),
+   und `projekt-setup` warnt ausdrücklich: „Plugins sind einzeln gecacht —
+   verlasse dich nicht auf Dateien eines anderen Plugins." Dedup nach Shift 4
+   ist deshalb nur **innerhalb** eines Plugins zulässig. Ein Verweis von
+   `feature-workflow` auf `context-kit` wäre ein Portabilitäts-Bruch.
+8. Der Post wertet Skills auf, die *eigene* Meinungen und Domänen-Praxis
+   kodieren. Fachliche Leitplanken sind damit kein Über-Constraining, auch
+   wenn sie negativ formuliert sind — der Test ist nicht die Grammatik,
+   sondern ob ein realer Failure-Mode dahintersteht.
 
 ## Befunde und Soll-Zustand
 
@@ -86,16 +96,22 @@ klar Geschmack ist.
 | C | `.../skills/kontext-audit/SKILL.md` | kein Check auf Über-Constraining | Neuer Prüfschritt: kollidierende Instruktionen über die Artefakte hinweg finden; Ban-Scan als Einstiegsheuristik; jeder Fund wird klassifiziert (hochwichtig → bleibt, sonst → Urteils-Anker oder weg) |
 | D | Doktrin | Auto-Memory kommt nicht vor | CLAUDE.md ist kein Memory-Store; der `#`-Hotkey-Reflex entfällt |
 | E | `plugins/feature-workflow/skills/spec-to-implementation/` | Gate 1 erzeugt Prosa-Specs; `references/review-loop.md` ohne Rubric | Rich References zulassen und bevorzugen: Mockup/Test-Suite/Code als Spec-Artefakt; Rubric für den Reviewer |
-| F | drei Dateien | Das 5-Zeilen-Status-Format steht wörtlich in `kontext-architektur.md`, `projekt-setup/SKILL.md` und `spec-to-implementation/SKILL.md` | Eine Quelle (Doktrin), die anderen verweisen — Shift 4 und die repo-eigene Regel „Eine Wahrheit, dünne Adapter" |
+| F | drei Dateien | Das 5-Zeilen-Status-Format steht wörtlich in `kontext-architektur.md`, `projekt-setup/SKILL.md` und `spec-to-implementation/SKILL.md` | Dedup **nur innerhalb context-kit**: die Doktrin ist die Quelle, `projekt-setup` verweist. `spec-to-implementation` behält seine Kopie — ein Cross-Plugin-Verweis bräche die Plugin-Isolation (Annahme 7). Die bewusste Duplikat-Ausnahme wird an beiden Stellen als solche markiert, damit ein späteres Audit sie nicht erneut meldet |
 | G | `templates/skill-vorlage/SKILL.template.md` | transportiert keine der neuen Autoren-Regeln | Neue Regeln aufnehmen: Description als autoritatives Interface, Progressive Disclosure via Datei-Baum, Urteils-Anker statt Regel-Listen, eigene Meinung kodieren |
 | H | `kontext-architektur.md` § „Was gehört in CLAUDE.md" | **Gotchas** kommen im Schichten-Modell nicht vor, obwohl der Post ihnen den Grossteil der Tokens zuweist | Gotchas werden der Schwerpunkt-Posten der CLAUDE.md; die übrigen Posten schrumpfen entsprechend |
+| I | `templates/skill-vorlage/`, `references/review-loop.md` | Shift 2 (Interface Design) ist nirgends benannt, obwohl das Repo ihn stellenweise schon erfüllt (Finding-Vertrag mit `severity`-Enum, `mode`/`environment`-Enums im Manifest) | Das Prinzip explizit machen: die `description` ist das Interface eines Skills, Enums und Verträge tragen die Bedienung. Bestehende gute Stellen bleiben, die Vorlage benennt die Regel |
+| J | `plugins/dev-toolkit/skills/*/SKILL.md` (6 Skills) | Gate 1 hat die Selbstanwendung auf dem Mittelweg entschieden, aber kein Befund deckt dev-toolkit ab | Ein dokumentierter Durchgang durch alle „Leitplanken"-Abschnitte: pro Regel entscheiden, ob ein realer Failure-Mode dahintersteht (bleibt), ob es kodierte Domänen-Meinung ist (bleibt — der Post wertet das auf) oder blosser Geschmack (wird Urteils-Anker oder entfällt). Das Ergebnis wird festgehalten, auch wenn es „nichts zu streichen" lautet |
 
 ## Nicht-Ziele
 
 - Keine CLAUDE.md für dieses Repo anlegen (eigener Entscheid, eigener Auftrag).
 - Keine inhaltliche Änderung an den Fach-Regeln der dev-toolkit-Skills
-  (Accessibility-Schwellen, Dependency-Risikostufen, ADR-Format o.ä.) —
-  nur die Form ihrer Leitplanken steht zur Debatte.
+  (Accessibility-Schwellen, Dependency-Risikostufen, ADR-Format o.ä.).
+  Befund J prüft die **Form** der Leitplanken, nicht ihren Fachgehalt.
+- Kein Split von `references/smoke-gate.md` (172 Zeilen). Die Datei ist
+  bereits das Ergebnis eines Progressive-Disclosure-Splits und wird genau
+  einmal beim Eintritt in Stufe 7 geladen; der Post kritisiert lange
+  *immer* geladene Kontexte.
 - Kein Nachbau von `/doctor`.
 - Kein Merge und kein Pull Request; die Arbeit endet mit dem Push auf
   `claude/skills-claude-5-context-b4wfoo`.
@@ -106,14 +122,71 @@ klar Geschmack ist.
 - [ ] `kontext-architektur.md` § „Was gehört in CLAUDE.md" führt **Gotchas** als Schwerpunkt-Posten und benennt sie als grössten Token-Anteil.
 - [ ] `kontext-architektur.md` hält fest, dass CLAUDE.md kein Memory-Store ist (Auto-Memory).
 - [ ] `kontext-architektur.md` benennt Rich References (Code, Test-Suite, Mockup, Rubric) als der Prosa vorzuziehen.
-- [ ] Das 5-Zeilen-Status-Format steht in genau **einer** Datei; `projekt-setup/SKILL.md` und `spec-to-implementation/SKILL.md` verweisen darauf, statt es zu wiederholen. Prüfbar per Suche nach dem Format-Literal.
+- [ ] Das 5-Zeilen-Status-Format steht innerhalb von context-kit genau **einmal** (in der Doktrin); `projekt-setup/SKILL.md` verweist darauf. `spec-to-implementation/SKILL.md` behält seine Kopie und markiert sie als bewusste Plugin-Isolations-Ausnahme, damit `/kontext-audit` sie nicht erneut als Duplikat meldet. Prüfbar: genau zwei Vorkommen des Format-Literals im Repo, eines davon markiert.
 - [ ] `projekt-setup/SKILL.md` fragt im Interview nach Gotchas; „Verbote" sind keine eigene Interview-Frage und kein Pflicht-Abschnitt der erzeugten CLAUDE.md mehr.
 - [ ] `kontext-audit/SKILL.md` hat einen Prüfschritt, der kollidierende Instruktionen über CLAUDE.md, AGENTS.md und Skills hinweg findet, jeden Fund klassifiziert und den Ban-Scan als Einstiegsheuristik nennt.
 - [ ] `kontext-audit/SKILL.md` prüft, ob lange Skills in einen Datei-Baum aufgeteilt sind (Progressive Disclosure), nicht nur ob sie im Zeilen-Budget liegen.
 - [ ] `spec-to-implementation/SKILL.md` erlaubt in Gate 1 Rich References als Spec-Artefakt und nennt die Präferenz für Code-Dateien.
 - [ ] `references/review-loop.md` kennt eine Rubric als Reviewer-Input.
-- [ ] `templates/skill-vorlage/SKILL.template.md` nennt Description-als-Interface, Progressive Disclosure via Datei-Baum, Urteils-Anker statt Regel-Liste und „eigene Meinung kodieren".
-- [ ] Die hochwichtigen Constraints sind wortwörtlich erhalten: Daten-Grenze/Secrets, Git-als-Wahrheit, Gate-Bypass-Schutz, keine erfundenen Fakten/Beweise. Prüfbar per Diff gegen `main`.
-- [ ] Jede geänderte Datei nennt die Quelle (Blogpost mit Datum), damit ein späteres Audit die Herkunft der Regel prüfen kann.
-- [ ] `tests/validate-feature-workflow.ps1` läuft unverändert grün — oder die Nicht-Ausführbarkeit ist dokumentiert.
+- [ ] `templates/skill-vorlage/SKILL.template.md` nennt vier Dinge: die `description` als autoritatives Interface des Skills (mit Enums/Verträgen als Trägern der Bedienung, Shift 2), Progressive Disclosure via Datei-Baum, Urteils-Anker statt Regel-Liste, und „eigene Meinung kodieren".
+- [ ] Befund J ist abgearbeitet: für jede „Leitplanke" der sechs dev-toolkit-Skills liegt ein Entscheid vor (realer Failure-Mode / kodierte Domänen-Meinung / Geschmack), und die Geschmacks-Fälle sind umgeschrieben oder entfernt. Das Ergebnis steht im Plan, auch wenn nichts gestrichen wurde.
+
+### Budget — die Änderung muss selbst dem Post folgen
+
+- [ ] **Zeilen-Bilanz wird ausgewiesen** (vorher/nachher pro Datei) und jede Netto-Vergrösserung ist mit dem Failure-Mode begründet, den sie adressiert. Harte Grenze ist das bereits geltende Budget der Doktrin — Orchestrator-Kern ~150–200 Zeilen je `SKILL.md` — nicht eine neu erfundene Null-Bilanz. Eine starre „darf nicht wachsen"-Regel wäre selbst die Sorte Constraint, die dieser Post streicht.
+- [ ] Kein Artefakt trägt eine Quellen-/Changelog-Zeile zum Blogpost. Provenienz steht in dieser Spec und in der Git-Historie — eine Quellenzeile pro Datei wäre genau der Token-Ballast, den der Post streicht. Einzige Ausnahme: die Doktrin `kontext-architektur.md` darf die Herkunft in einer Zeile nennen.
+
+### Regression — was nicht kaputtgehen darf
+
+- [ ] Diese Anker sind wortwörtlich erhalten (prüfbar per Grep): `Daten-Grenze` und `git ls-files --error-unmatch` in `spec-to-implementation`; `Git ist die Wahrheit`; der Gate-2-Passus `approvedAt` gesetzt + sauberer Worktree; `Keine erfundenen Beweise` in `landing-page`; `Keine PII/Secrets` in `bug-triage` und `web-audit`; `.env`/Secrets-Verbote in beiden context-kit-Skills.
+- [ ] Das Frontmatter aller acht `SKILL.md` bleibt gültig (`name:` + nichtleere `description:`) — genau das prüft `validate-feature-workflow.ps1`, und Befund E fasst diese Datei an.
+- [ ] `spec-to-implementation/SKILL.md` verweist weiterhin auf `references/codex-runtime.md` (zweite Assertion desselben Tests).
+- [ ] Ein portabler Check (`tests/`, ohne PowerShell lauffähig) verifiziert die maschinell prüfbaren Kriterien dieser Liste: Anker-Grep, Frontmatter, Status-Format-Vorkommen. Die Zeilen-Bilanz gibt er als Zahl aus, ohne sie zu erzwingen — die Bewertung bleibt menschlich.
+- [ ] `tests/validate-feature-workflow.ps1` läuft grün — oder die fehlende `pwsh`-Installation ist als Umgebungsgrenze dokumentiert und der portable Check deckt seine beiden Assertions mit ab.
 - [ ] Alle Änderungen sind auf `claude/skills-claude-5-context-b4wfoo` gepusht; `main` ist unberührt.
+
+## Review-Notizen
+
+**Runde 1** (Reviewer: `orchestrator`, adversarialer Pass) — 8 Findings,
+7 angewendet:
+
+- *CRITICAL* Befund F verlangte einen Cross-Plugin-Verweis und hätte die
+  Plugin-Isolation gebrochen → F umformuliert, Annahme 7 ergänzt.
+- *CRITICAL* Alle Befunde fügten nur Text hinzu → Budget-Sektion mit
+  Netto-Zeilen-Bilanz ergänzt.
+- *CRITICAL* Der Gate-1-Entscheid „Mittelweg" war für dev-toolkit nicht
+  operationalisiert → Befund J ergänzt.
+- *IMPORTANT* Das Kriterium „jede Datei nennt die Quelle" war nach diesem
+  Post selbst ein Anti-Pattern → gestrichen, durch das Gegenteil ersetzt.
+- *IMPORTANT* Shift 2 hatte keinen Befund → Befund I ergänzt.
+- *IMPORTANT* Die Akzeptanz stützte sich auf einen Test, der hier nicht
+  läuft und nichts zur Sache sagt → Regression-Sektion mit portablem Check.
+- *MINOR* „Prüfbar per Diff gegen main" benannte keine Anker → Anker-Liste.
+
+**Runde 2** (Reviewer: `orchestrator`) — 2 Findings, beide angewendet.
+Beides Folgefehler der Runde-1-Korrekturen:
+
+- *CRITICAL* Das Akzeptanz-Kriterium „Status-Format steht in genau einer
+  Datei" widersprach dem in Runde 1 reparierten Befund F, der
+  `spec-to-implementation` seine Kopie ausdrücklich belässt → auf „genau
+  zwei Vorkommen, eines markiert" korrigiert.
+- *IMPORTANT* Die neu eingeführte Netto-Null-Zeilenbilanz war selbst eine
+  starre Regel der Sorte, die dieser Post streicht → ersetzt durch
+  „Bilanz ausweisen und Wachstum begründen", hart begrenzt durch das
+  bereits bestehende Budget der Doktrin.
+
+**Runde 3** (Reviewer: `orchestrator`) — 2 MINOR-Findings, beide angewendet:
+
+- Die Akzeptanzliste enthielt zwei Kriterien für `skill-vorlage`, die
+  einander überlappten — ein Duplikat in der Spec, die Duplikate abschafft
+  → zu einem Kriterium zusammengezogen.
+- Das Kriterium zum portablen Check verlangte weiterhin eine
+  „Netto-Zeilen-Bilanz", obwohl Runde 2 die Null-Bilanz verworfen hatte
+  → der Check gibt die Zahl aus, erzwingt sie nicht.
+
+**Runde 4** (Reviewer: `orchestrator`) — `NO_FINDINGS`. Clean-Pass ohne
+Edits, Schleife verlassen (4 von 5 Runden verbraucht).
+
+**Bewusst abgelehnt:** Split von `references/smoke-gate.md` (172 Zeilen).
+Die Datei ist bereits das Ergebnis eines Splits und wird bedarfsgeladen —
+der Post kritisiert lange *immer* geladene Kontexte. Als Nicht-Ziel notiert.

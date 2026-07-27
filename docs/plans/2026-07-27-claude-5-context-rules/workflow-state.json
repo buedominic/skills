@@ -9,8 +9,8 @@
   "specPath": "docs/specs/2026-07-27-claude-5-context-rules-design.md",
   "planDir": "docs/plans/2026-07-27-claude-5-context-rules",
   "branch": "claude/skills-claude-5-context-b4wfoo",
-  "stage": 1,
-  "stageStatus": "spec-written",
+  "stage": 2,
+  "stageStatus": "spec-reviewed",
   "approvedAt": null,
   "gate1": {
     "quellenlage": "Original als PDF-Export vom User geliefert und gelesen; Spec basiert darauf. Die WebSearch-Rekonstruktion wurde verworfen (zwei Fehler, in der Spec unter Annahmen 2+3 dokumentiert).",
@@ -19,9 +19,11 @@
   },
   "reviews": {
     "spec": {
-      "rounds": 0,
+      "rounds": 4,
       "reviewer": "orchestrator",
-      "rejected": []
+      "rejected": [
+        "Split von references/smoke-gate.md — bereits Ergebnis eines Splits, bedarfsgeladen; der Post kritisiert lange immer geladene Kontexte"
+      ]
     },
     "plan": {
       "rounds": 0,
@@ -50,6 +52,8 @@
     "E",
     "F",
     "G",
-    "H"
+    "H",
+    "I",
+    "J"
   ]
 }
