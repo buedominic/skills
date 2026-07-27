@@ -11,26 +11,30 @@ nach Budget, optionale Workflow-Verdrahtung, verankerte Pflege-Regeln.
 **Doktrin ZUERST lesen** (erster Fund gewinnt):
 `references/kontext-architektur.md` (neben dieser Datei — bei
 Einzel-Skill-Installation, z.B. Codex) oder
-`../../docs/kontext-architektur.md` (Plugin-/Repo-Layout). Sie enthält
-Schichten-Modell, Budgets, was in CLAUDE.md gehört und was nicht — und ist
-die Wahrheit; der Skill hier beschreibt nur den Ablauf. Ist keine der
-beiden Dateien vorhanden, gilt die Kurzfassung:
+`../../docs/kontext-architektur.md` (Plugin-/Repo-Layout). Sie ist die
+Wahrheit; dieser Skill beschreibt nur den Ablauf. Fehlen beide, gilt die
+Kurzfassung:
 
 > CLAUDE.md wird in jeder Session geladen → hartes Budget ≤ ~120 Zeilen
 > (Kosten ∝ Ladehäufigkeit); Detail wandert in verlinkte Doku, Skill-
-> References oder Archive. Eine Wahrheit, dünne Adapter: jeder Fakt genau
-> einmal, `AGENTS.md` & Co. verweisen statt kopieren. Nur Nicht-Ableitbares
-> aufnehmen; stale-anfällige Fakten mit Code-Fundstelle als Prüfanker.
-> Status-Einträge max. 5 Zeilen, Historie in `*-archiv.md`.
+> References oder Archive. **Gotchas sind der Schwerpunkt-Posten** mit dem
+> grössten Token-Anteil: nicht in 30 Sekunden aus dem Repo ableitbar und
+> hat schon einmal jemanden gekostet. Code schlägt Prosa: Test-Suite,
+> Mockup, zu portierende Funktion oder Rubric werden per `@`-Mention
+> bedarfsgeladen, nie nach CLAUDE.md kopiert. Regeln stehen als
+> Urteils-Anker (Zielzustand statt Einzelfall-Untersagung), ein Verbot nur
+> bei realem Failure-Mode. Eine Wahrheit, dünne Adapter: jeder Fakt genau
+> einmal, `AGENTS.md` & Co. verweisen statt kopieren. Kein Memory-Store —
+> Claude legt Sitzungsfunde selbst ab (Auto-Memory). Status-Einträge max.
+> 5 Zeilen, Historie in `*-archiv.md`.
 
 ## Ablauf
 
 ### 1. Bestandsaufnahme (read-only)
 
 - Existiert schon eine `CLAUDE.md`/`AGENTS.md`? → **NICHT überschreiben.**
-  In den Restrukturierungs-Modus wechseln: Bestand lesen, gegen die
-  Doktrin bewerten, Umbau als Vorschlag präsentieren (wie `/kontext-audit`,
-  aber mit Ziel Neuaufbau statt Diät).
+  Stattdessen Restrukturierung: Bestand gegen die Doktrin bewerten, Umbau
+  als Vorschlag präsentieren (wie `/kontext-audit`, Neuaufbau statt Diät).
 - Repo analysieren: `package.json`/Build-Tooling (Befehle für dev, test,
   build, lint), Verzeichnisstruktur (nur Top-Level + auffällige
   Konventionen), Test-Setup, CI-Workflows, bestehende Doku unter `docs/`,
@@ -43,7 +47,11 @@ beiden Dateien vorhanden, gilt die Kurzfassung:
 Nur fragen, was nicht aus dem Repo ableitbar ist:
 
 - Projektzweck + Zielgruppe in einem Satz (falls README es nicht hergibt).
-- Nicht-verhandelbare Konventionen und Verbote („Was NICHT tun").
+- **Gotcha-Frage** (der grösste Posten): Was ist hier nicht aus dem Repo
+  ableitbar und hat schon einmal jemanden gekostet? Nachhaken, bis 2–5
+  konkrete Fälle mit Datei-Verweis stehen. Ein Verbot nur mit konkret
+  genanntem Failure-Mode, sonst Urteils-Anker oder nichts.
+- Nicht-verhandelbare Konventionen (je 1 Zeile + Datei-Verweis).
 - Deploy-Weg (nur die eine Zeile Wahrheit + wo das Detail liegt).
 - Soll der Feature-Workflow (`/spec-to-implementation`) für dieses Projekt
   gelten? Soll der Branch-Schutz aktiv sein?
@@ -51,9 +59,10 @@ Nur fragen, was nicht aus dem Repo ableitbar ist:
 
 ### 3. CLAUDE.md schreiben (Budget ≤ ~120 Zeilen)
 
-Struktur exakt nach Doktrin § „Was gehört in CLAUDE.md": Projekt-Kern,
-Befehle, Konventionen (1 Zeile + Verweis pro Regel), Verbote,
-Workflow-Verweis, Verweis-Tabelle, Kontext-Pflege-Abschnitt. Jeder
+Struktur exakt nach Doktrin § „Was gehört in CLAUDE.md": Gotchas zuerst und
+mit dem grössten Token-Anteil, dann Projekt-Kern, Befehle, Konventionen
+(1 Zeile + Verweis pro Regel), Workflow-Verweis, Verweis-Tabelle,
+Kontext-Pflege-Abschnitt. Regeln als Urteils-Anker formulieren; jeder
 stale-anfällige Fakt bekommt eine Code-Fundstelle als Prüfanker.
 
 Falls `AGENTS.md` gewünscht: als dünner Adapter (Projekt-Kern + Verweis auf
